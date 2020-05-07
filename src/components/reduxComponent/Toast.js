@@ -12,7 +12,7 @@ class MyToast extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.toast.text != prevState.toast.text) {
-            Toast.showWithGravity(nextProps.toast.text);
+            Toast.showWithGravity(nextProps.toast.text, Toast.SHORT, Toast.BOTTOM);
             return ({
                 toast: nextProps.toast.text
             })

@@ -12,9 +12,19 @@ import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { TextInputWithIcon } from '../components/common/TextInputs';
 import {Button} from '../components/common/Buttons';
+import withLoader from '../redux/actionCreator/withLoader';
+import withToast from '../redux/actionCreator/withToast';
 class LoginScreen extends Component{
     constructor(props){
         super(props);
+    }
+    onPressSignIn=()=>{
+        const {loader, toast} = this.props
+        toast({text:"Check"})
+        loader(true)
+        setTimeout(()=>{
+             loader(false)
+        }, 2000)
     }
     render(){
         return(
@@ -40,7 +50,7 @@ class LoginScreen extends Component{
                             secureTextEntry={true}
                         />
                         <Button 
-                            onPress={()=>alert("Sign Up")}
+                            onPress={this.onPressSignIn}
                             containerStyle={styles.buttonContainer}
                             textStyle={styles.buttonText}
                             text={'Sign In'}
@@ -59,7 +69,7 @@ class LoginScreen extends Component{
 }
 
 
-export default LoginScreen ;
+export default withToast(withLoader(LoginScreen));
 const styles = StyleSheet.create({
     container:{
         flex:1,
