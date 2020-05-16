@@ -43,6 +43,10 @@ jspm_packages/
 ios/Pods/
 ios/Podfile.lock
 yarn.lock
+android/.gradle
+android/.idea
+android/app/build
+android/build
 # TypeScript v1 declaration files
 typings/
 

@@ -4,9 +4,11 @@ import AppNavigator from './src/AppRouter/AppNavigator'
 import MainContainer from './src/containers/MainContainer'
 import {Provider} from 'react-redux'
 import Store from './src/redux/store'
+import { ThemeManager } from './src/managers/ThemeManager';
 export default class App extends Component<Props> {
   render() {
     return (
+      <ThemeManager>
         <Provider store={Store}>
             <View style={{flex:1}}>
                 <View style={{flex:1}}>
@@ -15,6 +17,7 @@ export default class App extends Component<Props> {
                 <MainContainer />
             </View>
         </Provider>
+      </ThemeManager>
     );
   }
 }

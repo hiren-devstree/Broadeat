@@ -1,11 +1,20 @@
 import React from 'react'
 import {
-    View
+    View,
+    Dimensions,
+    Platform
 } from 'react-native'
 import Loader from '../../components/reduxComponent/Loader'
 import Toast from '../../components/reduxComponent/Toast'
 import StyleConfig from '../../assets/styles/StyleConfig'
+
 class MainContainer extends React.PureComponent{
+    componentDidMount= async ()=>{
+        //     Dimensions.addEventListener('change', () => {
+    //         const {height, width} = Dimensions.get('window')
+    //         console.log("MAIN CONTAINER ", JSON.stringify({height,width}));
+    //     });
+    }
     render(){
         return(
             <View style={{

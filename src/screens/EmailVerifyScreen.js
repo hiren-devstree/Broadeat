@@ -3,16 +3,13 @@ import {
     View,
     Text,
     Image,
-    StyleSheet,
-    ScrollView
+    StyleSheet
 
 } from 'react-native';
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { TextInputWithIcon } from '../components/common/TextInputs';
-import {Button} from '../components/common/Buttons';
-import { SafeAreaView, View1CC, CTextInputWithIcon, Devider, CText } from '../components/common'; 
-class RegisterScreen extends Component{
+import { SafeAreaView, View1CC, Devider, CText,CTextColor } from '../components/common'; 
+class EmailVerifyScreen extends Component{
     constructor(props){
         super(props);
     }
@@ -29,39 +26,10 @@ class RegisterScreen extends Component{
                         />
                     </View>
                     <View style={styles.content}>
-                        <ScrollView>
-                        <Text style={styles.headerText}>Sign up to see your favorite food recipes.</Text>
-                        <CTextInputWithIcon 
-                            icon={AppImages.ic_mail} 
-                            placeholder={'Email'}
-                            
-                        />
-                        <CTextInputWithIcon 
-                            icon={AppImages.ic_contact_mail} 
-                            placeholder={'Full Name'}
-                        />
-                        <CTextInputWithIcon 
-                            icon={AppImages.ic_account_circle} 
-                            placeholder={'User Name'}
-                        />
-                        <CTextInputWithIcon 
-                            icon={AppImages.ic_lock} 
-                            placeholder={'Password'}
-                            secureTextEntry={true}
-                        />
-                        <CTextInputWithIcon 
-                            icon={AppImages.ic_lock} 
-                            placeholder={'Confirm Password'}
-                            secureTextEntry={true}
-                        />
-                        <Button 
-                            onPress={()=>this.props.navigation.navigate('EmailVerify')}
-                            containerStyle={styles.buttonContainer}
-                            textStyle={styles.buttonText}
-                            text={'Sign Up'}
-                        />
-                        <Text style={styles.detailsText}>{'By signing up, you agree to our Terms, Data Policy and Cookies Policy.'}</Text>
-                    </ScrollView>
+                        <CTextColor
+                            color={"#2294E3"}
+                            fontSize={StyleConfig.countPixelRatio(20)}
+                        >{'Account created successfully.\nVerify your email to continue.'}</CTextColor>
                     </View>
                     <Devider height={StyleConfig.convertHeightPerVal(6)} />
                     <View style={styles.bottomContainer}>
@@ -76,7 +44,7 @@ class RegisterScreen extends Component{
 }
 
 
-export default RegisterScreen ;
+export default EmailVerifyScreen ;
 const styles = StyleSheet.create({
     logoWrapper:{
         alignItems:'center',
@@ -89,7 +57,7 @@ const styles = StyleSheet.create({
     },
     content:{
         flex:1,
-        paddingHorizontal: StyleConfig.convertWidthPerVal(48),
+        paddingHorizontal: StyleConfig.convertWidthPerVal(30),
     },
     headerText:{
         fontSize:20,

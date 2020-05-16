@@ -4,7 +4,8 @@ const AppImages = {
     ic_broad_eat: require('./ic_broad_eat.png'),
     ic_contact_mail: require('./ic_contact_mail.png'),
     ic_lock: require('./ic_lock.png'),
-    ic_mail: require('./ic_mail.png')
+    ic_mail: require('./ic_mail.png'),
+    welcome_broadeat: require('./welcome_broadeat.png')
 }
 
 module.exports = AppImages ;

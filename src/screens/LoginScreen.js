@@ -4,7 +4,6 @@ import {
     Text,
     Image,
     StyleSheet,
-    SafeAreaView,
     ScrollView
 
 } from 'react-native';
@@ -14,10 +13,17 @@ import { TextInputWithIcon } from '../components/common/TextInputs';
 import {Button} from '../components/common/Buttons';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
-class LoginScreen extends Component{
+import styled from 'styled-components/native';
+import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon } from '../components/common'; 
+import BaseComponent from '../containers/BaseComponent';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+class LoginScreen extends BaseComponent{
     constructor(props){
         super(props);
     }
+    
+   
     onPressSignIn=()=>{
         const {loader, toast} = this.props
         toast({text:"Check"})
@@ -28,57 +34,79 @@ class LoginScreen extends Component{
     }
     render(){
         return(
-            <SafeAreaView style={styles.container} >
-                <View style={styles.container} >
-                    <View style={styles.logoWrapper}>
+            <SafeAreaViewC>
+                <View style={styles.content}>
+                <View style={styles.logoWrapper}>
                         <Image
                         resizeMode={'contain'}
                         style={styles.logoStyle}
                         source={AppImages.ic_broad_eat}
                         />
                     </View>
-                    <View style={styles.content}>
+                    <View style={{flex:1}}>
                         <ScrollView>
-                        <Text style={styles.headerText}>Sign up to see your favorite food recipes.</Text>
-                        <TextInputWithIcon 
-                            icon={AppImages.ic_mail} 
-                            placeholder={'Email'}
+                        <View style={{marginLeft: StyleConfig.convertHeightPerVal(12)}}>
+                        <CTextColor align={'left'} color={"#8A8A8F"} fontSize={StyleConfig.countPixelRatio(20)} >Login</CTextColor>
+                        </View>
+                        <CTextInputWithIcon 
+                            icon={AppImages.ic_account_circle} 
+                            placeholder={'User Email'}
+                            color={'#111'}
+                            placeholderTextColor={'#444'}
+                            background={'#fff'}
                         />
-                        <TextInputWithIcon 
+
+                        <CTextInputWithIcon 
                             icon={AppImages.ic_lock} 
                             placeholder={'Password'}
                             secureTextEntry={true}
+                            color={'#111'}
+                            placeholderTextColor={'#444'}
+                            background={'#fff'}
                         />
+                        
                         <Button 
                             onPress={this.onPressSignIn}
                             containerStyle={styles.buttonContainer}
                             textStyle={styles.buttonText}
                             text={'Sign In'}
                         />
-                        <Text style={styles.detailsText}>{'By signing up, you agree to our Terms, Data Policy and Cookies Policy.'}</Text>
+                        
+                        <TouchableOpacity style={{marginVertical: StyleConfig.convertHeightPerVal(15)}} onPress={()=> this.props.navigation.navigate('Register')}>
+                        <CTextColor
+                            color={"#2294E3"}
+                            fontSize={StyleConfig.countPixelRatio(16)}
+                        >{'Register new Account'}</CTextColor>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{marginVertical: StyleConfig.convertHeightPerVal(15)}} onPress={()=> alert('Forgot password screen missing.')}>
+                        <CTextColor
+                            color={"#2294E3"}
+                            fontSize={StyleConfig.countPixelRatio(16)}
+                        >{'Forgot Password'}</CTextColor>
+                        </TouchableOpacity>
                     </ScrollView>
                     </View>
-                    <View style={styles.devider} />
-                    <View style={styles.bottomContainer}>
-                            <Text style={{fontSize:16, color:'#000'}}>Have an account?<Text onPress={()=> this.props.navigation.navigate('Register')} style={{color:"#2294E3"}}> Sign Up</Text></Text>
-                    </View>
+                  
                 </View>
-            </SafeAreaView>
+             </SafeAreaViewC>
         );
     }
 }
 
 
 export default withToast(withLoader(LoginScreen));
+
+
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:'white'
+        backgroundColor: 'white'
     },
     logoWrapper:{
         alignItems:'center',
         justifyContent:'center',
-        marginVertical:StyleConfig.convertHeightPerVal(40)
+        marginVertical:StyleConfig.convertHeightPerVal(130)
     },
     logoStyle:{
         width: StyleConfig.convertWidthPerVal(166),
@@ -86,19 +114,20 @@ const styles = StyleSheet.create({
     },
     content:{
         flex:1,
-        paddingHorizontal: StyleConfig.convertWidthPerVal(48),
+        paddingHorizontal: StyleConfig.convertWidthPerVal(46),
     },
     headerText:{
+        
         fontSize:20,
         fontWeight:'bold',
-        color:'#8a8a8f',
         letterSpacing: 0.33,
         textAlign:'center',
         marginBottom:StyleConfig.countPixelRatio(16)
     },
     buttonContainer:{
         backgroundColor:"#2294E3",
-        borderColor:"#2294E3"
+        borderColor:"#2294E3",
+        marginHorizontal: StyleConfig.convertWidthPerVal(70) 
     },
     buttonText:{color:'white'},
     detailsText:{
@@ -109,12 +138,7 @@ const styles = StyleSheet.create({
         marginHorizontal:StyleConfig.convertWidthPerVal(36), 
         textAlign:'center'   
     },
-    devider:{
-        height:StyleConfig.countPixelRatio(10),
-        backgroundColor:"#EFEDED", 
-        borderWidth:0.5, 
-        borderColor:"#95989a"
-    },
+    
     bottomContainer:{
         height:StyleConfig.convertHeightPerVal(80), 
         alignItems:'center', 
