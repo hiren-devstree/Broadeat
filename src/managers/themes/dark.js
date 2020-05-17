@@ -1,6 +1,6 @@
 const dark = {
     theme: {
-      background: '#2E3440',
+      background: '#000',
       border: '#575c66',
       devider: "#666",
       backgroundAlt: '#575c66',
