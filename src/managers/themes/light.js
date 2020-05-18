@@ -1,6 +1,9 @@
 const light = {
     theme: {
       background: '#eee',
+      tabBackground:"#FFF",
+      iconColor:"#8A8A8F",
+      selectedIconColor:"#2294E3",
       border: '#bdbdbd',
       devider: "#a2a2a2",
       backgroundAlt: '#eaeaeb',

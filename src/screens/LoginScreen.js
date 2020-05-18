@@ -30,6 +30,7 @@ class LoginScreen extends BaseComponent{
         loader(true)
         setTimeout(()=>{
              loader(false)
+             this.props.navigation.navigate('Dashboard')
         }, 2000)
     }
     render(){

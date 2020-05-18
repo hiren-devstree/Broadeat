@@ -59,27 +59,7 @@ const styles = StyleSheet.create({
         flex:1,
         paddingHorizontal: StyleConfig.convertWidthPerVal(30),
     },
-    headerText:{
-        fontSize:20,
-        fontWeight:'bold',
-        color:'#8a8a8f',
-        letterSpacing: 0.33,
-        textAlign:'center',
-        marginBottom:StyleConfig.countPixelRatio(16)
-    },
-    buttonContainer:{
-        backgroundColor:"#2294E3",
-        borderColor:"#2294E3"
-    },
-    buttonText:{color:'white'},
-    detailsText:{
-        fontSize:14, 
-        marginTop:StyleConfig.convertHeightPerVal(20), 
-        color:"#95989a", 
-        letterSpacing:0.5, 
-        marginHorizontal:StyleConfig.convertWidthPerVal(36), 
-        textAlign:'center'   
-    },
+   
     bottomContainer:{
         height:StyleConfig.convertHeightPerVal(72), 
         alignItems:'center', 
