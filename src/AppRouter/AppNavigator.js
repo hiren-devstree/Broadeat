@@ -1,10 +1,14 @@
-import 'react-native-gesture-handler';
 import * as React from 'react';
+import {
+  Image
+} from 'react-native';
+import 'react-native-gesture-handler';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import styled from 'styled-components';
+
+import AppImages from '../assets/images';
 import { withTheme } from 'styled-components/native';
 import InitScreen from '../screens/InitScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -29,19 +33,23 @@ const TabNavigator= withTheme(({theme, ...props})=> {
             let iconName;
 
             if (route.name === 'Home') {
-              iconName = 'home';
+              iconName = AppImages.ic_home;
             } else if (route.name === 'Search') {
-              iconName = 'search';
+              iconName = AppImages.ic_search;
             }else if (route.name === 'Filter') {
-              iconName = 'filter';
+              iconName = AppImages.ic_filter;
             }else if (route.name === 'Bookmark') {
-              iconName = 'bookmark-o';
+              iconName = AppImages.ic_bookmark;
             }else if (route.name === 'Profile') {
-              iconName = 'user-circle';
+              iconName = AppImages.ic_profile;
             }
 
             // You can return any component that you like here!
-            return <Icon name={iconName} size={32} color={color} />;
+            return <Image source={iconName} resizeMode={'contain'} style={{
+              height: 28, width:28, tintColor:color
+            }} />;
+            
+            // <Icon name={iconName} size={32} color={color} />;
           },
         })}
         tabBarOptions={{

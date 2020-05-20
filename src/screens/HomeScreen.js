@@ -12,15 +12,53 @@ import withToast from '../redux/actionCreator/withToast';
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, View1CC, Devider, CText,CTextColor } from '../components/common'; 
+import { FlatList } from 'react-native-gesture-handler';
 class HomeScreen extends Component{
+    static navigationOptions = ({ navigation }) => {
+        //return header with Custom View which will replace the original header 
+        return {
+          header: (
+            <View
+              style={{
+                height: 45,
+                marginTop: 20,
+                backgroundColor: 'red',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                }}>
+                This is Custom Header
+              </Text>
+            </View>
+          ),
+        };
+      };
     constructor(props){
         super(props);
     }
+    
     render(){
+        let data=[]
+        for(let ind=0;ind <40;ind++){
+            let ii = ind %13 ;
+            data.push(AppImages.homeItems[ii]);
+        }
         return(
             <SafeAreaView {...this.props}>
             <View1CC {...this.props} >
                 <CText fontSize={StyleConfig.countPixelRatio(16)}>Home</CText>
+                <FlatList
+                    data={data}
+                    numColumns={3}
+                    renderItem={({item})=> <Image source={item}
+                        style={{ margin:2, height: StyleConfig.convertWidthPer(30), width:StyleConfig.convertWidthPer(30)}}
+                    />}
+                />
             </View1CC>
             </SafeAreaView>
         );

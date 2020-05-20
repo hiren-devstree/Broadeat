@@ -19,6 +19,7 @@ import BaseComponent from '../containers/BaseComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 class InitScreen extends BaseComponent{
+    
     render(){
         return(
             <SafeAreaViewC>
