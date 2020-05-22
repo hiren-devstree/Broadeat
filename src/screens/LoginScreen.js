@@ -17,10 +17,12 @@ import styled from 'styled-components/native';
 import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon } from '../components/common'; 
 import BaseComponent from '../containers/BaseComponent';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ForgotPasswordModal } from '../components/hybridComponents/ForgotPasswordModal';
 
 class LoginScreen extends BaseComponent{
     constructor(props){
         super(props);
+        this.state={ showForgotPasswordModal: false}
     }
     
    
@@ -80,7 +82,7 @@ class LoginScreen extends BaseComponent{
                         >{'Register new Account'}</CTextColor>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{marginVertical: StyleConfig.convertHeightPerVal(15)}} onPress={()=> alert('Forgot password screen missing.')}>
+                        <TouchableOpacity style={{marginVertical: StyleConfig.convertHeightPerVal(15)}} onPress={()=> this.setState({showForgotPasswordModal:true})}>
                         <CTextColor
                             color={"#2294E3"}
                             fontSize={StyleConfig.countPixelRatio(16)}
@@ -90,6 +92,12 @@ class LoginScreen extends BaseComponent{
                     </View>
                   
                 </View>
+                <ForgotPasswordModal
+                 {...this.props} 
+                 onCalcelPress={()=> this.setState({showForgotPasswordModal:false})}
+                 onSendPress={()=> this.setState({showForgotPasswordModal:false})}
+                 visible={this.state.showForgotPasswordModal} />
+               
              </SafeAreaViewC>
         );
     }

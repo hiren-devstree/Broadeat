@@ -29,9 +29,9 @@ export const View0CC = props => <VIEW0CC {...props}>{props.children}</VIEW0CC>
 const VIEW0CC = styled.View`
   justify-content: center;
   align-items: center;
-  width: ${props => props.width ? props.width : StyleConfig.width}
-  height: ${props => props.height ? props.height : StyleConfig.convertHeightPerVal(60)}
-  background: ${props => props.theme.backgroundAlt2};
+  width: ${props => props.width ? props.width : StyleConfig.width}px;
+  height: ${props => props.height ? props.height : StyleConfig.convertHeightPerVal(60)}px;
+  background: ${props => props.theme.background};
 `
 
 export const Devider = props => <DEVIDER width={StyleConfig.width} height={props.height ? props.height : 2} />
@@ -42,18 +42,21 @@ const DEVIDER = styled.View`
 `
 
 export const CText = props => <CTEXT {...props}>{props.children}</CTEXT>
-const CTEXT = styled.Text`
+const CTEXT = styled.Text.attrs(props =>({
+  onPress:props.onPress
+}))`
   flex: 1;
   text-align:center;
-  font-size:${props => props.fontSize ? props.fontSize : StyleConfig.countPixelRatio(12)}
+  font-size:${props => props.fontSize ? props.fontSize : StyleConfig.countPixelRatio(12)}px;
   color: ${props => props.theme.text};
+  font-weight: ${props => props.fontWeight ? props.fontWeight : '500'};
 `
 
 export const CTextColor = props => <CTEXTCOLOR {...props}>{props.children}</CTEXTCOLOR>
 const CTEXTCOLOR = styled.Text`
   flex: 1;
   text-align:${props => props.align ? props.align : 'center'};
-  font-size:${props => props.fontSize ? props.fontSize : StyleConfig.countPixelRatio(12)}
+  font-size:${props => props.fontSize ? props.fontSize : StyleConfig.countPixelRatio(12)}px ;
   color: ${props => props.color};
   font-weight: ${props => props.fontWeight ? props.fontWeight : '500'};
 `
@@ -86,7 +89,7 @@ border-radius: 10px;
 border: ${props=> props.theme.border};
 flex: 1;
 flex-direction: row;
-minHeight:40;
+minHeight:40px;
 align-items: center;
 padding: 4px ;
 margin-vertical: 12px;
@@ -101,9 +104,33 @@ export const TEXTINPUT = styled.TextInput.attrs(props =>({
   color: ${props => props.color? props.color : props.theme.text};
   flex: 1;
   text-align: center;
-  font-size: ${StyleConfig.countPixelRatio(16)};
+  font-size: ${StyleConfig.countPixelRatio(16)}px;
 `;
 
+export const CTextInput= props => <INPUT_WRAPPER2 {...props}>
+<TEXTINPUT 
+    {...props}
+     />
+</INPUT_WRAPPER2>
+const INPUT_WRAPPER2 = styled.View` 
+border-radius: 10px;
+border: ${props=> props.theme.border};
+flex-direction: row;
+minHeight:40px;
+align-items: center;
+padding: 4px ;
+margin-left: 22px;
+margin-right: 22px;
+background-color: ${props => props.background ?props.background : "#00000000"}
+`
 
 
+export const ModalView = props => <MODAL_VIEW {...props}>{props.children}</MODAL_VIEW>
+const MODAL_VIEW = styled.View`
+  border: 2px solid ${props=> props.theme.border};
+  border-radius: 8px;
+  width: ${props => props.width ? props.width : StyleConfig.width}px;
+  height: ${props => props.height ? props.height : StyleConfig.convertHeightPerVal(200)}px;
+  background: ${props => props.theme.background};
+`
 
