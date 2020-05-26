@@ -25,6 +25,7 @@ class HomeScreen extends Component{
             let ii = ind %13 ;
             data.push(AppImages.homeItems[ii]);
         }
+        
         return(
             <SafeAreaView {...this.props}>
             <View1CC {...this.props} >

@@ -50,8 +50,4 @@ export default {
     iPhoneX,
     statusBarHeight:55,
     isPad: Platform.OS === 'ios' && Platform.isPad,
-    
-
-
-
 }
