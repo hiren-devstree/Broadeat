@@ -1,36 +1,42 @@
 
-import React, {Component } from 'react';
+import React, { Component } from 'react';
 import {
+    FlatList,
     View,
     Text,
     Image,
     StyleSheet
-
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { SafeAreaView, View1CC, Devider, CText,CTextColor } from '../components/common'; 
-class SearchScreen extends Component{
-    constructor(props){
+import { SafeAreaView, View1CC, Devider, CText, CTextColor } from '../components/common';
+import FoodResultRow from '../components/common/FoodResultRow';
+class SearchScreen extends Component {
+    constructor(props) {
         super(props);
     }
-    render(){
-        return(
+    render() {
+        return (
             <SafeAreaView {...this.props}>
-            <View1CC {...this.props} >
-                <CText fontSize={StyleConfig.countPixelRatio(16)}>SearchScreen</CText>
-            </View1CC>
+                <View1CC {...this.props} >
+                    <CText fontSize={StyleConfig.countPixelRatio(16)}>SearchScreen</CText>
+                    <FlatList
+                        data={AppImages.homeItems}
+                        keyExtractor={(_, idx) => `search-${idx}`}
+                        renderItem={({ item, index }) => <FoodResultRow data={item} index={index} />}
+                    />
+                </View1CC>
             </SafeAreaView>
         );
     }
 }
 
 
-export default withLoader(withToast(SearchScreen)) ;
+export default withLoader(withToast(SearchScreen));
 const styles = StyleSheet.create({
-    
+
 
 });
