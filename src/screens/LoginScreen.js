@@ -19,7 +19,7 @@ import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon } from '.
 import BaseComponent from '../containers/BaseComponent';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ForgotPasswordModal } from '../components/hybridComponents/ForgotPasswordModal';
-import {postLogin} from './../apiManager'
+import { postLogin } from './../apiManager'
 //api
 import { BASE_URL, EMAIL_REGEX } from '../helper/Constants'
 
@@ -50,6 +50,14 @@ class LoginScreen extends BaseComponent {
 		const { email, password } = this.state
 		let response = await postLogin(email, password)
 		console.log(response)
+		if (response.code === 1) {
+			this.props.navigation.navigate('Dashboard', {
+				data: response.data,
+				token: response.token
+			})
+		} else {
+
+		}
 		loader(false)
 	}
 
@@ -62,7 +70,7 @@ class LoginScreen extends BaseComponent {
 		} else if (!EMAIL_REGEX.test(email)) {
 			Alert.alert('Please enter Valid email-address')
 			return false
-		} else if(password === '') {
+		} else if (password === '') {
 			Alert.alert('Please enter your password')
 			return false
 		} else if (password.length < 6) {

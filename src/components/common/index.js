@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity, Image, TextInput, View } from 'react-native';
+import { TouchableOpacity, Image, TextInput, View } from 'react-native';
 import styled from 'styled-components';
 import StyleConfig from '../../assets/styles/StyleConfig';
 
@@ -16,6 +16,18 @@ const SAFEAREAVIEWC = styled.SafeAreaView`
   background: ${props => props.theme.cLightCyan};
 `
 
+export const ViewX = styled.View`
+    justify-content: center;
+    align-items: center;
+    background: ${props => props.theme.background};
+`;
+
+export const TextX = styled.Text`
+  text-align:${props => props.align ? props.align : 'center'};
+  font-size:${props => props.fontSize ? props.fontSize : StyleConfig.countPixelRatio(12)}px ;
+  color: ${props => props.theme.text};
+  font-weight: ${props => props.fontWeight ? props.fontWeight : '500'};
+`
 
 export const View1CC = props => <VIEW1CC>{props.children}</VIEW1CC>
 const VIEW1CC = styled.View`
@@ -36,14 +48,14 @@ const VIEW0CC = styled.View`
 
 export const Devider = props => <DEVIDER width={StyleConfig.width} height={props.height ? props.height : 2} />
 const DEVIDER = styled.View`
-  height: ${props => props.height };
-  width:  ${props => props.width };
+  height: ${props => props.height};
+  width:  ${props => props.width};
   background: ${props => props.theme.devider};
 `
 
 export const CText = props => <CTEXT {...props}>{props.children}</CTEXT>
-const CTEXT = styled.Text.attrs(props =>({
-  onPress:props.onPress
+const CTEXT = styled.Text.attrs(props => ({
+  onPress: props.onPress
 }))`
   flex: 1;
   text-align:center;
@@ -62,72 +74,72 @@ const CTEXTCOLOR = styled.Text`
 `
 
 export const CButtonColor = props => <TouchableOpacity style={props.containerStyle} onPress={props.onPress}>
-<CBUTTONCOLOR {...props}>{props.children}</CBUTTONCOLOR></TouchableOpacity>
+  <CBUTTONCOLOR {...props}>{props.children}</CBUTTONCOLOR></TouchableOpacity>
 const CBUTTONCOLOR = styled.View` 
   border-radius: 10px;
   height: 50px;
-  border: ${props=> props.borderColor};
+  border: ${props => props.borderColor};
   background: ${props => props.color};
   justify-content: center;
   align-items: center;
   padding: 10px 
 `
 
-export const CTextInputWithIcon= props => <INPUT_WRAPPER {...props}>
-<Image source={props.icon} resizeMode={'contain'} style={{
-        height:StyleConfig.countPixelRatio(18), 
-        width:StyleConfig.countPixelRatio(22), 
-        marginRight:8 
-    }} />
-<TEXTINPUT 
+export const CTextInputWithIcon = props => <INPUT_WRAPPER {...props}>
+  <Image source={props.icon} resizeMode={'contain'} style={{
+    height: StyleConfig.countPixelRatio(18),
+    width: StyleConfig.countPixelRatio(22),
+    marginRight: 8
+  }} />
+  <TEXTINPUT
     {...props}
-     />
-    <View style={{width:StyleConfig.countPixelRatio(28)}} />
+  />
+  <View style={{ width: StyleConfig.countPixelRatio(28) }} />
 </INPUT_WRAPPER>
 const INPUT_WRAPPER = styled.View` 
 border-radius: 10px;
-border: ${props=> props.theme.border};
+border: ${props => props.theme.border};
 flex: 1;
 flex-direction: row;
 minHeight:40px;
 align-items: center;
 padding: 4px ;
 margin-vertical: 12px;
-background-color: ${props => props.background ?props.background : "#00000000"}
+background-color: ${props => props.background ? props.background : "#00000000"}
 `
-export const TEXTINPUT = styled.TextInput.attrs(props =>({
-  placeholderTextColor: props.placeholderTextColor ?props.placeholderTextColor : props.theme.textHint,
+export const TEXTINPUT = styled.TextInput.attrs(props => ({
+  placeholderTextColor: props.placeholderTextColor ? props.placeholderTextColor : props.theme.textHint,
   placeholder: props.placeholder,
   secureTextEntry: props.secureTextEntry ? props.secureTextEntry : false,
   underlineColorAndroid: "#00000000"
 }))`
-  color: ${props => props.color? props.color : props.theme.text};
+  color: ${props => props.color ? props.color : props.theme.text};
   flex: 1;
   text-align: center;
   font-size: ${StyleConfig.countPixelRatio(16)}px;
 `;
 
-export const CTextInput= props => <INPUT_WRAPPER2 {...props}>
-<TEXTINPUT 
+export const CTextInput = props => <INPUT_WRAPPER2 {...props}>
+  <TEXTINPUT
     {...props}
-     />
+  />
 </INPUT_WRAPPER2>
 const INPUT_WRAPPER2 = styled.View` 
 border-radius: 10px;
-border: ${props=> props.theme.border};
+border: ${props => props.theme.border};
 flex-direction: row;
 minHeight:40px;
 align-items: center;
 padding: 4px ;
 margin-left: 22px;
 margin-right: 22px;
-background-color: ${props => props.background ?props.background : "#00000000"}
+background-color: ${props => props.background ? props.background : "#00000000"}
 `
 
 
 export const ModalView = props => <MODAL_VIEW {...props}>{props.children}</MODAL_VIEW>
 const MODAL_VIEW = styled.View`
-  border: 2px solid ${props=> props.theme.border};
+  border: 2px solid ${props => props.theme.border};
   border-radius: 8px;
   width: ${props => props.width ? props.width : StyleConfig.width}px;
   height: ${props => props.height ? props.height : StyleConfig.convertHeightPerVal(200)}px;

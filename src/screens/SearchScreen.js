@@ -12,7 +12,7 @@ import withToast from '../redux/actionCreator/withToast';
 
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { SafeAreaView, View1CC, Devider, CText, CTextColor } from '../components/common';
+import { SafeAreaView, View1CC, Devider, CText, CTextColor, TextX } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
 class SearchScreen extends Component {
     constructor(props) {
@@ -21,8 +21,8 @@ class SearchScreen extends Component {
     render() {
         return (
             <SafeAreaView {...this.props}>
-                <View1CC {...this.props} >
-                    <CText fontSize={StyleConfig.countPixelRatio(16)}>SearchScreen</CText>
+                <TextX style={{ paddingVertical: StyleConfig.convertHeightPerVal(10) }} fontSize={StyleConfig.countPixelRatio(16)}>SearchScreen</TextX>
+                <View1CC style={{ flex: 0 }} {...this.props} >
                     <FlatList
                         data={AppImages.homeItems}
                         keyExtractor={(_, idx) => `search-${idx}`}
