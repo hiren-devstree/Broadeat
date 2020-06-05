@@ -1,20 +1,25 @@
 import React, { PureComponent } from "react";
 import {
-    Image
+    Image, TouchableOpacity
 } from "react-native";
 import StyleConfig from '../../assets/styles/StyleConfig';
-import { ViewX, TextX } from '../../components/common';
+import { ViewX, TextX, CButtonColor } from '../../components/common';
 
 class FoodResultRow extends PureComponent {
 
     render() {
         const { data, index } = this.props;
         return (
-            <>
-                <Image
-                    resizeMode="cover"
-                    style={{ width: StyleConfig.width * 0.94, height: StyleConfig.convertHeightPerVal(205) }} source={data}
-                />
+            <ViewX>
+                <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: data })}
+                    style={{ width: StyleConfig.width * 0.94, paddingVertical: 10 }}
+                >
+                    <Image
+                        resizeMode="cover"
+                        style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(205) }} source={data}
+                    />
+                </TouchableOpacity>
                 <ViewX style={{ flexDirection: "row", paddingVertical: StyleConfig.convertHeightPerVal(12) }} >
                     <Image
                         style={{ width: StyleConfig.convertHeightPerVal(50), aspectRatio: 1, borderRadius: StyleConfig.convertHeightPerVal(50) }}
@@ -35,7 +40,7 @@ class FoodResultRow extends PureComponent {
                         </ViewX>
                     </ViewX>
                 </ViewX>
-            </>
+            </ViewX>
         );
     }
 }

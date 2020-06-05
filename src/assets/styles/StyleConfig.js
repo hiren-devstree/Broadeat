@@ -1,12 +1,12 @@
-import {Dimensions, Platform} from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 const deviceType = width < 480 ? 'phone' : 'tablet';
-const iPhoneX = Platform.OS === 'ios' && (height === 812 || height === 896 || width === 812 || width === 896 );
+const iPhoneX = Platform.OS === 'ios' && (height === 812 || height === 896 || width === 812 || width === 896);
 const iPhone5 = (Platform.OS === 'ios' && height === 568);
 
 const smartScale = (value) => {
-    let val  = height > width ? height : width
+    let val = height > width ? height : width
     const dev_height = Platform.OS === 'ios' ? iPhoneX ? val - 78 : val : val - 24
     if (deviceType == 'phone') {
         return Math.round((value * dev_height) / 812);
@@ -16,18 +16,18 @@ const smartScale = (value) => {
 }
 const ratioCount = Math.sqrt(height * height + width * width) / 1000;
 
-const widthPer = width /100 ;
-const heightPer = height / 100; 
+const widthPer = width / 100;
+const heightPer = height / 100;
 export default {
     countPixelRatio: (defaultValue) => {
         return smartScale(defaultValue);
     },
     convertWithRatioCount: (size) => size * ratioCount,
-    convertWidthPer:(per, isLandscape = false)=> per* ( isLandscape && width < height ? heightPer : widthPer),
-    convertHeightPer:(per, isLandscape = false)=> per* ( isLandscape && width < height ? widthPer : heightPer),
-    convertWidthPerVal:(val)=> val*height/812,
-    convertHeightPerVal:(val)=> val*width/375,
-    
+    convertWidthPer: (per, isLandscape = false) => per * (isLandscape && width < height ? heightPer : widthPer),
+    convertHeightPer: (per, isLandscape = false) => per * (isLandscape && width < height ? widthPer : heightPer),
+    convertWidthPerVal: (val) => val * height / 812,
+    convertHeightPerVal: (val) => val * width / 375,
+
     width,
     height,
     // fontRegular: 'Roboto-Regular',
@@ -46,8 +46,9 @@ export default {
     white: '#ffffff',
     grey: '#808080',
     grey_light: '#D3D3D3',
+    yellow: '#FA9000',
     isIphone: Platform.OS === 'ios',
     iPhoneX,
-    statusBarHeight:55,
+    statusBarHeight: 55,
     isPad: Platform.OS === 'ios' && Platform.isPad,
 }
