@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components/native'
 import { Appearance, AppearanceProvider } from 'react-native-appearance'
 import lightTheme from './themes/light'
 import darkTheme from './themes/dark'
-const defaultMode = 'dark';
+const defaultMode = 'light';
 const ThemeContext = createContext({
     mode: defaultMode,
     setMode: mode => console.log(mode)
