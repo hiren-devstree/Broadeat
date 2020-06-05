@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Image
+  Image, View, Button
 } from 'react-native';
 import 'react-native-gesture-handler';
 
@@ -22,10 +22,43 @@ import BookmarkScreen from '../screens/BookmarkScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PhotoRecipeDetails from '../screens/PhotoRecipeDetails';
 
+import HeaderSearchBar from '../components/common/HeaderSearchBar';
+import Feather from 'react-native-vector-icons/Feather'
+import StyleConfig from '../assets/styles/StyleConfig';
 
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const HomeNavigator = createStackNavigator();
+
+const HomeStackNavigator = withTheme(({ theme, ...props }) => {
+  return (
+    <HomeNavigator.Navigator>
+      <HomeNavigator.Screen
+        options={{
+          headerStyle: {
+            height: StyleConfig.headerHeight,
+            backgroundColor: theme.background
+          },
+          headerTitleStyle: { color: theme.text },
+          headerTitle: ({ tintColor }) => (
+            <HeaderSearchBar {...props} />
+          ),
+          headerRight: () => (
+            <Feather
+              style={{ paddingHorizontal: 20 }}
+              name={"menu"}
+              color={theme.text}
+              size={StyleConfig.iconSize}
+            />
+          ),
+        }}
+        name={"Home"} component={HomeScreen} />
+    </HomeNavigator.Navigator>
+  )
+})
+
 const TabNavigator = withTheme(({ theme, ...props }) => {
   return (
     <Tab.Navigator
@@ -62,7 +95,7 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
         }
       }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeStackNavigator} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Filter" component={FilterScreen} />
       <Tab.Screen name="Bookmark" component={BookmarkScreen} />
@@ -76,16 +109,50 @@ const AppNavigator = ({ theme, ...props }) => {
   return (
     <NavigationContainer>
 
-      <Stack.Navigator headerMode={null}>
-        <Stack.Screen name="Init" component={InitScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="EmailVerify" component={EmailVerifyScreen} />
-        <Stack.Screen name="Dashboard" component={TabNavigator} />
-        <Stack.Screen name="PhotoRecipeDetails" component={PhotoRecipeDetails} />
+      <Stack.Navigator
+        // headerMode={'none'}
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: theme.background
+          },
+          headerTitleStyle: { color: theme.text },
+          headerTintColor: theme.text,
+          headerBackTitleVisible: false,
+        }}
+      >
+        <Stack.Screen options={{ headerShown: false }} name="Init" component={InitScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={TabNavigator} />
+        <Stack.Screen options={{ headerShown: false }} name="PhotoRecipeDetails" component={PhotoRecipeDetails} />
+        <Stack.Screen
+          screenOptions={({ route }) => ({
+
+          })}
+          options={({ route, navigation }) => ({
+            headerStyle: {
+              height: StyleConfig.headerHeight,
+              backgroundColor: theme.background
+            },
+            headerTitleStyle: { color: theme.text },
+            headerTitle: () => (
+              <HeaderSearchBar {...{ navigation, route }} />
+            ),
+            headerRight: () => (
+              <Feather
+                style={{ paddingHorizontal: 20 }}
+                name={"menu"}
+                color={theme.text}
+                size={StyleConfig.iconSize}
+              />
+            ),
+          })}
+          name="Search" component={SearchScreen}
+        />
       </Stack.Navigator>
 
-    </NavigationContainer>
+    </NavigationContainer >
   );
 }
 export default withTheme(AppNavigator)

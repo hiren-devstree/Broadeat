@@ -1,5 +1,5 @@
 
-import React, {Component } from 'react';
+import React, { Component } from 'react';
 import {
     View,
     Text,
@@ -12,25 +12,25 @@ import withToast from '../redux/actionCreator/withToast';
 
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { SafeAreaView, View1CC, Devider, CText,CTextColor } from '../components/common'; 
-class FilterScreen extends Component{
-    constructor(props){
+import { SafeAreaView, View1CC, Devider, CText, CTextColor } from '../components/common';
+class FilterScreen extends Component {
+    constructor(props) {
         super(props);
     }
-    render(){
-        return(
+    render() {
+        return (
             <SafeAreaView {...this.props}>
-            <View1CC {...this.props} >
-                <CText fontSize={StyleConfig.countPixelRatio(16)}>FilterScreen</CText>
-            </View1CC>
+                <View1CC {...this.props} >
+                    <CText fontSize={StyleConfig.countPixelRatio(16)}>FilterScreen</CText>
+                </View1CC>
             </SafeAreaView>
         );
     }
 }
 
 
-export default withLoader(withToast(FilterScreen)) ;
+export default withLoader(withToast(FilterScreen));
 const styles = StyleSheet.create({
-    
+
 
 });

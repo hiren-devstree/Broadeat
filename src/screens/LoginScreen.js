@@ -22,6 +22,7 @@ import { ForgotPasswordModal } from '../components/hybridComponents/ForgotPasswo
 import { postLogin } from './../apiManager'
 //api
 import { BASE_URL, EMAIL_REGEX } from '../helper/Constants'
+import { CommonActions } from '@react-navigation/native';
 
 
 class LoginScreen extends BaseComponent {
@@ -51,10 +52,24 @@ class LoginScreen extends BaseComponent {
 		let response = await postLogin(email, password)
 		console.log(response)
 		if (response.code === 1) {
-			this.props.navigation.navigate('Dashboard', {
-				data: response.data,
-				token: response.token
-			})
+			// this.props.navigation.reset('Dashboard', {
+			// 	data: response.data,
+			// 	token: response.token
+			// })
+			this.props.navigation.dispatch(
+				CommonActions.reset({
+					index: 1,
+					routes: [
+						{
+							name: 'Dashboard',
+							params: {
+								data: response.data,
+								token: response.token
+							},
+						},
+					],
+				})
+			);
 		} else {
 
 		}
