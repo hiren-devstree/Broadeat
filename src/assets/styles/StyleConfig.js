@@ -49,6 +49,7 @@ export default {
     grey: '#808080',
     grey_light: '#D3D3D3',
     yellow: '#FA9000',
+    blue: '#0465C6',
     isIphone: Platform.OS === 'ios',
     iPhoneX,
     statusBarHeight: 55,
