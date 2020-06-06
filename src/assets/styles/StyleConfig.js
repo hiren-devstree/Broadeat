@@ -43,7 +43,7 @@ export default {
     fontSizeH4: 10 * ratioCount,
     fontSizeParagraph: 13 * ratioCount,
     iconSize: 26 * ratioCount,
-    headerHeight: 90 * width / 375,
+    headerHeight: iPhoneX ? 90 * width / 375 : 60 * width / 375,
     black: '#000',
     white: '#ffffff',
     grey: '#808080',

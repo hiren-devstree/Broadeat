@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Image, TextInput, View } from 'react-native';
+import { TouchableOpacity, Image, ViewProps, TextInput, TextProps, View, } from 'react-native';
 import styled from 'styled-components';
 import StyleConfig from '../../assets/styles/StyleConfig';
 
@@ -15,14 +15,15 @@ const SAFEAREAVIEWC = styled.SafeAreaView`
   flex: 1;  
   background: ${props => props.theme.cLightCyan};
 `
-
-export const ViewX = styled.View`
+export const ViewX = (props: ViewProps) => <VIEWX {...props} >{props.children}</VIEWX>
+const VIEWX = styled.View`
     justify-content: center;
     align-items: center;
     background: ${props => props.theme.background};
 `;
 
-export const TextX = styled.Text`
+export const TextX = (props: TextProps) => <TEXTX {...props} >{props.children}</TEXTX>
+const TEXTX = styled.Text`
   text-align:${props => props.align ? props.align : 'center'};
   font-size:${props => props.fontSize ? props.fontSize : StyleConfig.countPixelRatio(12)}px ;
   color: ${props => props.theme.text};

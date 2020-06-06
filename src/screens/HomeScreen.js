@@ -13,6 +13,7 @@ import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, View1CC, Devider, CText, CTextColor, TextX } from '../components/common';
 import { FlatList } from 'react-native-gesture-handler';
+import withUser from '../redux/actionCreator/withUser';
 class HomeScreen extends Component {
 
     constructor(props) {
@@ -45,7 +46,7 @@ class HomeScreen extends Component {
 }
 
 
-export default withLoader(withToast(HomeScreen));
+export default withUser(withLoader(withToast(HomeScreen)));
 const styles = StyleSheet.create({
 
 
