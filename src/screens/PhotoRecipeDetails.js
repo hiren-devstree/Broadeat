@@ -16,9 +16,12 @@ import {
 } from '../components/common'
 import imgFood from '../assets/images/ic_food.png'
 import imgBack from '../assets/images/ic_back.png'
-import imgFav from '../assets/images/ic_fav.png'
+import imgFav from '../assets/images/ic_favorites.png'
 import imgMenu from '../assets/images/ic_menu.png'
 import imgShare from '../assets/images/ic_share.png'
+import imgLike from '../assets/images/ic_like.png'
+import imgDisLike from '../assets/images/ic_dislike.png'
+import imgView from '../assets/images/ic_view.png'
 import imgUser from '../assets/images/ic_user.png'
 import imgTimer from '../assets/images/ic_timer.png'
 import imgAddCircle from '../assets/images/ic_addCircle.png'
@@ -27,6 +30,8 @@ import imgRemoveCircle from '../assets/images/ic_removeCircle.png'
 class PhotoRecipeDetails extends Component {
   constructor(props) {
     super(props)
+
+    console.disableYellowBox = true
 
     this.state = {
       noOfUser: 2,
@@ -37,16 +42,35 @@ class PhotoRecipeDetails extends Component {
   }
 
 
-
   render() {
     return this.renderMainView()
   }
+
+  /*
+  .##........#######...######...####..######...######.
+  .##.......##.....##.##....##...##..##....##.##....##
+  .##.......##.....##.##.........##..##.......##......
+  .##.......##.....##.##...####..##..##........######.
+  .##.......##.....##.##....##...##..##.............##
+  .##.......##.....##.##....##...##..##....##.##....##
+  .########..#######...######...####..######...######.
+  */
 
   _tabbarBtnPressed = (index) => {
     this.setState({ selectedTab: index })
   }
 
   _keyExtractor = (item, index) => index.toString()
+
+  /*
+  ..######...#######..##.....##.########...#######..##....##.########.##....##.########..######.
+  .##....##.##.....##.###...###.##.....##.##.....##.###...##.##.......###...##....##....##....##
+  .##.......##.....##.####.####.##.....##.##.....##.####..##.##.......####..##....##....##......
+  .##.......##.....##.##.###.##.########..##.....##.##.##.##.######...##.##.##....##.....######.
+  .##.......##.....##.##.....##.##........##.....##.##..####.##.......##..####....##..........##
+  .##....##.##.....##.##.....##.##........##.....##.##...###.##.......##...###....##....##....##
+  ..######...#######..##.....##.##.........#######..##....##.########.##....##....##.....######.
+  */
 
   renderMainView = () => {
     const { selectedTab } = this.state
@@ -57,9 +81,8 @@ class PhotoRecipeDetails extends Component {
           {this.renderItemMainImage()}
           {this.renderDescriptionView()}
           {this.renderTabButtons()}
-          {selectedTab == 1 ? this.renderIngredientsView() : null}
-          {this.renderShoppingListView()}
-          {this.renderNutritionView()}
+          {selectedTab == 1 ? this.renderIngredientsView() : this.renderMethodListView()}
+          {/* {this.renderMethodListView()} */}
         </ScrollView>
       </SafeAreaView>
     )
@@ -72,24 +95,23 @@ class PhotoRecipeDetails extends Component {
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <Image source={imgBack} style={styles.backBtn} />
           </TouchableOpacity>
-          <ViewX style={{ flexDirection: 'row' }}>
-            <TouchableOpacity>
-              <Image source={imgShare} style={styles.headerBtn} resizeMode='contain' />
-            </TouchableOpacity>
-            <TouchableOpacity style={{ paddingHorizontal: StyleConfig.countPixelRatio(10) }}>
-              <Image source={imgFav} style={styles.headerBtn} resizeMode='contain' />
-            </TouchableOpacity>
+          <TextX
+            fontSize={StyleConfig.countPixelRatio(16)}
+          >
+            {'Gourmet Kitchen'}
+          </TextX>
+          <ViewX>
             <TouchableOpacity>
               <Image source={imgMenu} style={styles.headerBtn} resizeMode='contain' />
             </TouchableOpacity>
           </ViewX>
         </ViewX>
-        {this.renderHeaderBottomView()}
       </>
     )
   }
 
   renderHeaderBottomView = () => {
+    const { noOfUser, timer, foodType } = this.state
     return (
       <ViewX style={styles.headerBottomView} {...this.props}>
         <Image source={imgFood} />
@@ -100,13 +122,22 @@ class PhotoRecipeDetails extends Component {
           >
             {'Tomato & Broccoli Conchi Pasta'}
           </TextX>
-          <TextX
-            fontSize={StyleConfig.countPixelRatio(16)}
-            align={'left'}
-            color={'#747373'}
-          >
-            {'Gourmet Kitchen'}
-          </TextX>
+          <ViewX style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+            <TextX
+              fontSize={StyleConfig.countPixelRatio(16)}
+              align={'left'}
+              color={'#747373'}
+            >
+              {'Gourmet Kitchen'}
+            </TextX>
+            <ViewX style={{ flexDirection: 'row' }}>
+              <Image source={imgUser} style={{ width: 12, height: 12, marginRight: 3 }} />
+              <TextX>{noOfUser}</TextX>
+              <Image source={imgTimer} style={{ width: 15, height: 15, marginLeft: 15, marginRight: 3 }} />
+              <TextX>{timer}</TextX>
+              <TextX style={{ marginLeft: 15 }}>{foodType}</TextX>
+            </ViewX>
+          </ViewX>
         </ViewX>
       </ViewX>
     )
@@ -126,22 +157,34 @@ class PhotoRecipeDetails extends Component {
     const { noOfUser, timer, foodType } = this.state
     return (
       <ViewX style={{ flex: 1, alignItems: 'flex-start', }}>
-        <ViewX style={styles.descriptionView}>
-          <TextX
-            fontSize={StyleConfig.countPixelRatio(16)}
-            align={'left'}
-            color={'#747373'}
-          >Description</TextX>
+        {this.renderHeaderBottomView()}
+        <ViewX style={styles.operationView}>
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgUser} style={{ width: 12, height: 12, marginRight: 3 }} />
-            <TextX>{noOfUser}</TextX>
-            <Image source={imgTimer} style={{ width: 15, height: 15, marginLeft: 15, marginRight: 3 }} />
-            <TextX>{timer}</TextX>
-            <TextX style={{ marginLeft: 15 }}>{foodType}</TextX>
+            <Image source={imgView} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
           </ViewX>
+
+          <ViewX style={{ flexDirection: 'row' }}>
+            <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+          </ViewX>
+
+          <ViewX style={{ flexDirection: 'row' }}>
+            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+          </ViewX>
+          <ViewX style={{ flexDirection: 'row' }}>
+            <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+          </ViewX>
+          <ViewX style={{ flexDirection: 'row' }}>
+            <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+          </ViewX>
+
         </ViewX>
         <TextX
-          fontSize={StyleConfig.countPixelRatio(20)}
+          fontSize={StyleConfig.countPixelRatio(14)}
           style={{ marginLeft: 15 }}
           align={'left'}
         >{'Comforting and satisfying without being too heavy, making them a great choice.'}
@@ -181,6 +224,7 @@ class PhotoRecipeDetails extends Component {
       <FlatList
         scrollEnabled={false}
         contentContainerStyle={{ paddingHorizontal: StyleConfig.countPixelRatio(15) }}
+        ListFooterComponent={this.renderNutritionView}
         keyExtractor={this._keyExtractor}
         data={[1, 1, 1, 1]}
         renderItem={this.renderIngredientCellView}
@@ -190,35 +234,54 @@ class PhotoRecipeDetails extends Component {
 
   renderIngredientCellView = () => {
     return (
-      <ViewX style={{ flexDirection: 'row', paddingLeft: StyleConfig.countPixelRatio(10), marginTop: StyleConfig.countPixelRatio(7) }}>
-        <TouchableOpacity>
-          <Image source={imgAddCircle} style={{ width: 17, height: 17, marginRight: 3 }} />
-        </TouchableOpacity>
-        <TextX
-          style={{ width: '35%' }}
-          align='left'
-          fontSize={StyleConfig.countPixelRatio(16)}
-        >{'2 tablespoon'}
-        </TextX>
-        <TextX
-          style={{ flex: 1 }}
-          align='left'
-          fontSize={StyleConfig.countPixelRatio(16)}
-        >{'Olive Oil'}
-        </TextX>
-      </ViewX>
+      <>
+        <ViewX style={{ flexDirection: 'row', paddingLeft: StyleConfig.countPixelRatio(10), marginTop: StyleConfig.countPixelRatio(7) }}>
+          <TouchableOpacity>
+            <Image source={imgAddCircle} style={{ width: 17, height: 17, marginRight: 3 }} />
+          </TouchableOpacity>
+          <TextX
+            style={{ width: '35%' }}
+            align='left'
+            fontSize={StyleConfig.countPixelRatio(16)}
+          >{'2 tablespoon'}
+          </TextX>
+          <TextX
+            style={{ flex: 1 }}
+            align='left'
+            fontSize={StyleConfig.countPixelRatio(16)}
+          >{'Olive Oil'}
+          </TextX>
+        </ViewX>
+        <ViewX style={styles.shoppingCellContainer}>
+          <TouchableOpacity>
+            <Image source={imgRemoveCircle} style={{ width: 17, height: 17, marginRight: 3 }} />
+          </TouchableOpacity>
+          <TextX
+            style={{ width: '35%' }}
+            align='left'
+            fontSize={StyleConfig.countPixelRatio(16)}
+          >{'150oz'}
+          </TextX>
+          <TextX
+            style={{ flex: 1 }}
+            align='left'
+            fontSize={StyleConfig.countPixelRatio(16)}
+          >{'Cream '}
+          </TextX>
+        </ViewX>
+      </>
     )
   }
 
-  renderShoppingListView = () => {
+  renderMethodListView = () => {
     return (
       <FlatList
         scrollEnabled={false}
         contentContainerStyle={{ paddingHorizontal: StyleConfig.countPixelRatio(15), marginTop: 15 }}
-        ListHeaderComponent={this.renderShoppingListHeader}
+        // ListHeaderComponent={this.renderShoppingListHeader}
         keyExtractor={this._keyExtractor}
-        data={[1, 1]}
-        renderItem={this.renderShoppingListCellContainer}
+        data={[1, 1, 1, 1]}
+        renderItem={this.renderMethodListCellContainer}
       />
     )
   }
@@ -239,7 +302,7 @@ class PhotoRecipeDetails extends Component {
           >{'4 items added'}
           </TextX>
           <Text
-            style={{ flex: 1, fontSize: StyleConfig.countPixelRatio(16), color: '#0465C6' }}
+            style={{ flex: 1, fontSize: StyleConfig.countPixelRatio(16), color: StyleConfig.blue }}
           >{'Shopping list '}
           </Text>
         </ViewX>
@@ -248,23 +311,20 @@ class PhotoRecipeDetails extends Component {
     )
   }
 
-  renderShoppingListCellContainer = ({ item, index }) => {
+  renderMethodListCellContainer = ({ item, index }) => {
     return (
       <ViewX style={styles.shoppingCellContainer}>
-        <TouchableOpacity>
-          <Image source={imgRemoveCircle} style={{ width: 17, height: 17, marginRight: 3 }} />
-        </TouchableOpacity>
         <TextX
-          style={{ width: '35%' }}
+          style={{ width: '5%' }}
           align='left'
           fontSize={StyleConfig.countPixelRatio(16)}
-        >{'150oz'}
+        >{index + 1}.
         </TextX>
         <TextX
           style={{ flex: 1 }}
           align='left'
           fontSize={StyleConfig.countPixelRatio(16)}
-        >{'Cream '}
+        >{'Lorem ipsum dolor sit amet, consectetur adipisicin'}
         </TextX>
       </ViewX>
     )
@@ -305,12 +365,22 @@ class PhotoRecipeDetails extends Component {
 
 }
 
+/*
+..######..########.##....##.##.......########..######.
+.##....##....##.....##..##..##.......##.......##....##
+.##..........##......####...##.......##.......##......
+..######.....##.......##....##.......######....######.
+.......##....##.......##....##.......##.............##
+.##....##....##.......##....##.......##.......##....##
+..######.....##.......##....########.########..######.
+*/
 
 const styles = StyleSheet.create({
   headerTopView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: StyleConfig.countPixelRatio(12)
+    paddingHorizontal: StyleConfig.countPixelRatio(12),
+    marginBottom: StyleConfig.countPixelRatio(12),
   },
   headerBottomView: {
     justifyContent: 'flex-start',
@@ -332,7 +402,6 @@ const styles = StyleSheet.create({
   headerBtn: {
     width: 22,
     height: 22,
-    tintColor: 'white'
   },
   backBtn: {
     width: 22,
@@ -376,7 +445,15 @@ const styles = StyleSheet.create({
   shoppingCellContainer: {
     flexDirection: 'row',
     paddingLeft: StyleConfig.countPixelRatio(10),
-    marginTop: StyleConfig.countPixelRatio(7)
+    marginTop: StyleConfig.countPixelRatio(7),
+    alignItems: 'flex-start',
+  },
+  operationView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: StyleConfig.countPixelRatio(15),
+    marginBottom: StyleConfig.countPixelRatio(10),
   }
 })
 
