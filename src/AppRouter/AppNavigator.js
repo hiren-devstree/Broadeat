@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Image, View, Button
+  Image, View, TouchableWithoutFeedback, Text
 } from 'react-native';
 import 'react-native-gesture-handler';
 
@@ -24,7 +24,10 @@ import PhotoRecipeDetails from '../screens/PhotoRecipeDetails';
 
 import HeaderSearchBar from '../components/common/HeaderSearchBar';
 import Feather from 'react-native-vector-icons/Feather'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import StyleConfig from '../assets/styles/StyleConfig';
+import Icon from 'react-native-vector-icons/Feather';
+import SearchResult from '../screens/SearchResult';
 
 
 const Stack = createStackNavigator();
@@ -34,7 +37,9 @@ const HomeNavigator = createStackNavigator();
 
 const HomeStackNavigator = withTheme(({ theme, ...props }) => {
   return (
-    <HomeNavigator.Navigator>
+    <HomeNavigator.Navigator
+      mode="modal"
+    >
       <HomeNavigator.Screen
         options={{
           headerStyle: {
@@ -43,7 +48,27 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
           },
           headerTitleStyle: { color: theme.text },
           headerTitle: ({ tintColor }) => (
-            <HeaderSearchBar {...props} />
+            <TouchableWithoutFeedback
+              onPress={() => props.navigation.navigate('SearchScreenModal')}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 10,
+                  height: StyleConfig.convertHeightPerVal(38),
+                  width: StyleConfig.width * 0.4,
+                  backgroundColor: theme.textHint
+                }}
+              >
+                <Icon
+                  style={{ position: "absolute", alignSelf: "center", left: 10 }}
+                  name={"search"}
+                />
+                <Text style={{}} > {"Search"} </Text>
+              </View>
+            </TouchableWithoutFeedback>
           ),
           headerRight: () => (
             <Feather
@@ -55,7 +80,20 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
           ),
         }}
         name={"Home"} component={HomeScreen} />
-    </HomeNavigator.Navigator>
+      <HomeNavigator.Screen
+        options={{
+          headerStyle: {
+            height: StyleConfig.headerHeight,
+            backgroundColor: theme.background
+          },
+          headerTitleStyle: { color: theme.text },
+          header: ({ tintColor }) => (
+            <HeaderSearchBar  {...props} />
+          )
+        }}
+        name={'SearchScreenModal'} component={SearchScreen}
+      />
+    </HomeNavigator.Navigator >
   )
 })
 
@@ -110,7 +148,7 @@ const AppNavigator = ({ theme, ...props }) => {
     <NavigationContainer>
 
       <Stack.Navigator
-        // headerMode={'none'}
+        headerMode={'screen'}
         screenOptions={{
           headerStyle: {
             backgroundColor: theme.background
@@ -127,28 +165,12 @@ const AppNavigator = ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={TabNavigator} />
         <Stack.Screen options={{ headerShown: false }} name="PhotoRecipeDetails" component={PhotoRecipeDetails} />
         <Stack.Screen
-          screenOptions={({ route }) => ({
-
-          })}
           options={({ route, navigation }) => ({
-            headerStyle: {
-              height: StyleConfig.headerHeight,
-              backgroundColor: theme.background
-            },
-            headerTitleStyle: { color: theme.text },
-            headerTitle: () => (
-              <HeaderSearchBar {...{ navigation, route }} />
-            ),
-            headerRight: () => (
-              <Feather
-                style={{ paddingHorizontal: 20 }}
-                name={"menu"}
-                color={theme.text}
-                size={StyleConfig.iconSize}
-              />
-            ),
+            header: () => (
+              <HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />
+            )
           })}
-          name="Search" component={SearchScreen}
+          name="SearchResult" component={SearchResult}
         />
       </Stack.Navigator>
 

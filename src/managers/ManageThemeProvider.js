@@ -4,37 +4,37 @@ import { ThemeProvider } from 'styled-components/native'
 import { Appearance, AppearanceProvider } from 'react-native-appearance'
 import lightTheme from './themes/light'
 import darkTheme from './themes/dark'
-const defaultMode = 'light';
+const defaultMode = 'dark';
 const ThemeContext = createContext({
-    mode: defaultMode,
-    setMode: mode => console.log(mode)
-  })
+  mode: defaultMode,
+  setMode: mode => console.log(mode)
+})
 
 export const useTheme = () => React.useContext(ThemeContext)
 
 
 export const ManageThemeProvider = ({ children }) => {
-    const [themeState, setThemeState] = useState(defaultMode)
-    const setMode = mode => {
-      setThemeState(mode)
-    }
-    useEffect(() => {
-      const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-        setThemeState(colorScheme)
-      })
-      return () => subscription.remove()
-    }, [])
-    return (
-      <ThemeContext.Provider value={{ mode: themeState, setMode }}>
-        <ThemeProvider
-          theme={themeState === 'dark' ? darkTheme.theme : lightTheme.theme}>
-          <>
-            <StatusBar
-              barStyle={themeState === 'dark' ? 'light-content' : 'dark-content'}
-            />
-            {children}
-          </>
-        </ThemeProvider>
-      </ThemeContext.Provider>
-    )
+  const [themeState, setThemeState] = useState(defaultMode)
+  const setMode = mode => {
+    setThemeState(mode)
   }
+  useEffect(() => {
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+      setThemeState(colorScheme)
+    })
+    return () => subscription.remove()
+  }, [])
+  return (
+    <ThemeContext.Provider value={{ mode: themeState, setMode }}>
+      <ThemeProvider
+        theme={themeState === 'dark' ? darkTheme.theme : lightTheme.theme}>
+        <>
+          <StatusBar
+            barStyle={themeState === 'dark' ? 'light-content' : 'dark-content'}
+          />
+          {children}
+        </>
+      </ThemeProvider>
+    </ThemeContext.Provider>
+  )
+}

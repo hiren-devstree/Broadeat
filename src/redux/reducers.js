@@ -2,7 +2,10 @@ import {
     LOADER_SET,
     TOAST_SET,
     INTERNET_CONN_SET,
- } from './actions';
+    LOGIN_SUCCESS,
+    LOGOUT_SUCCESS,
+    UPDATE_PROFILE
+} from './actions';
 
 export const loader = (state = false, action) => {
     switch (action.type) {
@@ -34,3 +37,45 @@ export const internetConn = (state = false, action) => {
     }
 };
 
+const userInitialState = {
+    token: null,
+    userDetails: null,
+};
+
+export const user = (state = userInitialState, action) => {
+    switch (action.type) {
+        case LOGIN_SUCCESS:
+
+            console.log('object', {
+                ...state,
+                token: action.state.token,
+                userDetails: {
+                    ...state.userDetails,
+                    ...action.state.data,
+                },
+            });
+            
+            return {
+                ...state,
+                token: action.state.token,
+                userDetails: {
+                    ...state.userDetails,
+                    ...action.state.data,
+                },
+            };
+
+        case UPDATE_PROFILE:
+            return {
+                ...state,
+                userDetails: {
+                    ...state.userDetails,
+                    ...action.state,
+                },
+            };
+
+        case LOGOUT_SUCCESS:
+            return userInitialState;
+        default:
+            return state;
+    }
+};
