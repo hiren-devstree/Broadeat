@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { View } from 'react-native';
 
 import StyleConfig from '../../assets/styles/StyleConfig';
+import BackButton from './BackButton';
 
 class SaerchHeader extends React.Component {
 
@@ -46,17 +47,7 @@ class SaerchHeader extends React.Component {
             }} >
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
                     {
-                        back &&
-                        (
-                            <Ionicons
-                                onPress={() => { navigation.pop() }}
-                                name={"ios-arrow-back"}
-                                style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20) }}
-                                color={theme.text}
-                                size={StyleConfig.iconSize}
-
-                            />
-                        )
+                        back && <BackButton {...{ navigation }} />
                     }
                     <SearchBar
                         ref={input => {
@@ -86,7 +77,7 @@ class SaerchHeader extends React.Component {
                             ?
                             <View style={{ flexDirection: "row" }} >
                                 <Ionicons
-                                    onPress={() => { navigation }}
+                                    onPress={() => { navigation.push('Filter') }}
                                     style={{ paddingRight: StyleConfig.convertHeightPerVal(10) }}
                                     name={"ios-funnel"}
                                     color={theme.text}
@@ -100,7 +91,7 @@ class SaerchHeader extends React.Component {
                                 />
                             </View>
                             : <Button
-                                buttonStyle={{ backgroundColor: "transparent", paddingHorizontal: 10 }}
+                                buttonStyle={{ backgroundColor: theme.background, paddingHorizontal: 10 }}
                                 title={"Cancel"}
                                 onPress={() => this.props.navigation.pop()}
                             />

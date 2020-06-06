@@ -172,6 +172,7 @@ const AppNavigator = ({ theme, ...props }) => {
           })}
           name="SearchResult" component={SearchResult}
         />
+        <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
       </Stack.Navigator>
 
     </NavigationContainer >
