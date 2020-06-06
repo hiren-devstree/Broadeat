@@ -14,6 +14,7 @@ import { TextInputWithIcon } from '../components/common/TextInputs';
 import { Button } from '../components/common/Buttons';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
+import withUser from '../redux/actionCreator/withUser';
 import styled from 'styled-components/native';
 import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon } from '../components/common';
 import BaseComponent from '../containers/BaseComponent';
@@ -45,27 +46,20 @@ class LoginScreen extends BaseComponent {
 	}
 
 	_authorizeUser = async () => {
-		const { loader, toast } = this.props
+		const { loader, toast, loginSuccess } = this.props
 		toast({ text: "Check" })
 		loader(true)
 		const { email, password } = this.state
 		let response = await postLogin(email, password)
 		console.log(response)
 		if (response.code === 1) {
-			// this.props.navigation.reset('Dashboard', {
-			// 	data: response.data,
-			// 	token: response.token
-			// })
+			loginSuccess(response);
 			this.props.navigation.dispatch(
 				CommonActions.reset({
 					index: 1,
 					routes: [
 						{
 							name: 'Dashboard',
-							params: {
-								data: response.data,
-								token: response.token
-							},
 						},
 					],
 				})
@@ -170,7 +164,7 @@ class LoginScreen extends BaseComponent {
 }
 
 
-export default withToast(withLoader(LoginScreen));
+export default withUser(withToast(withLoader(LoginScreen)));
 
 
 const styles = StyleSheet.create({

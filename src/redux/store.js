@@ -1,16 +1,18 @@
-import {createStore, applyMiddleware, compose, combineReducers} from 'redux';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import {
     loader,
     toast,
-    internetConn
+    internetConn,
+    user
 } from './reducers';
 
 const store = createStore(
     combineReducers({
         loader,
         toast,
-        internetConn
+        internetConn,
+        user
     }),
     undefined,
     compose(applyMiddleware(thunk))
