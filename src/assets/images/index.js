@@ -6,6 +6,8 @@ const AppImages = {
     ic_lock: require('./ic_lock.png'),
     ic_mail: require('./ic_mail.png'),
     welcome_broadeat: require('./welcome_broadeat.png'),
+    ic_fav_selected: require('./ic_fav_green.png'),
+    mock_user_1: require('./mock_user_1.png'),
 
     ic_home: require('./tabIcon/home.png'),
     ic_search: require('./tabIcon/search.png'),
@@ -13,7 +15,7 @@ const AppImages = {
     ic_bookmark: require('./tabIcon/bookmark.png'),
     ic_profile: require('./tabIcon/profile.png'),
 
-    homeItems:[
+    homeItems: [
         require('./home/item1.png'),
         require('./home/item2.png'),
         require('./home/item3.png'),
@@ -30,4 +32,4 @@ const AppImages = {
     ]
 }
 
-module.exports = AppImages ;
+module.exports = AppImages;

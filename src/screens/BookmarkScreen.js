@@ -53,8 +53,10 @@ class BookmarkScreen extends Component {
         const { theme } = this.props;
 
         return (<TextX style={[{
+            textAlignVertical: "center",
+            fontSize: StyleConfig.fontSizeH3,
             height: StyleConfig.headerHeight,
-            color: focused ? theme.background : theme.filterOn
+            color: focused ? theme.text : theme.filterOn
         }]}>{""}{route.title}{""}</TextX>)
     }
 

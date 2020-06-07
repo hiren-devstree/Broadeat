@@ -55,7 +55,8 @@ class SearchScreen extends Component {
                   <ViewX
                     style={{
                       paddingVertical: StyleConfig.convertWidthPerVal(10),
-                      flexDirection: "row", justifyContent: 'space-between'
+                      flexDirection: "row",
+                      justifyContent: 'space-between'
                     }} >
                     <TouchableWithoutFeedback onPress={() => navigation.navigate("SearchResult")} >
                       <ViewX style={{ flexDirection: "row", borderColor: "white" }} >
