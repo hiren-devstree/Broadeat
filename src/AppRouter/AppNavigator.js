@@ -21,6 +21,7 @@ import FilterScreen from '../screens/FilterScreen';
 import BookmarkScreen from '../screens/BookmarkScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PhotoRecipeDetails from '../screens/PhotoRecipeDetails';
+import EditAccount from '../screens/EditAccount';
 
 import HeaderSearchBar from '../components/common/HeaderSearchBar';
 import Feather from 'react-native-vector-icons/Feather'
@@ -164,6 +165,7 @@ const AppNavigator = ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={TabNavigator} />
         <Stack.Screen options={{ headerShown: false }} name="PhotoRecipeDetails" component={PhotoRecipeDetails} />
+        <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen
           options={({ route, navigation }) => ({
             header: () => (
