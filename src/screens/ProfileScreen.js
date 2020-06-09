@@ -78,7 +78,7 @@ class ProfileScreen extends Component {
             <TextX fontSize={StyleConfig.countPixelRatio(16)}>{'email@mail.com'}</TextX>
           </ViewX>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => this.props.navigation.push('EditAccount')}>
             <Text style={{ color: StyleConfig.blue, fontSize: StyleConfig.countPixelRatio(16) }}>{'Edit Account'}</Text>
           </TouchableOpacity>
 

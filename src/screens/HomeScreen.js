@@ -35,7 +35,8 @@ class HomeScreen extends Component {
                         numColumns={3}
                         keyExtractor={(_, idx) => `foodGlr-${idx}`}
                         renderItem={({ item }) =>
-                            <Image source={item}
+                            <Image
+                                source={item}
                                 style={{ margin: 3, height: StyleConfig.convertWidthPer(29), width: StyleConfig.convertWidthPer(30) }}
                             />}
                     />
