@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     FlatList,
-    Image
+    Image,
+    TouchableWithoutFeedback
 } from "react-native";
 
 import { withTheme } from "styled-components";
@@ -31,30 +32,32 @@ const FilterBubble = withTheme(({ theme, item }) => {
 // const POST_SIZE = StyleConfig.width / 2;
 const POST_SIZE = (StyleConfig.width - 15) / 2;
 
-const FavoriteFood = withTheme(({ theme, item, idx }) => {
+const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
     return (
-        <ViewX
-            style={{
-                width: POST_SIZE
-            }}>
+        <TouchableWithoutFeedback onPress={onPres} >
             <ViewX
                 style={{
-                    width: POST_SIZE,
-                    height: POST_SIZE
+                    width: POST_SIZE
                 }}>
-                <Image
+                <ViewX
                     style={{
-                        borderRadius: StyleConfig.convertWidthPerVal(10),
-                        width: "90%",
-                        height: "90%"
-                    }}
-                    source={item}
-                />
+                        width: POST_SIZE,
+                        height: POST_SIZE
+                    }}>
+                    <Image
+                        style={{
+                            borderRadius: StyleConfig.convertWidthPerVal(10),
+                            width: "90%",
+                            height: "90%"
+                        }}
+                        source={item}
+                    />
+                </ViewX>
+                <TextX style={{
+                    fontSize: StyleConfig.fontSizeH3
+                }} >{" Tomato & Broccoli Conchiglie Pasta"}</TextX>
             </ViewX>
-            <TextX style={{
-                fontSize: StyleConfig.fontSizeH3
-            }} >{" Tomato & Broccoli Conchiglie Pasta"}</TextX>
-        </ViewX>
+        </TouchableWithoutFeedback>
     )
 })
 
@@ -65,6 +68,10 @@ class RecipesTab extends Component {
         this.state = {
             filters: ["View All", "Pastas", "Salads", "Deserts", "Vegetarian"]
         }
+    }
+
+    onFoodItemPress(item) {
+        this.props.navigation.navigate('PhotoRecipeDetails', { data: item })
     }
 
     render() {
@@ -97,7 +104,7 @@ class RecipesTab extends Component {
                     numColumns={2}
                     keyExtractor={(_, idx) => `foodGlr-${idx}`}
                     data={data}
-                    renderItem={({ item, idx }) => <FavoriteFood {...{ item, idx }} />}
+                    renderItem={({ item, idx }) => <FavoriteFood {...{ item, idx }} onPres={() => this.onFoodItemPress(item)} />}
                 />
             </SafeAreaView>
         );
