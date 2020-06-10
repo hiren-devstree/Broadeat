@@ -4,6 +4,7 @@ import {
   Image, StyleSheet, TouchableOpacity, ScrollView,
   Text, View, Switch
 } from 'react-native'
+import ImagePicker from "react-native-customized-image-picker";
 import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
 
@@ -22,6 +23,16 @@ class ProfileScreen extends Component {
       isDarkTheme: false,
       isEnableNotifiation: false,
     }
+  }
+
+  addContent = () => {
+    const { navigation } = this.props;
+    ImagePicker.openPicker({
+      multiple: true,
+      isHidePreview: true,
+    }).then(images => {
+      navigation.navigate('AddContent', { images: images });
+    });
   }
 
   render() {
@@ -102,7 +113,7 @@ class ProfileScreen extends Component {
             <Switch value={isHideProfile} onValueChange={() => this.setState({ isHideProfile: !isHideProfile })} />
           </ViewX>
 
-          <TouchableOpacity style={styles.optionbtnContainer}>
+          <TouchableOpacity onPress={() => this.addContent()} style={styles.optionbtnContainer}>
             <TextX fontSize={StyleConfig.countPixelRatio(16)}>Add Content</TextX>
           </TouchableOpacity>
 
