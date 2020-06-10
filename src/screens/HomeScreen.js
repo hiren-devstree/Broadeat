@@ -3,8 +3,8 @@ import {
     View,
     Text,
     Image,
-    StyleSheet
-
+    StyleSheet,
+    TouchableOpacity
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
@@ -26,7 +26,7 @@ class HomeScreen extends Component {
             let ii = ind % 13;
             data.push(AppImages.homeItems[ii]);
         }
-
+        let objData = {}
         return (
             <SafeAreaView {...this.props}>
                 <View1CC {...this.props} >
@@ -35,10 +35,11 @@ class HomeScreen extends Component {
                         numColumns={3}
                         keyExtractor={(_, idx) => `foodGlr-${idx}`}
                         renderItem={({ item }) =>
+                            <TouchableOpacity style={{margin: 3,}} onPress={()=>this.props.navigation.navigate('PhotoRecipeDetails', { data: item })}>
                             <Image
                                 source={item}
-                                style={{ margin: 3, height: StyleConfig.convertWidthPer(29), width: StyleConfig.convertWidthPer(30) }}
-                            />}
+                                style={{  height: StyleConfig.convertWidthPer(29), width: StyleConfig.convertWidthPer(30) }}
+                            /></TouchableOpacity>}
                     />
                 </View1CC>
             </SafeAreaView>
