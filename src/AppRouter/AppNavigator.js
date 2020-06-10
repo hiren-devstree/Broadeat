@@ -99,6 +99,28 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
   )
 })
 
+const SearchNavigator = createStackNavigator();
+
+const SearchStackNavigator = withTheme(({ theme, ...props }) => {
+  return (
+    <SearchNavigator.Navigator>
+      <SearchNavigator.Screen
+        options={{
+          headerStyle: {
+            height: StyleConfig.headerHeight,
+            backgroundColor: theme.background
+          },
+          headerTitleStyle: { color: theme.text },
+          header: ({ tintColor }) => (
+            <HeaderSearchBar  {...props} />
+          )
+        }}
+        name={'SearchScreen'} component={SearchScreen}
+      />
+    </SearchNavigator.Navigator >
+  )
+})
+
 const TabNavigator = withTheme(({ theme, ...props }) => {
   return (
     <Tab.Navigator
@@ -136,7 +158,7 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
       }}
     >
       <Tab.Screen name="Home" component={HomeStackNavigator} />
-      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Search" component={SearchStackNavigator} />
       <Tab.Screen name="Filter" component={FilterScreen} />
       <Tab.Screen name="Bookmark" component={BookmarkScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />

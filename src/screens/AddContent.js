@@ -28,6 +28,15 @@ const InputTextX = styled.TextInput`
     background: ${props => props.theme.text};
     text-align: center;
 `
+const MultiTextInputX = (props: TextInputProps) => <MultiTextInput multiline {...props}>{props.children}</MultiTextInput>
+const MultiTextInput = styled.TextInput`
+    color: ${props => props.theme.text};
+    border-radius: ${StyleConfig.convertHeightPerVal(10)}px;
+    paddingVertical: ${StyleConfig.convertHeightPerVal(10)}px;
+    font-size: ${StyleConfig.fontSizeH3_4}px;
+    background: ${props => props.theme.tabBackground};
+    padding: 10px;
+`
 
 class AddContent extends Component {
     constructor(props) {
@@ -154,6 +163,32 @@ class AddContent extends Component {
                             placeholder={"Ingredient"}
                         />
                     </ViewX>
+                    <TextX
+                        style={{
+                            textAlign: "left",
+                            color: theme.text,
+                            fontSize: StyleConfig.fontSizeH3,
+                            padding: StyleConfig.convertWidthPerVal(10),
+                            paddingVertical: StyleConfig.convertHeightPerVal(10),
+                        }}
+                    >Cooking Method</TextX>
+                    {/* STEPS START */}
+                    <TextX
+                        style={{
+                            textAlign: "left",
+                            color: theme.text,
+                            fontSize: StyleConfig.fontSizeH3_4,
+                            padding: StyleConfig.convertWidthPerVal(10),
+                            paddingVertical: StyleConfig.convertHeightPerVal(10),
+                        }}
+                    >Step 01</TextX>
+                    <MultiTextInputX
+                        style={{
+                            minHeight: StyleConfig.convertHeightPerVal(100),
+                            margin: 5
+                        }}
+                    />
+                    {/* STEPS END */}
                 </ScrollView>
 
             </SafeAreaView >
