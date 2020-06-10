@@ -29,6 +29,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import StyleConfig from '../assets/styles/StyleConfig';
 import Icon from 'react-native-vector-icons/Feather';
 import SearchResult from '../screens/SearchResult';
+import AddContent from '../screens/AddContent';
 
 
 const Stack = createStackNavigator();
@@ -175,6 +176,7 @@ const AppNavigator = ({ theme, ...props }) => {
           name="SearchResult" component={SearchResult}
         />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} />
       </Stack.Navigator>
 
     </NavigationContainer >
