@@ -5,7 +5,8 @@ import {
     Text,
     Image,
     StyleSheet,
-    Dimensions
+    Dimensions,
+    TouchableWithoutFeedback
 
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
@@ -19,6 +20,8 @@ import AccountTab from './BookMarkTabs/AccountTab';
 import RecipesTab from './BookMarkTabs/RecipesTab';
 import { withTheme } from 'styled-components';
 import Animated, { Extrapolate, interpolate } from "react-native-reanimated";
+import HeaderSearchBar from '../components/common/HeaderSearchBar';
+import { SearchBar } from 'react-native-elements';
 
 const TABBAR_BORDER_RADIUS = StyleConfig.convertWidthPerVal(10);
 const TABBAR_MARGIN = StyleConfig.convertWidthPerVal(10);
@@ -122,10 +125,34 @@ class BookmarkScreen extends Component {
     render() {
 
         const { index, routes } = this.state;
-        console.log('this.props.theme', this.props.theme)
+        const { theme } = this.props;
 
         return (
             <SafeAreaView {...this.props}>
+                <SearchBar
+                    ref={input => {
+                        this.searchTextInput = input;
+                    }}
+                    containerStyle={{
+                        alignSelf: "center",
+                        backgroundColor: "transparent",
+                        borderBottomWidth: 0,
+                        borderTopWidth: 0,
+                    }}
+                    inputStyle={{ fontSize: StyleConfig.fontSizeH3 }}
+                    inputContainerStyle={{
+                        borderRadius: 10,
+                        width: StyleConfig.width * 0.6,
+                        height: StyleConfig.convertHeightPerVal(38),
+                        backgroundColor: theme.backgroundAlt
+                    }}
+                    textContentType={"name"}
+                    placeholder="Search"
+                    returnKeyType="search"
+                // onChangeText={this.updateSearch}
+                // onSubmitEditing={this.moveToSearchResults}
+                // value={search}
+                />
                 <TabView
                     style={{ flex: 1 }}
                     // position={position}      //Animated value: Accessible but no usecase of now

@@ -9,7 +9,7 @@ import AppImages from '../../assets/images';
 import { withTheme } from "styled-components";
 import { FlatList } from "react-native-gesture-handler";
 
-const Account = withTheme(({ theme, onPres }) => (
+export const Account = withTheme(({ theme, onPres, isActive }) => (
   <ViewX style={{
     paddingVertical: StyleConfig.convertHeightPerVal(10),
     flexDirection: "row",
@@ -30,7 +30,7 @@ const Account = withTheme(({ theme, onPres }) => (
     <Image
       resizeMode="contain"
       style={{ width: StyleConfig.iconSize, aspectRatio: 1 }}
-      source={AppImages.ic_fav_selected}
+      source={isActive ? AppImages.ic_fav_selected : AppImages.ic_bookmark}
     />
   </ViewX>
 ))
@@ -38,7 +38,7 @@ const Account = withTheme(({ theme, onPres }) => (
 class AccountTab extends React.Component {
 
   _goToBookamrk = (item) => {
-    this.props.navigation.navigate('Bookmark')
+    this.props.navigation.navigate('UserAccount')
   }
 
   render() {
@@ -49,7 +49,7 @@ class AccountTab extends React.Component {
             style={{ width: "100%", paddingHorizontal: StyleConfig.convertWidthPerVal(20) }}
             data={[...Array(10)]}
             keyExtractor={(itm, idx) => `$user-${idx}`}
-            renderItem={({ item, index }) => <Account {...{ item, index }} onPres={() => this._goToBookamrk(item)} />}
+            renderItem={({ item, index }) => <Account {...{ item, index }} isActive onPres={() => this._goToBookamrk(item)} />}
           />
         </ViewX>
       </SafeAreaView >

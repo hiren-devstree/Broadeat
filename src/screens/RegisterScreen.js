@@ -14,7 +14,7 @@ import { TextInputWithIcon } from '../components/common/TextInputs';
 import { Button } from '../components/common/Buttons';
 import { SafeAreaView, View1CC, CTextInputWithIcon, Devider, CText } from '../components/common';
 import { EMAIL_REGEX } from '../helper/Constants';
-import { register } from './../ApiManager'
+import { register } from './../apiManager'
 import withLoader from '../redux/actionCreator/withLoader';
 class RegisterScreen extends Component {
 	constructor(props) {

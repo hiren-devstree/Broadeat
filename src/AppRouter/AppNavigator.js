@@ -30,6 +30,7 @@ import StyleConfig from '../assets/styles/StyleConfig';
 import Icon from 'react-native-vector-icons/Feather';
 import SearchResult from '../screens/SearchResult';
 import AddContent from '../screens/AddContent';
+import UserAccount from '../screens/UserAccount';
 
 
 const Stack = createStackNavigator();
@@ -216,6 +217,15 @@ const AppNavigator = ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
         <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} />
+        <Stack.Screen options={{
+          headerShown: true,
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: theme.background,
+            elevation: 0,
+            shadowOpacity: 0
+          },
+        }} name="UserAccount" component={UserAccount} />
       </Stack.Navigator>
 
     </NavigationContainer >
