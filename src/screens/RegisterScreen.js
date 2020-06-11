@@ -14,7 +14,8 @@ import { TextInputWithIcon } from '../components/common/TextInputs';
 import { Button } from '../components/common/Buttons';
 import { SafeAreaView, View1CC, CTextInputWithIcon, Devider, CText } from '../components/common';
 import { EMAIL_REGEX } from '../helper/Constants';
-import { postLogin } from './../ApiManager'
+import { register } from './../ApiManager'
+import withLoader from '../redux/actionCreator/withLoader';
 class RegisterScreen extends Component {
 	constructor(props) {
 		super(props);
@@ -35,17 +36,34 @@ class RegisterScreen extends Component {
 	}
 
 	_registerUser = async () => {
-		const { loader, toast } = this.props
-		toast({ text: "Check" })
+		const { loader } = this.props
+		
 		loader(true)
-		const { email, fullName, password } = this.state
+		const { email, fullName, password , userName} = this.state
 		let data = {
 			name: fullName,
 			email: email,
+			username: userName,
 			password: password
 		}
 
 		let response = await register(data)
+		console.log(response)
+		if (response.code === 1) {
+			this.props.navigation.navigate("EmailVerify")
+			// this.props.navigation.dispatch(
+			// 	CommonActions.reset({
+			// 		index: 1,
+			// 		routes: [
+			// 			{
+			// 				name: 'Dashboard',
+			// 			},
+			// 		],
+			// 	})
+			// );
+		} else {
+
+		}
 		loader(false)
 	}
 
@@ -148,7 +166,7 @@ class RegisterScreen extends Component {
 }
 
 
-export default RegisterScreen;
+export default withLoader( RegisterScreen);
 const styles = StyleSheet.create({
 	logoWrapper: {
 		alignItems: 'center',
