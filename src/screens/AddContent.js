@@ -1,9 +1,7 @@
 
 import React, { Component } from 'react';
 import {
-    FlatList,
-    View,
-    Text,
+    TouchableOpacity,
     Image,
     StyleSheet,
     ScrollView,
@@ -19,6 +17,8 @@ import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, TextX, ViewX } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
 import styled, { withTheme, ThemeConsumer } from 'styled-components';
+
+import imgBack from '../assets/images/ic_back.png'
 
 
 const IngredientTextInput = (props: TextInputProps) => <InputTextX {...props} >{props.children}</InputTextX>
@@ -97,7 +97,19 @@ class AddContent extends Component {
         return (
             <SafeAreaView {...this.props}>
                 <ScrollView>
-
+    
+              <ViewX style={styles.headerTopView}>
+                <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image source={imgBack} style={styles.backBtn} />
+                </TouchableOpacity>
+                <TextX
+                fontSize={StyleConfig.countPixelRatio(16)}
+                style={{ marginLeft: 15 }}
+                >
+                {'Add Content'}
+                </TextX>
+            </ViewX>
+    
                     <ViewX style={{
                         paddingVertical: 5,
                         width: StyleConfig.width,
@@ -225,6 +237,16 @@ class AddContent extends Component {
 
 export default withTheme(withLoader(withToast(AddContent)));
 const styles = StyleSheet.create({
-
+    headerTopView: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        paddingHorizontal: StyleConfig.countPixelRatio(12),
+        marginBottom: StyleConfig.countPixelRatio(12),
+        height: StyleConfig.countPixelRatio(44)
+      },
+      backBtn: {
+        width: StyleConfig.countPixelRatio(22),
+        height: StyleConfig.countPixelRatio(22)
+      },
 
 });

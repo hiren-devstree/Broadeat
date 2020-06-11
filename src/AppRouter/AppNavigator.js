@@ -94,6 +94,10 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
         }}
         name={'SearchScreenModal'} component={SearchScreen}
       />
+       <SearchNavigator.Screen
+        options={{ headerShown: false }}
+        name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
+      />
     </HomeNavigator.Navigator >
   )
 })

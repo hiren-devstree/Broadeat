@@ -35,7 +35,7 @@ class HomeScreen extends Component {
                         numColumns={3}
                         keyExtractor={(_, idx) => `foodGlr-${idx}`}
                         renderItem={({ item }) =>
-                            <TouchableOpacity style={{margin: 3,}} onPress={()=>this.props.navigation.navigate('PhotoRecipeDetails', { data: item })}>
+                            <TouchableOpacity style={{margin: 3,}} onPress={()=> this.props.navigation.navigate('PhotoRecipeDetails', { data: item })}>
                             <Image
                                 source={item}
                                 style={{  height: StyleConfig.convertWidthPer(29), width: StyleConfig.convertWidthPer(30) }}
