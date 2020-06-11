@@ -8,7 +8,8 @@ import {
     StyleSheet,
     ScrollView,
     TextInput,
-    TextInputProps
+    TextInputProps,
+    TouchableWithoutFeedback
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
@@ -38,11 +39,48 @@ const MultiTextInput = styled.TextInput`
     padding: 10px;
 `
 
+const IngredientsWrapper = withTheme(({ theme, ...props }) => {
+    return (<ViewX style={{
+        flex: 1,
+        marginVertical: StyleConfig.convertHeightPerVal(5),
+        justifyContent: "space-around",
+        alignItems: "center",
+        flexDirection: "row"
+    }} >
+        <IngredientTextInput
+            style={{
+                width: StyleConfig.convertWidthPerVal(80)
+            }}
+            placeholder={"Qty"}
+        />
+        <IngredientTextInput
+            style={{
+                // flex: 1,
+                width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
+                // marginHorizontal: 8,
+                backgroundColor: theme.text,
+                textAlign: "center"
+            }}
+            placeholder={"Measure"}
+        />
+        <IngredientTextInput
+            style={{
+                // flex: 1,
+                width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
+                backgroundColor: theme.text,
+                textAlign: "center"
+            }}
+            placeholder={"Ingredient"}
+        />
+    </ViewX>)
+})
+
 class AddContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            images: []
+            images: [],
+            ingredients: [...Array(3)]
         }
     }
 
@@ -53,7 +91,7 @@ class AddContent extends Component {
 
 
     render() {
-        const { images } = this.state;
+        const { images, ingredients } = this.state;
         const { theme } = this.props;
 
         return (
@@ -131,38 +169,26 @@ class AddContent extends Component {
                             fontSize: StyleConfig.fontSizeH3
                         }} >Ingredient</TextX>
                     </ViewX>
-                    <ViewX style={{
-                        flex: 1,
-                        justifyContent: "space-around",
-                        alignItems: "center",
-                        flexDirection: "row"
+                    {
+                        ingredients.map(() => <IngredientsWrapper />)
+                    }
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState((prevState, props) => {
+                            return {
+                                ingredients: [...prevState.ingredients, ...Array(1)]
+                            }
+                        })
                     }} >
-                        <IngredientTextInput
+                        <TextX
                             style={{
-                                width: StyleConfig.convertWidthPerVal(80)
+                                textAlign: "left",
+                                color: theme.text,
+                                fontSize: StyleConfig.fontSizeH1,
+                                padding: StyleConfig.convertWidthPerVal(10),
+                                paddingVertical: StyleConfig.convertHeightPerVal(10),
                             }}
-                            placeholder={"Qty"}
-                        />
-                        <IngredientTextInput
-                            style={{
-                                // flex: 1,
-                                width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
-                                // marginHorizontal: 8,
-                                backgroundColor: theme.text,
-                                textAlign: "center"
-                            }}
-                            placeholder={"Measure"}
-                        />
-                        <IngredientTextInput
-                            style={{
-                                // flex: 1,
-                                width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
-                                backgroundColor: theme.text,
-                                textAlign: "center"
-                            }}
-                            placeholder={"Ingredient"}
-                        />
-                    </ViewX>
+                        >{"+"}</TextX>
+                    </TouchableWithoutFeedback>
                     <TextX
                         style={{
                             textAlign: "left",
