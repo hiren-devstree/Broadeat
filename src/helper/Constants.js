@@ -5,3 +5,5 @@ export const KEY_POST_LOGIN = `${BASE_URL}user/login`
 export const REGISTER_URL = `${BASE_URL}user/register`
 
 export const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+export const KEY_PREF_ANDROID_THEME = "PREF_ANDROID_THEME"

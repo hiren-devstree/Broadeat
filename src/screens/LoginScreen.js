@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
 	View, Text, Modal,
-	Image, StyleSheet, ScrollView, Alert
+	Image, StyleSheet, ScrollView, Alert, TouchableOpacity
 } from 'react-native';
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
@@ -13,7 +13,6 @@ import withUser from '../redux/actionCreator/withUser';
 import styled from 'styled-components/native';
 import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon, TextX } from '../components/common';
 import BaseComponent from '../containers/BaseComponent';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ForgotPasswordModal } from '../components/hybridComponents/ForgotPasswordModal';
 import { postLogin } from './../ApiManager'
 //api
@@ -44,9 +43,11 @@ class LoginScreen extends BaseComponent {
 	}
 
 	_navigateToDashboard = () => {
-		this.setState({ isOpenVeggieModal: false }, () => {
-			this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Dashboard' }] }))
-		})
+		const {navigation}= this.props;
+		this.setState({ isOpenVeggieModal: false }, () => 
+			
+			navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Dashboard' }] }))
+		)
 	}
 
 	_authorizeUser = async () => {

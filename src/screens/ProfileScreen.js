@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import {
   Image, StyleSheet, TouchableOpacity, ScrollView,
-  Text, View, Switch
+  Text, View, Switch, AsyncStorage
 } from 'react-native'
 import ImagePicker from "react-native-customized-image-picker";
 import withLoader from '../redux/actionCreator/withLoader'
@@ -135,6 +135,13 @@ class ProfileScreen extends Component {
     )
   }
 
+  themeChange= async () => {
+    const {isDarkTheme} = this.state
+    await AsyncStorage.setItem(isDarkTheme? 'light':'dark')
+    this.setState({ isDarkTheme: !isDarkTheme })
+
+  }
+
   renderSettingsOptions = () => {
     const { isEnableNotifiation, isDarkTheme } = this.state
     return (
@@ -145,7 +152,7 @@ class ProfileScreen extends Component {
 
         <ViewX style={styles.hideProfileContainer}>
           <TextX fontSize={StyleConfig.countPixelRatio(16)}>Dark Theme</TextX>
-          <Switch value={isDarkTheme} onValueChange={() => this.setState({ isDarkTheme: !isDarkTheme })} />
+          <Switch value={isDarkTheme} onValueChange={ this.themeChange } />
         </ViewX>
 
         <ViewX style={styles.hideProfileContainer}>
