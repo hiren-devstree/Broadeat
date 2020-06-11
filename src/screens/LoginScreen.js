@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import {
-	View,
-	Text,
-	Image,
-	StyleSheet,
-	ScrollView,
-	Alert
-
+	View, Text, Modal,
+	Image, StyleSheet, ScrollView, Alert
 } from 'react-native';
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
@@ -16,7 +11,7 @@ import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import withUser from '../redux/actionCreator/withUser';
 import styled from 'styled-components/native';
-import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon } from '../components/common';
+import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon, TextX } from '../components/common';
 import BaseComponent from '../containers/BaseComponent';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ForgotPasswordModal } from '../components/hybridComponents/ForgotPasswordModal';
@@ -25,6 +20,8 @@ import { postLogin } from './../apiManager'
 import { BASE_URL, EMAIL_REGEX } from '../helper/Constants'
 import { CommonActions } from '@react-navigation/native';
 
+const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down', 'landscape', 'landscape-left', 'landscape-right'];
+
 
 class LoginScreen extends BaseComponent {
 	constructor(props) {
@@ -32,7 +29,8 @@ class LoginScreen extends BaseComponent {
 		this.state = {
 			showForgotPasswordModal: false,
 			email: 'akshay.devstree@gmail.com',
-			password: 'devstree'
+			password: 'devstree',
+			isOpenVeggieModal: false
 		}
 	}
 
@@ -45,6 +43,12 @@ class LoginScreen extends BaseComponent {
 		}, 1000)
 	}
 
+	_navigateToDashboard = () => {
+		this.setState({ isOpenVeggieModal: false }, () => {
+			this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Dashboard' }] }))
+		})
+	}
+
 	_authorizeUser = async () => {
 		const { loader, toast, loginSuccess } = this.props
 		toast({ text: "Check" })
@@ -54,16 +58,7 @@ class LoginScreen extends BaseComponent {
 		console.log(response)
 		if (response.code === 1) {
 			loginSuccess(response);
-			this.props.navigation.dispatch(
-				CommonActions.reset({
-					index: 1,
-					routes: [
-						{
-							name: 'Dashboard',
-						},
-					],
-				})
-			);
+			this.setState({ isOpenVeggieModal: true })
 		} else {
 
 		}
@@ -88,6 +83,36 @@ class LoginScreen extends BaseComponent {
 		} else {
 			return true
 		}
+	}
+
+	renderVeggieModal = () => {
+		return (
+			<Modal
+				supportedOrientations={SUPPORTED_ORIENTATIONS}
+				animationType={"fade"}
+				transparent={true}
+				visible={this.state.isOpenVeggieModal}
+				onRequestClose={() => { console.log("Modal has been closed.") }}>
+				<View style={styles.modalTransparentView}>
+					<View style={styles.modalMainView}>
+						<Text style={styles.modalHeaderText} >Meal Preferences</Text>
+
+						<TouchableOpacity style={[styles.popUpBtn, { marginTop: StyleConfig.countPixelRatio(40) }]} onPress={() => this._navigateToDashboard()}>
+							<Text style={styles.popUpBtnText} >All Meals</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity style={styles.popUpBtn} onPress={() => this._navigateToDashboard()}>
+							<Text style={styles.popUpBtnText} >Vegetarian</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity style={[styles.popUpBtn, { marginBottom: StyleConfig.countPixelRatio(40) }]} onPress={() => this._navigateToDashboard()}>
+							<Text style={styles.popUpBtnText} >Vegan</Text>
+						</TouchableOpacity>
+
+					</View>
+				</View>
+			</Modal>
+		)
 	}
 
 	render() {
@@ -158,6 +183,7 @@ class LoginScreen extends BaseComponent {
 					onSendPress={() => this.setState({ showForgotPasswordModal: false })}
 					visible={this.state.showForgotPasswordModal} />
 
+				{this.renderVeggieModal()}
 			</SafeAreaViewC>
 		);
 	}
@@ -207,11 +233,42 @@ const styles = StyleSheet.create({
 		marginHorizontal: StyleConfig.convertWidthPerVal(36),
 		textAlign: 'center'
 	},
-
 	bottomContainer: {
 		height: StyleConfig.convertHeightPerVal(80),
 		alignItems: 'center',
 		justifyContent: 'center'
+	},
+	modalTransparentView: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#00000088',
+	},
+	modalMainView: {
+		backgroundColor: StyleConfig.cLightCyan,
+		borderRadius: StyleConfig.countPixelRatio(15),
+		width: '90%',
+		paddingVertical: StyleConfig.countPixelRatio(20),
+	},
+	modalHeaderText: {
+		fontSize: StyleConfig.countPixelRatio(20),
+		color: StyleConfig.grey,
+		alignSelf: 'center'
+	},
+	popUpBtn: {
+		width: '70%',
+		alignSelf: 'center',
+		borderRadius: StyleConfig.countPixelRatio(10),
+		borderColor: StyleConfig.grey,
+		borderWidth: 1.0,
+		paddingVertical: StyleConfig.countPixelRatio(5),
+		alignItems: 'center',
+		backgroundColor: 'white',
+		marginTop: StyleConfig.countPixelRatio(15)
+	},
+	popUpBtnText: {
+		fontSize: StyleConfig.countPixelRatio(20),
+		color: StyleConfig.grey
 	}
 
 

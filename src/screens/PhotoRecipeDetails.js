@@ -114,7 +114,9 @@ class PhotoRecipeDetails extends Component {
     const { noOfUser, timer, foodType } = this.state
     return (
       <ViewX style={styles.headerBottomView} {...this.props}>
-        <Image source={imgFood} />
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Bookmark')}>
+          <Image source={imgFood} />
+        </TouchableOpacity>
         <ViewX style={styles.headerContents}>
           <TextX
             fontSize={StyleConfig.countPixelRatio(20)}
@@ -131,8 +133,10 @@ class PhotoRecipeDetails extends Component {
               {'Gourmet Kitchen'}
             </TextX>
             <ViewX style={{ flexDirection: 'row' }}>
-              <Image source={imgUser} style={{ width: 12, height: 12, marginRight: 3 }} />
-              <TextX>{noOfUser}</TextX>
+              <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => this.props.navigation.navigate('Profile')}>
+                <Image source={imgUser} style={{ width: 12, height: 12, marginRight: 3 }} />
+                <TextX>{noOfUser}</TextX>
+              </TouchableOpacity>
               <Image source={imgTimer} style={{ width: 15, height: 15, marginLeft: 15, marginRight: 3 }} />
               <TextX>{timer}</TextX>
               <TextX style={{ marginLeft: 15 }}>{foodType}</TextX>
@@ -177,10 +181,12 @@ class PhotoRecipeDetails extends Component {
             <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
           </ViewX>
-          <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
-          </ViewX>
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <ViewX style={{ flexDirection: 'row' }}>
+              <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+              <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+            </ViewX>
+          </TouchableOpacity>
 
         </ViewX>
         <TextX

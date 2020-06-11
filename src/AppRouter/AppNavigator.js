@@ -39,9 +39,7 @@ const HomeNavigator = createStackNavigator();
 
 const HomeStackNavigator = withTheme(({ theme, ...props }) => {
   return (
-    <HomeNavigator.Navigator
-      mode="modal"
-    >
+    <HomeNavigator.Navigator mode="modal">
       <HomeNavigator.Screen
         options={{
           headerStyle: {
@@ -117,7 +115,35 @@ const SearchStackNavigator = withTheme(({ theme, ...props }) => {
         }}
         name={'SearchScreen'} component={SearchScreen}
       />
+      <SearchNavigator.Screen
+        options={({ route, navigation }) => ({
+          header: () => (<HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />)
+        })}
+        name="SearchResult" component={SearchResult}
+      />
+      <SearchNavigator.Screen
+        options={{ headerShown: false }}
+        name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
+      />
     </SearchNavigator.Navigator >
+  )
+})
+
+const BookmarkNavigator = createStackNavigator();
+
+const BookmarkStackNavigator = withTheme(({ theme, ...props }) => {
+  return (
+    <BookmarkNavigator.Navigator>
+      <BookmarkNavigator.Screen
+        options={{ headerShown: false }}
+        name={'Bookmark'} component={BookmarkScreen}
+      />
+      <BookmarkNavigator.Screen
+        options={{ headerShown: false }}
+        name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
+      />
+
+    </BookmarkNavigator.Navigator >
   )
 })
 
@@ -160,7 +186,7 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
       <Tab.Screen name="Home" component={HomeStackNavigator} />
       <Tab.Screen name="Search" component={SearchStackNavigator} />
       <Tab.Screen name="Filter" component={FilterScreen} />
-      <Tab.Screen name="Bookmark" component={BookmarkScreen} />
+      <Tab.Screen name="Bookmark" component={BookmarkStackNavigator} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
 
@@ -187,16 +213,7 @@ const AppNavigator = ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={TabNavigator} />
-        <Stack.Screen options={{ headerShown: false }} name="PhotoRecipeDetails" component={PhotoRecipeDetails} />
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
-        <Stack.Screen
-          options={({ route, navigation }) => ({
-            header: () => (
-              <HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />
-            )
-          })}
-          name="SearchResult" component={SearchResult}
-        />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
         <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} />
       </Stack.Navigator>
