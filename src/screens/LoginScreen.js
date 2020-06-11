@@ -15,7 +15,7 @@ import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon, TextX } 
 import BaseComponent from '../containers/BaseComponent';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ForgotPasswordModal } from '../components/hybridComponents/ForgotPasswordModal';
-import { postLogin } from '../apiManager'
+import { postLogin } from './../ApiManager'
 //api
 import { BASE_URL, EMAIL_REGEX } from '../helper/Constants'
 import { CommonActions } from '@react-navigation/native';
