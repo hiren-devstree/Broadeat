@@ -27,8 +27,8 @@ class LoginScreen extends BaseComponent {
 		super(props);
 		this.state = {
 			showForgotPasswordModal: false,
-			email: 'akshay.devstree@gmail.com',
-			password: 'devstree',
+			email: '',
+			password: '',
 			isOpenVeggieModal: false
 		}
 	}
@@ -52,7 +52,6 @@ class LoginScreen extends BaseComponent {
 
 	_authorizeUser = async () => {
 		const { loader, toast, loginSuccess } = this.props
-		toast({ text: "Check" })
 		loader(true)
 		const { email, password } = this.state
 		let response = await postLogin(email, password)

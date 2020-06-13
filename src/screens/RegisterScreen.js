@@ -21,11 +21,11 @@ class RegisterScreen extends Component {
 		super(props);
 
 		this.state = {
-			email: 'pavan.devstree@gmail.com',
-			fullName: 'pavan',
-			userName: 'pavan_123',
-			password: '12345678',
-			cPassword: '12345678'
+			email: '',
+			fullName: '',
+			userName: '',
+			password: '',
+			cPassword: ''
 		}
 	}
 	

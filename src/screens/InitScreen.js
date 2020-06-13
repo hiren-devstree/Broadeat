@@ -35,6 +35,7 @@ class InitScreen extends BaseComponent{
                         <View style={{marginHorizontal: StyleConfig.convertWidthPerVal(46)}} >
                         <Image 
                             source={AppImages.welcome_broadeat}
+                            resizeMode={'contain'}
                             style={{
                                 height: StyleConfig.convertHeightPerVal(95),
                                 width: StyleConfig.convertWidthPerVal(202),
