@@ -6,7 +6,8 @@ import {
     Image,
     StyleSheet,
     Dimensions,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    Platform
 
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
@@ -55,12 +56,13 @@ class BookmarkScreen extends Component {
     _renderTabLabel = ({ route, focused }) => {
         const { theme } = this.props;
 
-        return (<TextX style={[{
-            textAlignVertical: "center",
-            fontSize: StyleConfig.fontSizeH3,
-            height: StyleConfig.headerHeight,
-            color: focused ? theme.text : theme.filterOn
-        }]}>{""}{route.title}{""}</TextX>)
+        return (<TextX
+            style={[{
+                textAlignVertical: "center",
+                fontSize: StyleConfig.fontSizeH3,
+                marginTop: -15,
+                color: focused ? theme.text : theme.filterOn,
+            }]}>{""}{route.title}{""}</TextX>)
     }
 
     _renderTabOverlayIndicator = ({ navigationState, position, width, getTabWidth }) => {

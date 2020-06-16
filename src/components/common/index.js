@@ -102,7 +102,7 @@ border-radius: 10px;
 border: ${props => props.theme.border};
 flex: 1;
 flex-direction: row;
-minHeight:40px;
+height:40px;
 align-items: center;
 padding: 4px ;
 margin-vertical: 12px;
@@ -118,6 +118,7 @@ export const TEXTINPUT = styled.TextInput.attrs(props => ({
   color: ${props => props.color ? props.color : props.theme.text};
   flex: 1;
   font-size: ${StyleConfig.countPixelRatio(16)}px;
+  height: 50px;
 `;
 
 export const CTextInput = props => <INPUT_WRAPPER2 {...props}>
@@ -129,10 +130,11 @@ const INPUT_WRAPPER2 = styled.View`
 border-radius: 10px;
 border: ${props => props.theme.border};
 flex-direction: row;
-minHeight:40px;
+height:40px;
 align-items: center;
 padding: 4px ;
 margin-left: 22px;
+margin-top: 10px;
 margin-right: 22px;
 background-color: ${props => props.background ? props.background : "#00000000"}
 `

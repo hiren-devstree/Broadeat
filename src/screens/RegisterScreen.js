@@ -28,7 +28,7 @@ class RegisterScreen extends Component {
 			cPassword: ''
 		}
 	}
-	
+
 	_onSignUpPressed = () => {
 		if (this._validate()) {
 			this._registerUser()
@@ -37,9 +37,9 @@ class RegisterScreen extends Component {
 
 	_registerUser = async () => {
 		const { loader } = this.props
-		
+
 		loader(true)
-		const { email, fullName, password , userName} = this.state
+		const { email, fullName, password, userName } = this.state
 		let data = {
 			name: fullName,
 			email: email,
@@ -82,7 +82,7 @@ class RegisterScreen extends Component {
 		} else if (userName === '') {
 			Alert.alert('Please enter user name')
 			return false
-		} else if (password ===' ') {
+		} else if (password === ' ') {
 			Alert.alert('Please enter password')
 			return false
 		} else if (cPassword === '') {
@@ -109,7 +109,7 @@ class RegisterScreen extends Component {
 						/>
 					</View>
 					<View style={styles.content}>
-						<ScrollView>
+						<ScrollView style={{ paddingHorizontal: StyleConfig.convertWidthPerVal(48), }}>
 							<Text style={styles.headerText}>Sign up to see your favorite food recipes.</Text>
 							<CTextInputWithIcon
 								icon={AppImages.ic_mail}
@@ -166,7 +166,7 @@ class RegisterScreen extends Component {
 }
 
 
-export default withLoader( RegisterScreen);
+export default withLoader(RegisterScreen);
 const styles = StyleSheet.create({
 	logoWrapper: {
 		alignItems: 'center',
@@ -179,7 +179,6 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		flex: 1,
-		paddingHorizontal: StyleConfig.convertWidthPerVal(48),
 	},
 	headerText: {
 		fontSize: 20,

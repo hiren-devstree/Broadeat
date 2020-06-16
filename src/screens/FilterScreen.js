@@ -51,7 +51,8 @@ const FilterHeader = withTheme(({ theme, ...props }) => {
         inputContainerStyle={{
           // borderWidth: StyleConfig.countPixelRatio(0.6),
           // borderColor: theme.text,
-          borderRadius: StyleConfig.convertHeightPerVal(20)
+          borderRadius: StyleConfig.convertHeightPerVal(20),
+          backgroundColor: "transparent"
         }}
         onChange={onChange}
         value={value}

@@ -58,9 +58,11 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: theme.text,
                   height: StyleConfig.convertHeightPerVal(38),
                   width: StyleConfig.width * 0.4,
-                  backgroundColor: theme.textHint
+                  backgroundColor: theme.background
                 }}
               >
                 <Icon
@@ -94,7 +96,7 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
         }}
         name={'SearchScreenModal'} component={SearchScreen}
       />
-       <SearchNavigator.Screen
+      <SearchNavigator.Screen
         options={{ headerShown: false }}
         name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
       />
