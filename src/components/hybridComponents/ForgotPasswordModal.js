@@ -9,7 +9,7 @@ import {
   ModalView, CText, CTextInput, CTextColor
 } from './../common';
 import StyleConfig from '../../assets/styles/StyleConfig';
-import { forgotPassword } from '../../ApiManager'
+import { forgotPassword } from '../../apiManager'
 import { EMAIL_REGEX } from '../../helper/Constants'
 import withLoader from '../../redux/actionCreator/withLoader'
 const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down', 'landscape', 'landscape-left', 'landscape-right'];

@@ -9,7 +9,7 @@ import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
 import AsyncStorage from '@react-native-community/async-storage'
 
-import { getUserDetails } from './../ApiManager'
+import { getUserDetails } from './../apiManager'
 
 import StyleConfig from '../assets/styles/StyleConfig'
 import { SafeAreaView, View1CC, ViewX, CText, TextX } from '../components/common'

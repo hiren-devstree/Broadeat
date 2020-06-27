@@ -7,12 +7,13 @@ import {
 import AsyncStorage from '@react-native-community/async-storage'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
-import { getTagList } from './../ApiManager'
+import { getTagList } from './../apiManager'
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, View1CC, Devider, CText, CTextColor, TextX, ViewX } from '../components/common';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { withTheme } from 'styled-components';
+import HeaderSearchBar from '../components/common/HeaderSearchBar';
 
 let _this
 class SearchScreen extends Component {
@@ -22,8 +23,17 @@ class SearchScreen extends Component {
     this.state = {
       data: []
     }
+
+    props.navigation.setOptions({
+      header: ({ tintColor }) => (
+        <HeaderSearchBar  {...props} onChangeSearchText={this.onChangeSearchText} />
+      )
+    })
   }
 
+  onChangeSearchText = (text) => {
+    console.log('Search Text: ', text)
+  }
 
   async componentDidMount() {
     const { loader } = this.props

@@ -6,7 +6,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage'
 
 import withLoader from '../../redux/actionCreator/withLoader'
-import { getFavouriteListRecipe } from '../../ApiManager'
+import { getFavouriteListRecipe } from '../../apiManager'
 import { IMAGE_PATH } from '../../helper/Constants'
 import { withTheme } from "styled-components";
 import { ScrollView } from "react-native-gesture-handler";

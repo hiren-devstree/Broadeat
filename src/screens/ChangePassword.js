@@ -14,7 +14,7 @@ import { SafeAreaView, TextX, ViewX } from '../components/common';
 import imgShowPsw from '../assets/images/ic_show_psw.png'
 import imghidePsw from '../assets/images/ic_hide_psw.png'
 
-import { changePassword } from './../ApiManager'
+import { changePassword } from './../apiManager'
 
 
 export class ChangePassword extends Component {

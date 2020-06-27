@@ -116,10 +116,7 @@ const SearchStackNavigator = withTheme(({ theme, ...props }) => {
             height: StyleConfig.headerHeight,
             backgroundColor: theme.background
           },
-          headerTitleStyle: { color: theme.text },
-          header: ({ tintColor }) => (
-            <HeaderSearchBar  {...props} />
-          )
+          headerTitleStyle: { color: theme.text }
         }}
         name={'SearchScreen'} component={SearchScreen}
       />

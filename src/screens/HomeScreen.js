@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
-import { getRecipeData } from './../ApiManager'
+import { getRecipeData } from './../apiManager'
 import { IMAGE_PATH } from '../helper/Constants'
 import AsyncStorage from '@react-native-community/async-storage'
 import StyleConfig from '../assets/styles/StyleConfig';

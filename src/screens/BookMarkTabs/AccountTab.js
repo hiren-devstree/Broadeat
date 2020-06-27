@@ -5,7 +5,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage'
 
 import withLoader from '../../redux/actionCreator/withLoader'
-import { getUserBookmarkList } from '../../ApiManager'
+import { getUserBookmarkList } from '../../apiManager'
 import { IMAGE_PATH } from '../../helper/Constants'
 
 import { ViewX, TextX, SafeAreaView } from "../../components/common";

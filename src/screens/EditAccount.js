@@ -8,7 +8,7 @@ import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
 import AsyncStorage from '@react-native-community/async-storage'
 
-import { updateProfile } from './../ApiManager'
+import { updateProfile } from './../apiManager'
 import ProfileScreen from './ProfileScreen'
 
 import StyleConfig from '../assets/styles/StyleConfig'

@@ -14,7 +14,7 @@ import { SafeAreaView, TextX, ViewX } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
 import styled, { withTheme, ThemeConsumer } from 'styled-components';
 
-import { addContentApiCalling } from './../ApiManager'
+import { addContentApiCalling } from './../apiManager'
 
 import imgBack from '../assets/images/ic_back.png'
 
