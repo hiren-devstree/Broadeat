@@ -13,8 +13,9 @@ import withUser from '../redux/actionCreator/withUser';
 import styled from 'styled-components/native';
 import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon, TextX } from '../components/common';
 import BaseComponent from '../containers/BaseComponent';
-import { ForgotPasswordModal } from '../components/hybridComponents/ForgotPasswordModal';
+import ForgotPasswordModal from '../components/hybridComponents/ForgotPasswordModal';
 import { postLogin } from './../ApiManager'
+import AsyncStorage from '@react-native-community/async-storage'
 //api
 import { BASE_URL, EMAIL_REGEX } from '../helper/Constants'
 import { CommonActions } from '@react-navigation/native';
@@ -27,8 +28,8 @@ class LoginScreen extends BaseComponent {
 		super(props);
 		this.state = {
 			showForgotPasswordModal: false,
-			email: '',
-			password: '',
+			email: 'bhavesh.iblazing@gmail.com',
+			password: 'asdasdasd',
 			isOpenVeggieModal: false
 		}
 	}
@@ -43,9 +44,9 @@ class LoginScreen extends BaseComponent {
 	}
 
 	_navigateToDashboard = () => {
-		const {navigation}= this.props;
-		this.setState({ isOpenVeggieModal: false }, () => 
-			
+		const { navigation } = this.props;
+		this.setState({ isOpenVeggieModal: false }, () =>
+
 			navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Dashboard' }] }))
 		)
 	}
@@ -55,14 +56,18 @@ class LoginScreen extends BaseComponent {
 		loader(true)
 		const { email, password } = this.state
 		let response = await postLogin(email, password)
-		console.log(response)
+
+		loader(false)
+
 		if (response.code === 1) {
+			AsyncStorage.setItem('user_token', response.token)
 			loginSuccess(response);
 			this.setState({ isOpenVeggieModal: true })
 		} else {
-
+			setTimeout(() => {
+				Alert.alert(response.message)
+			}, 500)
 		}
-		loader(false)
 	}
 
 	_validate = () => {
@@ -77,8 +82,8 @@ class LoginScreen extends BaseComponent {
 		} else if (password === '') {
 			Alert.alert('Please enter your password')
 			return false
-		} else if (password.length < 6) {
-			Alert.alert('Password should contain minimum 6 character')
+		} else if (password.length < 8) {
+			Alert.alert('Password should contain minimum 8 character')
 			return false
 		} else {
 			return true
@@ -133,7 +138,7 @@ class LoginScreen extends BaseComponent {
 							</View>
 							<CTextInputWithIcon
 								icon={AppImages.ic_account_circle}
-								placeholder={'User Email'}
+								placeholder={'Email'}
 								color={'#111'}
 								placeholderTextColor={'#444'}
 								background={'#fff'}

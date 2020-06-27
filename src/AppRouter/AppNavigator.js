@@ -31,6 +31,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import SearchResult from '../screens/SearchResult';
 import AddContent from '../screens/AddContent';
 import UserAccount from '../screens/UserAccount';
+import ChangePassword from '../screens/ChangePassword';
 
 
 const Stack = createStackNavigator();
@@ -191,10 +192,18 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
       }}
     >
       <Tab.Screen name="Home" component={HomeStackNavigator} />
-      <Tab.Screen name="Search" component={SearchStackNavigator} />
+      <Tab.Screen listeners={{
+        tabPress: e => {
+          SearchScreen.reloadScreen()
+        }
+      }} name="Search" component={SearchStackNavigator} />
       <Tab.Screen name="Filter" component={FilterScreen} />
       <Tab.Screen name="Bookmark" component={BookmarkStackNavigator} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen listeners={{
+        tabPress: e => {
+          ProfileScreen.reloadScreen()
+        }
+      }} name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
 
   )
@@ -223,6 +232,7 @@ const AppNavigator = ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
         <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} />
+        <Stack.Screen options={{ headerShown: false }} name="ChangePassword" component={ChangePassword} />
         <Stack.Screen options={{
           headerShown: true,
           headerTitle: "",

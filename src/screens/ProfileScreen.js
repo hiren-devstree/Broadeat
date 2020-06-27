@@ -2,11 +2,14 @@
 import React, { Component } from 'react'
 import {
   Image, StyleSheet, TouchableOpacity, ScrollView,
-  Text, View, Switch, AsyncStorage
+  Text, View, Switch, Alert
 } from 'react-native'
 import ImagePicker from "react-native-customized-image-picker";
 import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
+import AsyncStorage from '@react-native-community/async-storage'
+
+import { getUserDetails } from './../ApiManager'
 
 import StyleConfig from '../assets/styles/StyleConfig'
 import { SafeAreaView, View1CC, ViewX, CText, TextX } from '../components/common'
@@ -14,14 +17,51 @@ import { SafeAreaView, View1CC, ViewX, CText, TextX } from '../components/common
 import imgBack from '../assets/images/ic_back.png'
 import imgDummy from '../assets/images/ic_dummy.png'
 
+let _this
 class ProfileScreen extends Component {
   constructor(props) {
     super(props)
-
+    _this = this
     this.state = {
       isHideProfile: false,
       isDarkTheme: false,
       isEnableNotifiation: false,
+      userDetails: undefined
+    }
+  }
+
+  componentDidMount() {
+    this._getProfileDetailsAPICalling()
+  }
+
+  static reloadScreen = async () => {
+    let token = await AsyncStorage.getItem('user_token')
+
+    let response = await getUserDetails(token)
+
+    if (response.code === 1) {
+      _this.setState({ userDetails: response.data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
+
+  _getProfileDetailsAPICalling = async () => {
+    const { loader } = this.props
+    let token = await AsyncStorage.getItem('user_token')
+
+    loader(true)
+    let response = await getUserDetails(token)
+    loader(false)
+
+    if (response.code === 1) {
+      this.setState({ userDetails: response.data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
     }
   }
 
@@ -63,33 +103,39 @@ class ProfileScreen extends Component {
   }
 
   renderHeaderView = () => {
+    const { userDetails } = this.state
     return (
       <ViewX style={styles.headerTopView}>
         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-          <Image source={imgBack} style={styles.backBtn} />
+          {userDetails != undefined && userDetails.profilepic != '' ?
+            <Image source={{ uri: userDetails.profilepic }} style={styles.backBtn} /> :
+            <Image source={imgBack} style={styles.backBtn} />
+          }
         </TouchableOpacity>
         <TextX
           fontSize={StyleConfig.countPixelRatio(16)}
           style={{ marginLeft: 15 }}
         >
-          {'Account'}
+          {'My Account'}
         </TextX>
       </ViewX>
     )
   }
 
   renderUserDetailsView = () => {
+    const { userDetails } = this.state
+
     return (
       <>
         <ViewX style={styles.userDetails}>
           <Image source={imgDummy} style={styles.imgProfile} />
 
           <ViewX style={styles.userDetailTextContainer}>
-            <TextX fontSize={StyleConfig.countPixelRatio(16)}>{'User Name'}</TextX>
-            <TextX fontSize={StyleConfig.countPixelRatio(16)}>{'email@mail.com'}</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(16)}>{userDetails ? userDetails.name : ''}</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{userDetails ? userDetails.email : ''}</TextX>
           </ViewX>
 
-          <TouchableOpacity onPress={() => this.props.navigation.push('EditAccount')}>
+          <TouchableOpacity onPress={() => this.props.navigation.push('EditAccount', { userDetails: userDetails })}>
             <Text style={{ color: StyleConfig.blue, fontSize: StyleConfig.countPixelRatio(16) }}>{'Edit Account'}</Text>
           </TouchableOpacity>
 
@@ -100,11 +146,13 @@ class ProfileScreen extends Component {
   }
 
   renderMiddleContainer = () => {
-    const { isHideProfile } = this.state
+    const { isHideProfile, userDetails } = this.state
     return (
       <>
         <ViewX style={styles.optionContainer}>
-          <TouchableOpacity style={styles.optionbtnContainer}>
+          <TouchableOpacity style={styles.optionbtnContainer} onPress={() => {
+            this.props.navigation.navigate('UserAccount', { userDetails: userDetails })
+          }}>
             <TextX fontSize={StyleConfig.countPixelRatio(16)}>View Profile</TextX>
           </TouchableOpacity>
 
@@ -135,9 +183,9 @@ class ProfileScreen extends Component {
     )
   }
 
-  themeChange= async () => {
-    const {isDarkTheme} = this.state
-    await AsyncStorage.setItem(isDarkTheme? 'light':'dark')
+  themeChange = async () => {
+    const { isDarkTheme } = this.state
+    await AsyncStorage.setItem(isDarkTheme ? 'light' : 'dark')
     this.setState({ isDarkTheme: !isDarkTheme })
 
   }
@@ -146,13 +194,13 @@ class ProfileScreen extends Component {
     const { isEnableNotifiation, isDarkTheme } = this.state
     return (
       <ViewX style={styles.optionContainer}>
-        <TouchableOpacity style={styles.optionbtnContainer}>
+        <TouchableOpacity style={styles.optionbtnContainer} onPress={() => this.props.navigation.navigate('ChangePassword')}>
           <TextX fontSize={StyleConfig.countPixelRatio(16)}>Settings</TextX>
         </TouchableOpacity>
 
         <ViewX style={styles.hideProfileContainer}>
           <TextX fontSize={StyleConfig.countPixelRatio(16)}>Dark Theme</TextX>
-          <Switch value={isDarkTheme} onValueChange={ this.themeChange } />
+          <Switch value={isDarkTheme} onValueChange={this.themeChange} />
         </ViewX>
 
         <ViewX style={styles.hideProfileContainer}>

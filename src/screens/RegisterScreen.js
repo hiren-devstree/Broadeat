@@ -51,18 +51,10 @@ class RegisterScreen extends Component {
 		console.log(response)
 		if (response.code === 1) {
 			this.props.navigation.navigate("EmailVerify")
-			// this.props.navigation.dispatch(
-			// 	CommonActions.reset({
-			// 		index: 1,
-			// 		routes: [
-			// 			{
-			// 				name: 'Dashboard',
-			// 			},
-			// 		],
-			// 	})
-			// );
 		} else {
-
+			setTimeout(() => {
+				Alert.alert(response.message)
+			}, 500)
 		}
 		loader(false)
 	}
@@ -82,8 +74,11 @@ class RegisterScreen extends Component {
 		} else if (userName === '') {
 			Alert.alert('Please enter user name')
 			return false
-		} else if (password === ' ') {
+		} else if (password === '') {
 			Alert.alert('Please enter password')
+			return false
+		} else if (password.length < 8) {
+			Alert.alert('Password should be 8 character long')
 			return false
 		} else if (cPassword === '') {
 			Alert.alert('Please enter confirm password')

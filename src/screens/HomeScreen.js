@@ -1,50 +1,79 @@
 import React, { Component } from 'react';
 import {
-    View,
-    Text,
-    Image,
-    StyleSheet,
-    TouchableOpacity
+  View, Alert,
+  Image, StyleSheet, TouchableOpacity
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
-
-import AppImages from '../assets/images';
+import { getRecipeData } from './../ApiManager'
+import { IMAGE_PATH } from '../helper/Constants'
+import AsyncStorage from '@react-native-community/async-storage'
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, View1CC, Devider, CText, CTextColor, TextX } from '../components/common';
 import { FlatList } from 'react-native-gesture-handler';
 import withUser from '../redux/actionCreator/withUser';
 class HomeScreen extends Component {
 
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props)
 
-    render() {
-        let data = []
-        for (let ind = 0; ind < 40; ind++) {
-            let ii = ind % 13;
-            data.push(AppImages.homeItems[ii]);
-        }
-        let objData = {}
-        return (
-            <SafeAreaView {...this.props}>
-                <View1CC {...this.props} >
-                    <FlatList
-                        data={data}
-                        numColumns={3}
-                        keyExtractor={(_, idx) => `foodGlr-${idx}`}
-                        renderItem={({ item }) =>
-                            <TouchableOpacity style={{margin: 3,}} onPress={()=> this.props.navigation.navigate('PhotoRecipeDetails', { data: item })}>
-                            <Image
-                                source={item}
-                                style={{  height: StyleConfig.convertWidthPer(29), width: StyleConfig.convertWidthPer(30) }}
-                            /></TouchableOpacity>}
-                    />
-                </View1CC>
-            </SafeAreaView>
-        );
+    this.state = {
+      data: []
     }
+  }
+
+  async componentDidMount() {
+    const { loader } = this.props
+    let token = await AsyncStorage.getItem('user_token')
+
+    loader(true)
+    let response = await getRecipeData(token)
+    loader(false)
+
+    console.log(response)
+    if (response.code === 1) {
+      this.setState({ data: response.data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
+
+
+  render() {
+    return this.renderMainView()
+  }
+
+  renderMainView = () => {
+    return (
+      <SafeAreaView {...this.props}>
+        <View1CC {...this.props} >
+          {this.renderFlatList()}
+        </View1CC>
+      </SafeAreaView>
+    )
+  }
+
+  renderFlatList = () => {
+    const { data } = this.state
+    return (
+      <FlatList
+        data={data}
+        numColumns={3}
+        keyExtractor={(_, idx) => `foodGlr-${idx}`}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity style={{ margin: 3, }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.user_id })}>
+              <Image
+                source={{ uri: IMAGE_PATH + item.image }}
+                style={{ height: StyleConfig.convertWidthPer(29), width: StyleConfig.convertWidthPer(30) }}
+              /></TouchableOpacity>
+          )
+        }}
+      />
+    )
+  }
 }
 
 

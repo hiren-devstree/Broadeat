@@ -1,13 +1,13 @@
 
 import React, { Component } from 'react';
 import {
-    View,
-    Text,
-    Image,
-    StyleSheet,
-    Dimensions,
-    TouchableWithoutFeedback,
-    Platform
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  TouchableWithoutFeedback,
+  Platform
 
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
@@ -30,145 +30,157 @@ const TABBAR_HEIGHT = StyleConfig.convertHeightPerVal(32);
 
 const initialLayout = { width: Dimensions.get('window').width };
 class BookmarkScreen extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            index: 0,
-            routes: [
-                { key: 'recipes', title: 'Recipes' },
-                { key: 'account', title: 'Accounts' },
-            ]
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+      index: 0,
+      routes: [
+        { key: 'recipes', title: 'Recipes' },
+        { key: 'account', title: 'Accounts' },
+      ]
     }
+  }
 
-    _renderScene = ({ route }) => {
-        const { navigation } = this.props;
-        switch (route.key) {
-            case "recipes":
-                return <RecipesTab {...{ navigation }} />;
-            case 'account':
-                return <AccountTab {...{ navigation }} />;
-            default:
-                return <View />;
-        }
-    };
+  componentDidMount() {
+    // AccountTab.reloadScreen()
+  }
 
-    _renderTabLabel = ({ route, focused }) => {
-        const { theme } = this.props;
 
-        return (<TextX
-            style={[{
-                textAlignVertical: "center",
-                fontSize: StyleConfig.fontSizeH3,
-                marginTop: -15,
-                color: focused ? theme.text : theme.filterOn,
-            }]}>{""}{route.title}{""}</TextX>)
+  _renderScene = ({ route }) => {
+    const { navigation } = this.props;
+    switch (route.key) {
+      case "recipes":
+        return <RecipesTab {...{ navigation }} />;
+      case 'account':
+        return <AccountTab {...{ navigation }} />;
+      default:
+        return <View />;
     }
+  };
 
-    _renderTabOverlayIndicator = ({ navigationState, position, width, getTabWidth }) => {
-        const { routes } = this.state;
-        const { theme } = this.props;
+  _renderTabLabel = ({ route, focused }) => {
+    const { theme } = this.props;
 
-        const inputRange = routes.map((_, i) => i);
+    return (<TextX
+      style={[{
+        textAlignVertical: "center",
+        fontSize: StyleConfig.fontSizeH3,
+        marginTop: Platform.OS == 'android' ? -18 : -15,
+        color: focused ? theme.text : theme.filterOn,
+      }]}>{""}{route.title}{""}</TextX>)
+  }
 
-        // every index contains widths at all previous indices
-        const outputRange = routes.reduce((acc, _, i) => {
-            if (i === 0) return [0];
-            return [...acc, acc[i - 1] + getTabWidth(i - 1)];
-        }, []);
+  _renderTabOverlayIndicator = ({ navigationState, position, width, getTabWidth }) => {
+    const { routes } = this.state;
+    const { theme } = this.props;
 
-        const translateX = interpolate(position, {
-            inputRange,
-            outputRange,
-            extrapolate: Extrapolate.CLAMP,
-        });
+    const inputRange = routes.map((_, i) => i);
 
-        return (
-            <Animated.View
-                style={{
-                    backgroundColor: theme.filterOn,
-                    width,
-                    height: "100%",
-                    borderRadius: TABBAR_BORDER_RADIUS,
-                    transform: [{ translateX }]
-                }}
-            />
-        )
-    }
+    // every index contains widths at all previous indices
+    const outputRange = routes.reduce((acc, _, i) => {
+      if (i === 0) return [0];
+      return [...acc, acc[i - 1] + getTabWidth(i - 1)];
+    }, []);
 
-    _renderTabBar = (props) => {
-        const { theme } = this.props;
-        return (
-            <TabBar
-                labelStyle={{ height: TABBAR_HEIGHT }}
-                // onTabPress={({ route }) => setIndex(route.key)}
-                renderLabel={(rest) => this._renderTabLabel(rest)}
-                renderIndicator={(rest) => this._renderTabOverlayIndicator(rest)}
-                indicatorStyle={{ backgroundColor: theme.filterOn }}
-                style={{
-                    margin: TABBAR_MARGIN,
-                    backgroundColor: theme.background,
-                    borderRadius: TABBAR_BORDER_RADIUS,
-                    borderWidth: 1,
-                    height: TABBAR_HEIGHT,
-                    borderColor: theme.filterOn,
-                }}
-                {...props}
-            />
-        );
-    }
+    const translateX = interpolate(position, {
+      inputRange,
+      outputRange,
+      extrapolate: Extrapolate.CLAMP,
+    });
 
-    _renderLazyPlaceholder = ({ route }) => {
-        <ViewX>
-            <Text>Loading {route.title}…</Text>
-        </ViewX>
-    }
+    return (
+      <Animated.View
+        style={{
+          backgroundColor: theme.filterOn,
+          width,
+          height: "100%",
+          borderRadius: TABBAR_BORDER_RADIUS,
+          transform: [{ translateX }]
+        }}
+      />
+    )
+  }
 
-    render() {
+  _renderTabBar = (props) => {
+    const { theme } = this.props;
+    return (
+      <TabBar
+        labelStyle={{ height: TABBAR_HEIGHT }}
+        // onTabPress={({ route }) => setIndex(route.key)}
+        renderLabel={(rest) => this._renderTabLabel(rest)}
+        renderIndicator={(rest) => this._renderTabOverlayIndicator(rest)}
+        indicatorStyle={{ backgroundColor: theme.filterOn }}
+        style={{
+          margin: TABBAR_MARGIN,
+          backgroundColor: theme.background,
+          borderRadius: TABBAR_BORDER_RADIUS,
+          borderWidth: 1,
+          height: TABBAR_HEIGHT,
+          borderColor: theme.filterOn,
+        }}
+        {...props}
+      />
+    );
+  }
 
-        const { index, routes } = this.state;
-        const { theme } = this.props;
+  _renderLazyPlaceholder = ({ route }) => {
+    <ViewX>
+      <Text>Loading {route.title}…</Text>
+    </ViewX>
+  }
 
-        return (
-            <SafeAreaView {...this.props}>
-                <SearchBar
-                    ref={input => {
-                        this.searchTextInput = input;
-                    }}
-                    containerStyle={{
-                        alignSelf: "center",
-                        backgroundColor: "transparent",
-                        borderBottomWidth: 0,
-                        borderTopWidth: 0,
-                    }}
-                    inputStyle={{ fontSize: StyleConfig.fontSizeH3 }}
-                    inputContainerStyle={{
-                        borderRadius: 10,
-                        width: StyleConfig.width * 0.6,
-                        height: StyleConfig.convertHeightPerVal(38),
-                        backgroundColor: theme.backgroundAlt
-                    }}
-                    textContentType={"name"}
-                    placeholder="Search"
-                    returnKeyType="search"
-                // onChangeText={this.updateSearch}
-                // onSubmitEditing={this.moveToSearchResults}
-                // value={search}
-                />
-                <TabView
-                    style={{ flex: 1 }}
-                    // position={position}      //Animated value: Accessible but no usecase of now
-                    lazy
-                    navigationState={{ index, routes }}
-                    renderScene={(rest) => this._renderScene(rest)}
-                    renderTabBar={(rest) => this._renderTabBar(rest)}
-                    renderLazyPlaceholder={(rest) => this._renderLazyPlaceholder(rest)}
-                    onIndexChange={(index) => this.setState({ index })}
-                    initialLayout={initialLayout}
-                />
-            </SafeAreaView>
-        );
-    }
+  render() {
+
+    const { index, routes } = this.state;
+    const { theme } = this.props;
+
+    return (
+      <SafeAreaView {...this.props}>
+        <SearchBar
+          ref={input => {
+            this.searchTextInput = input;
+          }}
+          containerStyle={{
+            alignSelf: "center",
+            backgroundColor: "transparent",
+            borderBottomWidth: 0,
+            borderTopWidth: 0,
+          }}
+          inputStyle={{ fontSize: StyleConfig.fontSizeH3 }}
+          inputContainerStyle={{
+            borderRadius: 10,
+            width: StyleConfig.width * 0.6,
+            height: StyleConfig.convertHeightPerVal(38),
+            backgroundColor: theme.backgroundAlt
+          }}
+          textContentType={"name"}
+          placeholder="Search"
+          returnKeyType="search"
+        // onChangeText={this.updateSearch}
+        // onSubmitEditing={this.moveToSearchResults}
+        // value={search}
+        />
+        <TabView
+          style={{ flex: 1 }}
+          // position={position}      //Animated value: Accessible but no usecase of now
+          lazy
+          navigationState={{ index, routes }}
+          renderScene={(rest) => this._renderScene(rest)}
+          renderTabBar={(rest) => this._renderTabBar(rest)}
+          renderLazyPlaceholder={(rest) => this._renderLazyPlaceholder(rest)}
+          onIndexChange={(index) => {
+            if (index == 0) {
+              RecipesTab.reloadScreen()
+            } else {
+              AccountTab.reloadScreen()
+            }
+            this.setState({ index })
+          }}
+          initialLayout={initialLayout}
+        />
+      </SafeAreaView>
+    );
+  }
 }
 
 

@@ -160,7 +160,7 @@ class PhotoRecipeDetails extends Component {
   renderDescriptionView = () => {
     const { noOfUser, timer, foodType } = this.state
     return (
-      <ViewX style={{ flex: 1, alignItems: 'flex-start', }}>
+      <ViewX style={{ flex: 1, alignItems: 'flex-start' }}>
         {this.renderHeaderBottomView()}
         <ViewX style={styles.operationView}>
           <ViewX style={{ flexDirection: 'row' }}>
@@ -174,7 +174,7 @@ class PhotoRecipeDetails extends Component {
           </ViewX>
 
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, }} resizeMode='contain' />
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
           </ViewX>
           <ViewX style={{ flexDirection: 'row' }}>
@@ -338,7 +338,7 @@ class PhotoRecipeDetails extends Component {
 
   renderNutritionView = () => {
     return (
-      <ViewX style={{ marginTop: 15, paddingHorizontal: StyleConfig.countPixelRatio(15), }}>
+      <ViewX style={{ marginVertical: 15, paddingHorizontal: StyleConfig.countPixelRatio(15), }}>
         <TextX
           style={{ width: '100%' }}
           fontSize={StyleConfig.countPixelRatio(16)}
@@ -387,6 +387,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: StyleConfig.countPixelRatio(12),
     marginBottom: StyleConfig.countPixelRatio(12),
+    height: StyleConfig.countPixelRatio(40),
   },
   headerBottomView: {
     justifyContent: 'flex-start',
@@ -460,6 +461,8 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: StyleConfig.countPixelRatio(15),
     marginBottom: StyleConfig.countPixelRatio(10),
+    alignItems: 'flex-end',
+    height: 30
   }
 })
 
