@@ -7,7 +7,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
-import { getTagList } from './../ApiManager'
+import { getTagList, getSearchRecipeList } from './../ApiManager'
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, View1CC, Devider, CText, CTextColor, TextX, ViewX } from '../components/common';
@@ -57,6 +57,25 @@ class SearchScreen extends Component {
         Alert.alert(response.message)
       }, 500)
     }
+  }
+
+  _getSearchResultListAPICalling = async () => {
+    let token = await AsyncStorage.getItem('user_token')
+    let data = {
+      "meal": "",
+      "title": "data",
+      "tag": ""
+    }
+    let response = await getSearchRecipeList(data, token)
+
+    console.log(response)
+    if (response.code === 1) {
+      console.log('COMPLETE')
+      // this.props.navigation.navigate("SearchResult")
+    } else {
+      console.log('FAILED')
+    }
+
   }
 
   render() {
