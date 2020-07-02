@@ -2,7 +2,9 @@ import React from 'react'
 import {
   KEY_POST_LOGIN, REGISTER_URL, FORGOT_PASSWORD_URL, CHANGE_PASSWORD_URL,
   ADD_RECIPE_URL, RECIPE_DATA_URL, USER_DETAILS_URL, UPDATE_USER_DETAILS_URL,
-  FAVOURITE_LIST_URL, BOOKMARK_USER_URL, TAG_URL, SEARCH_RECIPE_URL
+  FAVOURITE_LIST_URL, BOOKMARK_USER_URL, TAG_URL, SEARCH_RECIPE_URL,
+  GET_RECIPE_DETAILS_URL, GET_USER_WISE_RECIPE_DETAILS_URL, GET_RECENT_SEARCH_URL,
+  DELETE_SEARCH_RECORD_URL, FILTER_URL
 } from './../helper/Constants'
 
 
@@ -133,14 +135,13 @@ const ApiManager = {
     console.log('Update profile data ', data)
     let myHeaders = new Headers()
     myHeaders.append('Authorization', `Bearer ${token}`)
-    myHeaders.append("Content-Type", "application/json")
 
     return fetch(UPDATE_USER_DETAILS_URL, {
       method: 'POST',
       headers: myHeaders,
-      body: JSON.stringify(data)
+      body: data
     }).then((response) => {
-      return response.json()
+      return response.text()
     }, function (error) {
       console.log('error', error)
     }).catch((error) => {
@@ -196,25 +197,109 @@ const ApiManager = {
     });
   },
   getSearchRecipeList: async (data, token) => {
-    console.log('GET SEARCH RECIPE CALLED!!!!')
+    console.log('GET SEARCH RECIPE CALLED!!!!', data)
     let myHeaders = new Headers()
     myHeaders.append('Authorization', `Bearer ${token}`)
+    myHeaders.append("Content-Type", "application/json")
 
-    var raw = JSON.stringify(data)
-
-    var requestOptions = {
-      method: 'GET',
+    return fetch(SEARCH_RECIPE_URL, {
+      method: 'POST',
       headers: myHeaders,
-      body: raw,
-    }
-
-    return fetch(TAG_URL, requestOptions).then((response) => {
+      body: JSON.stringify(data)
+    }).then((response) => {
       return response.json()
     }, function (error) {
       console.log('error', error)
     }).catch((error) => {
       console.log('error', error)
     });
-  }
+  },
+  getRcipeDetails: async (data, token) => {
+    console.log('GET RECIPE DETAILS Data: ', data)
+    let myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${token}`)
+    myHeaders.append('Content-Type', 'application/json')
+
+    return fetch(GET_RECIPE_DETAILS_URL, {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(data)
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
+  getUserWiseRcipeDetails: async (data, token) => {
+    console.log('GET USER WISE RECIPE DETAILS Data: ', data)
+    let myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${token}`)
+    myHeaders.append('Content-Type', 'application/json')
+
+    return fetch(GET_USER_WISE_RECIPE_DETAILS_URL, {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(data)
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
+  getRecentSearch: async (token) => {
+    console.log('GET RECENT SSEARCH CALLED!!!!')
+    let myHeaders = new Headers()
+    myHeaders.append('Authorization', `Bearer ${token}`)
+
+    return fetch(GET_RECENT_SEARCH_URL, {
+      method: 'GET',
+      headers: myHeaders,
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
+  deleteSearchRecord: async (data, token) => {
+    console.log('DELETE SEARCH RECORD Data: ', data)
+    let myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${token}`)
+
+    return fetch(DELETE_SEARCH_RECORD_URL, {
+      method: 'POST',
+      headers: myHeaders,
+      body: data
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
+  applyFilters: async (data, token) => {
+    console.log('FILTER API CALLED Data: ', data)
+    let myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${token}`)
+    myHeaders.append("Content-Type", "application/json")
+
+    return fetch(FILTER_URL, {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(data)
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
 }
 module.exports = ApiManager;

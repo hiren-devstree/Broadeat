@@ -97,7 +97,7 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
         }}
         name={'SearchScreenModal'} component={SearchScreen}
       />
-      <SearchNavigator.Screen
+      <HomeNavigator.Screen
         options={{ headerShown: false }}
         name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
       />
@@ -152,6 +152,26 @@ const BookmarkStackNavigator = withTheme(({ theme, ...props }) => {
   )
 })
 
+const FIlterNavigator = createStackNavigator();
+
+const FIlterStackNavigator = withTheme(({ theme, ...props }) => {
+  return (
+    <FIlterNavigator.Navigator>
+      <FIlterNavigator.Screen
+        options={{ headerShown: false }}
+        name={'Filter'} component={FilterScreen}
+      />
+      <FIlterNavigator.Screen
+        options={({ route, navigation }) => ({
+          header: () => (<HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />)
+        })}
+        name="SearchResult" component={SearchResult}
+      />
+
+    </FIlterNavigator.Navigator >
+  )
+})
+
 const TabNavigator = withTheme(({ theme, ...props }) => {
   return (
     <Tab.Navigator
@@ -194,7 +214,7 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
           SearchScreen.reloadScreen()
         }
       }} name="Search" component={SearchStackNavigator} />
-      <Tab.Screen name="Filter" component={FilterScreen} />
+      <Tab.Screen name="Filter" component={FIlterStackNavigator} />
       <Tab.Screen name="Bookmark" component={BookmarkStackNavigator} />
       <Tab.Screen listeners={{
         tabPress: e => {

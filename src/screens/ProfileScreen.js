@@ -8,6 +8,7 @@ import ImagePicker from "react-native-customized-image-picker";
 import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
 import AsyncStorage from '@react-native-community/async-storage'
+import { CommonActions } from '@react-navigation/native'
 
 import { getUserDetails } from './../apiManager'
 
@@ -107,10 +108,7 @@ class ProfileScreen extends Component {
     return (
       <ViewX style={styles.headerTopView}>
         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-          {userDetails != undefined && userDetails.profilepic != '' ?
-            <Image source={{ uri: userDetails.profilepic }} style={styles.backBtn} /> :
-            <Image source={imgBack} style={styles.backBtn} />
-          }
+          <Image source={imgBack} style={styles.backBtn} />
         </TouchableOpacity>
         <TextX
           fontSize={StyleConfig.countPixelRatio(16)}
@@ -124,11 +122,14 @@ class ProfileScreen extends Component {
 
   renderUserDetailsView = () => {
     const { userDetails } = this.state
-
+    console.log(userDetails)
     return (
       <>
         <ViewX style={styles.userDetails}>
-          <Image source={imgDummy} style={styles.imgProfile} />
+          {userDetails != undefined && userDetails.profilepic != '' ?
+            <Image source={{ uri: userDetails.profilepic }} style={styles.imgProfile} /> :
+            <Image source={imgDummy} style={styles.imgProfile} />
+          }
 
           <ViewX style={styles.userDetailTextContainer}>
             <TextX fontSize={StyleConfig.countPixelRatio(16)}>{userDetails ? userDetails.name : ''}</TextX>
@@ -173,7 +174,9 @@ class ProfileScreen extends Component {
             <TextX fontSize={StyleConfig.countPixelRatio(16)}>Switch Account</TextX>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionbtnContainer}>
+          <TouchableOpacity style={styles.optionbtnContainer} onPress={() => {
+            this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login' }] }))
+          }}>
             <TextX fontSize={StyleConfig.countPixelRatio(16)}>Logout</TextX>
           </TouchableOpacity>
 

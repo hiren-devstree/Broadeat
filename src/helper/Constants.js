@@ -13,7 +13,12 @@ export const UPDATE_USER_DETAILS_URL = `${BASE_URL}user/update/profile`
 export const FAVOURITE_LIST_URL = `${BASE_URL}recipe/Getfavoritelist`
 export const BOOKMARK_USER_URL = `${BASE_URL}recipe/UserBookmarklist`
 export const TAG_URL = `${BASE_URL}tag`
+export const GET_RECENT_SEARCH_URL = `${BASE_URL}recipe/getSearchList`
+export const DELETE_SEARCH_RECORD_URL = `${BASE_URL}recipe/deleteSearchRecord`
+export const FILTER_URL = `${BASE_URL}recipe/SearchWithTagsFilter`
 export const SEARCH_RECIPE_URL = `${BASE_URL}recipe/search`
+export const GET_RECIPE_DETAILS_URL = `${BASE_URL}recipe/data`
+export const GET_USER_WISE_RECIPE_DETAILS_URL = `${BASE_URL}recipe/UserRecipeList`
 
 export const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 

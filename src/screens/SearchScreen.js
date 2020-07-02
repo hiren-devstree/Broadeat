@@ -2,12 +2,12 @@
 import React, { Component } from 'react';
 import {
   FlatList, View, Text,
-  Image, StyleSheet, ScrollView, TouchableWithoutFeedback
+  Image, StyleSheet, ScrollView, TouchableWithoutFeedback, Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
-import { getTagList, getSearchRecipeList } from './../apiManager'
+import { getRecentSearch, getSearchRecipeList, deleteSearchRecord } from './../apiManager'
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, View1CC, Devider, CText, CTextColor, TextX, ViewX } from '../components/common';
@@ -21,26 +21,57 @@ class SearchScreen extends Component {
     super(props)
     _this = this
     this.state = {
-      data: []
+      data: [],
+      searchText: ''
     }
 
     props.navigation.setOptions({
       header: ({ tintColor }) => (
-        <HeaderSearchBar  {...props} onChangeSearchText={this.onChangeSearchText} />
+        <HeaderSearchBar  {...props} isBack={true} onChangeSearchText={this.onChangeSearchText} onSubmitPressed={this._onSubmitPressed} />
       )
     })
   }
 
   onChangeSearchText = (text) => {
-    console.log('Search Text: ', text)
+    this.setState({ searchText: text })
   }
 
-  async componentDidMount() {
+  _onSubmitPressed = () => {
+    this._getSearchResultListAPICalling(this.state.searchText)
+  }
+
+  _onDeleteRecord = async (item) => {
+    console.log(item)
+    let token = await AsyncStorage.getItem('user_token')
+    let data = {
+      id: item.id
+    }
+
+    var formdata = new FormData();
+    formdata.append("id", item.id);
+
+    let response = await deleteSearchRecord(formdata, token)
+
+    console.log(response)
+    if (response.code === 1) {
+      this._getRecentSearchAPICalled()
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
+
+  componentDidMount() {
+    this._getRecentSearchAPICalled()
+  }
+
+  _getRecentSearchAPICalled = async () => {
     const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
 
     loader(true)
-    let response = await getTagList(token)
+    let response = await getRecentSearch(token)
     loader(false)
 
     console.log(response)
@@ -55,13 +86,11 @@ class SearchScreen extends Component {
 
   static reloadScreen = async () => {
     let token = await AsyncStorage.getItem('user_token')
-    let response = await getTagList(token)
+    let response = await getRecentSearch(token)
 
     console.log(response)
     if (response.code === 1) {
-      _this.setState({ data: response.data }, () => {
-        console.log(_this.state.data)
-      })
+      _this.setState({ data: response.data })
     } else {
       setTimeout(() => {
         Alert.alert(response.message)
@@ -69,21 +98,24 @@ class SearchScreen extends Component {
     }
   }
 
-  _getSearchResultListAPICalling = async () => {
+  _getSearchResultListAPICalling = async (tagName) => {
+    const { searchText } = this.state
+    let sText = `${tagName}`.length > 0 ? tagName : searchText
     let token = await AsyncStorage.getItem('user_token')
     let data = {
-      "meal": "",
-      "title": "data",
-      "tag": ""
+      "title": sText
     }
     let response = await getSearchRecipeList(data, token)
 
     console.log(response)
     if (response.code === 1) {
-      console.log('COMPLETE')
-      // this.props.navigation.navigate("SearchResult")
+      if (response.data.length > 0) {
+        this.props.navigation.navigate("SearchResult", { data: response.data })
+      } else {
+        Alert.alert(response.message)
+      }
     } else {
-      console.log('FAILED')
+      Alert.alert(response.message)
     }
 
   }
@@ -117,6 +149,7 @@ class SearchScreen extends Component {
           >
             {
               data.map((item, idx) => {
+                let count = `${item.related_count} ${item.related_count < 2 ? 'post' : 'posts'}`
                 return (
                   <ViewX
                     style={{
@@ -124,7 +157,7 @@ class SearchScreen extends Component {
                       flexDirection: "row",
                       justifyContent: 'space-between'
                     }} key={idx}>
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate("SearchResult")} >
+                    <TouchableWithoutFeedback onPress={() => this._getSearchResultListAPICalling(item.search_text)} >
                       <ViewX style={{ flexDirection: "row", borderColor: "white" }} >
                         <TextX style={{
                           borderColor: theme.backgroundAlt,
@@ -136,8 +169,8 @@ class SearchScreen extends Component {
                             alignItems: 'flex-start',
                             paddingHorizontal: StyleConfig.convertWidthPerVal(20)
                           }} >
-                          <TextX> {`#${item.tag_name}`} </TextX>
-                          <TextX style={{ color: theme.backgroundAlt }} > {item.category_type} </TextX>
+                          <TextX>{`#${item.search_text}`} </TextX>
+                          <TextX style={{ color: '#999' }}> {count}</TextX>
                         </ViewX>
                       </ViewX>
                     </TouchableWithoutFeedback>
@@ -145,6 +178,7 @@ class SearchScreen extends Component {
                       name={"ios-close"}
                       color={theme.backgroundAlt}
                       size={StyleConfig.iconSize}
+                      onPress={() => this._onDeleteRecord(item)}
                     />
                   </ViewX>
                 )

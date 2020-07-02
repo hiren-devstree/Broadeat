@@ -7,6 +7,9 @@ import {
   Image,
   TouchableWithoutFeedback
 } from "react-native";
+import withLoader from '../redux/actionCreator/withLoader'
+import { getUserWiseRcipeDetails } from '../apiManager'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import { withTheme } from "styled-components";
 import { ScrollView } from "react-native-gesture-handler";
@@ -51,12 +54,12 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
               width: "90%",
               height: "90%"
             }}
-            source={item}
+            source={{ uri: item.image }}
           />
         </ViewX>
         <TextX style={{
           fontSize: StyleConfig.fontSizeH3
-        }} >{" Tomato & Broccoli Conchiglie Pasta"}</TextX>
+        }} >{item.recipe_title}</TextX>
       </ViewX>
     </TouchableWithoutFeedback>
   )
@@ -67,9 +70,30 @@ class UserAccount extends Component {
   constructor() {
     super()
     this.state = {
-      filters: ["View All", "Pastas", "Salads", "Deserts", "Vegetarian"]
+      filters: ["View All", "Pastas", "Salads", "Deserts", "Vegetarian"],
+      data: []
     }
   }
+
+  async componentDidMount() {
+    const { loader } = this.props
+    let token = await AsyncStorage.getItem('user_token')
+    let userId = await AsyncStorage.getItem('user_id')
+    let data = {
+      user_id: userId
+    }
+    let response = await getUserWiseRcipeDetails(data, token)
+
+    console.log(response)
+    if (response.code === 1) {
+      this.setState({ data: response.data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
+
 
   onFoodItemPress(item) {
     this.props.navigation.navigate('PhotoRecipeDetails', { data: item })
@@ -77,13 +101,13 @@ class UserAccount extends Component {
 
   render() {
     const { theme } = this.props
-    const { filters } = this.state;
+    const { filters, data } = this.state;
     let userDetails = this.props.route.params.userDetails
-    let data = []
-    for (let ind = 0; ind < 20; ind++) {
-      let ii = ind % 13;
-      data.push(AppImages.homeItems[ii]);
-    }
+    // let data = []
+    // for (let ind = 0; ind < 20; ind++) {
+    //   let ii = ind % 13;
+    //   data.push(AppImages.homeItems[ii]);
+    // }
     return (
       <SafeAreaView {...this.props}>
         <ViewX style={{ marginVertical: 10, padding: 20 }} >
@@ -98,10 +122,10 @@ class UserAccount extends Component {
               <ViewX style={{ flex: 1, flexDirection: "row", justifyContent: "flex-start" }} >
                 <Image
                   style={{ width: StyleConfig.convertWidthPerVal(56), height: StyleConfig.convertWidthPerVal(56) }}
-                  source={AppImages.mock_user_1}
+                  source={{ uri: userDetails.profilepic }}
                 />
                 <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20) }} >
-                  <TextX style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{userDetails.name}</TextX>
+                  <TextX align={'left'} style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{userDetails.name}</TextX>
                   <TextX style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4 }} >{userDetails.description}</TextX>
                 </ViewX>
               </ViewX>

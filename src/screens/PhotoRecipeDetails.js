@@ -2,13 +2,15 @@
 import React, { Component } from 'react';
 import {
   View, StyleSheet, Image, TouchableOpacity,
-  ScrollView, FlatList, Text
+  ScrollView, FlatList, Text, Alert
 } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 
 // File Imports
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import StyleConfig from '../assets/styles/StyleConfig';
+import { getRcipeDetails } from './../apiManager'
 
 // Component Imports
 import {
@@ -38,7 +40,14 @@ class PhotoRecipeDetails extends Component {
       timer: '15-20',
       foodType: 'Vegetarian',
       selectedTab: 1,
+      data: undefined
     }
+  }
+
+  componentDidMount() {
+    let id = this.props.route.params.data
+    console.log('dataaaaaaa ', id)
+    this._getRecipeDetailsAPICalling(1)
   }
 
 
@@ -61,6 +70,26 @@ class PhotoRecipeDetails extends Component {
   }
 
   _keyExtractor = (item, index) => index.toString()
+
+  _getRecipeDetailsAPICalling = async (id) => {
+    const { loader } = this.props
+    let token = await AsyncStorage.getItem('user_token')
+
+    let data = {
+      id: id
+    }
+
+    let response = await getRcipeDetails(data, token)
+
+    console.log(response)
+    if (response.code === 1) {
+      this.setState({ data: response.data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
 
   /*
   ..######...#######..##.....##.########...#######..##....##.########.##....##.########..######.
@@ -111,7 +140,8 @@ class PhotoRecipeDetails extends Component {
   }
 
   renderHeaderBottomView = () => {
-    const { noOfUser, timer, foodType } = this.state
+    const { noOfUser, timer, foodType, data } = this.state
+    console.log(data)
     return (
       <ViewX style={styles.headerBottomView} {...this.props}>
         <TouchableOpacity onPress={() => this.props.navigation.navigate('Bookmark')}>
@@ -122,7 +152,7 @@ class PhotoRecipeDetails extends Component {
             fontSize={StyleConfig.countPixelRatio(20)}
             align={'left'}
           >
-            {'Tomato & Broccoli Conchi Pasta'}
+            {data ? data.Recipe.recipe_title : ''}
           </TextX>
           <ViewX style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
             <TextX
@@ -148,17 +178,19 @@ class PhotoRecipeDetails extends Component {
   }
 
   renderItemMainImage = () => {
+    const { data } = this.state
+    console.log('this.props.route.params.data ', this.props.route.params.data.image)
     return (
       <Image
         style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(205) }}
         resizeMode='cover'
-        source={this.props.route.params.data}
+        source={{ uri: data ? data.Recipe.image : '' }}
       />
     )
   }
 
   renderDescriptionView = () => {
-    const { noOfUser, timer, foodType } = this.state
+    const { noOfUser, timer, foodType, data } = this.state
     return (
       <ViewX style={{ flex: 1, alignItems: 'flex-start' }}>
         {this.renderHeaderBottomView()}
@@ -193,7 +225,7 @@ class PhotoRecipeDetails extends Component {
           fontSize={StyleConfig.countPixelRatio(14)}
           style={{ marginLeft: 15 }}
           align={'left'}
-        >{'Comforting and satisfying without being too heavy, making them a great choice.'}
+        >{data ? data.Recipe.description : ''}
         </TextX>
       </ViewX>
     )

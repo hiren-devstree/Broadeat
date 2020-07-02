@@ -24,7 +24,7 @@ export const Account = withTheme(({ item, theme, onPres, isActive }) => (
       <ViewX style={{ flex: 1, flexDirection: "row", justifyContent: "flex-start" }} >
         <Image
           style={{ width: StyleConfig.convertWidthPerVal(56), height: StyleConfig.convertWidthPerVal(56) }}
-          source={AppImages.mock_user_1}
+          source={{ uri: item.profilepic }}
         />
         <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20) }} >
           <TextX style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{item.name}</TextX>
@@ -57,7 +57,8 @@ class AccountTab extends React.Component {
 
 
   _goToBookamrk = (item) => {
-    this.props.navigation.navigate('UserAccount')
+    console.log(item)
+    this.props.navigation.navigate('UserAccount', { userDetails: item })
   }
 
   static async reloadScreen() {
@@ -85,6 +86,7 @@ class AccountTab extends React.Component {
 
   render() {
     const { data } = this.state
+    console.log(data)
     return (
       <SafeAreaView>
         <ViewX style={{}} {...this.props} >

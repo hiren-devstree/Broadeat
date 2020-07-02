@@ -28,8 +28,8 @@ class LoginScreen extends BaseComponent {
     super(props);
     this.state = {
       showForgotPasswordModal: false,
-      email: 'bhavesh.iblazing@gmail.com',
-      password: 'asdasdasd',
+      email: '',
+      password: '',
       isOpenVeggieModal: false
     }
   }
@@ -61,6 +61,7 @@ class LoginScreen extends BaseComponent {
 
     if (response.code === 1) {
       AsyncStorage.setItem('user_token', response.token)
+      AsyncStorage.setItem('user_id', `${response.data.id}`)
       loginSuccess(response);
       this.setState({ isOpenVeggieModal: true })
     } else {

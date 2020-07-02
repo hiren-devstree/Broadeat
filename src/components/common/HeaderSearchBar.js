@@ -31,10 +31,14 @@ class SaerchHeader extends React.Component {
   moveToSearchResults = () => {
     const { search } = this.state;
     const { route } = this.props;
-    if (route && route.name !== "SearchResult") {
-      this.props.navigation.push('SearchResult', { search });
+    if (this.props.onSubmitPressed) {
+      this.props.onSubmitPressed()
     } else {
-      //Search you query via redux
+      if (route && route.name !== "SearchResult") {
+        this.props.navigation.push('SearchResult', { search });
+      } else {
+        //Search you query via redux
+      }
     }
   };
 
@@ -96,7 +100,7 @@ class SaerchHeader extends React.Component {
               : <Button
                 buttonStyle={{ backgroundColor: theme.background, paddingHorizontal: 10 }}
                 title={"Cancel"}
-                onPress={() => this.props.navigation.pop()}
+                onPress={() => { this.props.navigation.goBack() }}
               />
           }
         </View>

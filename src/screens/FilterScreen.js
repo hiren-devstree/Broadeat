@@ -2,11 +2,13 @@
 import React, { Component, useState } from 'react';
 import {
   StyleSheet, TouchableWithoutFeedback,
-  TouchableOpacity, Image
-
+  TouchableOpacity, Image, Alert
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
+import AsyncStorage from '@react-native-community/async-storage'
+
+import { getTagList, applyFilters } from './../apiManager'
 
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, ViewX, TextX } from '../components/common';
@@ -31,7 +33,7 @@ const FilterBubble = withTheme(({ theme, ...props }) => {
   )
 })
 
-const FilterHeader = withTheme(({ theme, ...props }) => {
+const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
 
   const { navigation } = props;
   const [value, setValue] = useState('')
@@ -58,8 +60,9 @@ const FilterHeader = withTheme(({ theme, ...props }) => {
         value={value}
       />
       <Button
-        title={"Cancel"}
+        title={"Done"}
         buttonStyle={{ backgroundColor: theme.background }}
+        onPress={() => onPress()}
       />
     </ViewX>
   )
@@ -69,7 +72,7 @@ class FilterScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [
+      data1: [
         {
           title: "Main dishes",
           data: [
@@ -100,7 +103,54 @@ class FilterScreen extends Component {
             { type: "Cheese Cake", select: false },
             { type: "Ice Cream", select: false }]
         }
-      ]
+      ],
+      data: [],
+      selectedTag: []
+    }
+  }
+
+  componentDidMount() {
+    this._getFilterAPICalling()
+  }
+
+
+  _getFilterAPICalling = async () => {
+
+    let token = await AsyncStorage.getItem('user_token')
+
+    let response = await getTagList(token)
+
+    let tempArr = []
+    response.data.category_list.forEach(item => {
+      let temp = []
+      response.data.tag_list[`${item.category_type}`].forEach((ele) => {
+        temp.push({ ...ele, isSelected: false })
+      })
+      tempArr.push({ title: item.category_type, data: temp })
+    })
+
+    this.setState({ data: tempArr })
+  }
+
+  _applyFilters = async () => {
+    const { selectedTag } = this.state
+    let token = await AsyncStorage.getItem('user_token')
+    let data = selectedTag.toString()
+
+    let raw = {
+      tags: data
+    }
+
+    let response = await applyFilters(raw, token)
+    console.log(response)
+    if (response.code === 1) {
+      if (response.data.length > 0) {
+        this.props.navigation.navigate("SearchResult", { data: response.data })
+      } else {
+        Alert.alert(response.message)
+      }
+    } else {
+      Alert.alert(response.message)
     }
   }
 
@@ -109,7 +159,7 @@ class FilterScreen extends Component {
     const { data } = this.state
     return (
       <SafeAreaView  {...this.props}>
-        <FilterHeader {...{ navigation }} />
+        <FilterHeader {...{ navigation }} onPress={() => this._applyFilters()} />
         <ScrollView>
           <ViewX style={{ alignItems: 'flex-start' }}  {...this.props} >
             {
@@ -140,11 +190,21 @@ class FilterScreen extends Component {
                         _.data
                           .map((itm, idx) => <FilterBubble
                             key={`fb-${idx}`}
-                            name={itm.type}
+                            name={itm.tag_name}
                             isSelected={itm.select}
                             onPress={() => {
                               itm.select = !itm.select
-                              this.setState({ data: data })
+                              let selectedTag = this.state.selectedTag
+                              if (selectedTag.includes(itm.tag_name)) {
+                                let index = selectedTag.indexOf(itm.tag_name)
+                                if (index !== -1) {
+                                  selectedTag.splice(index, 1)
+                                }
+                              } else {
+                                selectedTag.push(itm.tag_name)
+                              }
+                              console.log(selectedTag)
+                              this.setState({ data: data, selectedTag: selectedTag })
                             }}
                           />)
                       }
