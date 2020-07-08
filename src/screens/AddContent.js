@@ -148,7 +148,7 @@ class AddContent extends Component {
     const { ingredients, methods, images, title, description } = this.state
     let token = await AsyncStorage.getItem('user_token')
 
-    // let data = {}
+    let data = {}
 
     // data.recipe_title = title
     // data.meal_preference = 'vegetarian'
@@ -165,146 +165,71 @@ class AddContent extends Component {
     //   data[`recipe_ingredients[${index}][ingredient]`] = item.ingredient
     // })
 
-    // images.forEach((item) => {
-    //   var photo = {
-    //     uri: item.path,
-    //     type: 'image/jpeg',
-    //     name: 'image',
-    //   };
-    //   data.image = photo
-    // })
+    var formdata = new FormData()
+    formdata.append("recipe_title", title)
+    formdata.append("meal_preference", "vegetarian")
+    formdata.append("description", description)
+    formdata.append('recipe_tags', 1)
 
-    // images.forEach((item) => {
-    //   var photo = {
-    //     uri: item.path,
-    //     type: 'image/jpeg',
-    //     name: 'image',
-    //   };
-    //   data.recipe_media = photo
-    // })
+    methods.forEach((item) => {
+      formdata.append("recipe_method", item.text)
+    })
 
-    // var formdata = new FormData()
-    // formdata.append("recipe_title", title)
-    // formdata.append("meal_preference", "vegetarian")
-    // formdata.append("description", description)
-    // formdata.append('recipe_tags', 1)
-
-    // methods.forEach((item) => {
-    //   formdata.append("recipe_method", item.text)
-    // })
-
-    // ingredients.forEach((item, index) => {
-    //   formdata.append(`recipe_ingredients[${index}][quantity]`, item.qty)
-    //   formdata.append(`recipe_ingredients[${index}][measure]`, item.measuremnt)
-    //   formdata.append(`recipe_ingredients[${index}][ingredient]`, item.ingredient)
-    // })
-
-    // images.forEach((item) => {
-    //   var photo = {
-    //     uri: item.path,
-    //     type: 'image/jpeg',
-    //     name: 'image',
-    //   };
-    //   formdata.append('image', photo)
-    // })
-
-    // images.forEach((item) => {
-    //   var photo = {
-    //     uri: item.path,
-    //     type: 'image/jpeg',
-    //     name: 'image',
-    //   };
-    //   formdata.append('recipe_media', photo)
-    // })
-
-    // console.log(token)
-    // // console.log(data)
+    ingredients.forEach((item, index) => {
+      formdata.append(`recipe_ingredients[${index}][quantity]`, item.qty)
+      formdata.append(`recipe_ingredients[${index}][measure]`, item.measuremnt)
+      formdata.append(`recipe_ingredients[${index}][ingredient]`, item.ingredient)
+    })
 
     const { loader } = this.props
     loader(true)
-
-    // // let dataa = this.formDataToJSON(formdata)
-
-    // let response = await addContentApiCalling(formdata, token)
-    // console.log(response)
-    // if (response.code === 1) {
-    //   console.log('COMPLETEDDDDDDDD')
-    // } else {
-    //   console.log('FAILED')
-
-    // }
-
-    // loader(false)
-
-
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDZlMjdmY2JmNTg2M2IzYTEyNWJkODk5YjVjYWU4YmU5Zjk5MmU3OTFmMmIyMWZmYTAxYWEwM2VjM2QxMDc1NTExMTZiYjBiZDViY2ZjNmQiLCJpYXQiOjE1OTI0ODY4MjgsIm5iZiI6MTU5MjQ4NjgyOCwiZXhwIjoxNjI0MDIyODI4LCJzdWIiOiIzMSIsInNjb3BlcyI6W119.PCwD8jOV1ZjVdnN4q4NGNKpTnXNWhIDT_a6c3tiF7qJ76cQ9jWv91z94Bn12DIzNogY5KJJtu0GOCARlBuNcOPdWX3-xxj-MMCdMGH485gnXKg60k0KlZ0By701Z7Ls8mrzApB9TAkLxZSGpUHAIDlJSoy7oYJ_8nCxHyQG2G3lxNCHCDipJSqvP1DrAaOlG0MSpFjB9EbbFzypp3QzNVqOb2L6oH0Zk_Deo2Q6r8VnQ8fEIKagTY8nv7nsXE6Rg-oe1DQWFffITJrOMfQE-LZs6IKw0AR72uwraDj9ETAkkUQGeVTyvWfMpiYdSoc5_1crPDqMwlUb1DUzMoibN97KF-TKLpJcwbTNc3kwTd50KmwGwqkzHv5SjFWFD809iWu6EWrNMGfnEKWJM-P9gewft_GzUrf-j8-XolLBi_xdK8dFqvj_VsPUkmgNqiyj3GvFh3QziGle8_RLVFAQpaZNh-3As9ICWwAnXVsUMi-k3e0F861i4FvfUJ8NLf7ep3aKuQVcD7WsbDgRjqxPHR4wY-Pfd2j5-abSICym25wgFKHByDjXZowwv_FBvN4qMw3lcJqhuq__QBpLdku-tWNtouNAsI62jYzkcrm77uXc-UGYCll6WGdpSKIOZybvsxk3xoUnw5oG9CPWTvYtYhvO25ioTHP032Y3G2pS9Og8");
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
 
     var formdata = new FormData();
     formdata.append("recipe_title", "New tecipe");
     formdata.append("meal_preference", "vegetarian");
-    // images.map((item, index) => {
-    //   var photo = {
-    //     uri: item.path,
-    //     type: 'image/jpeg',
-    //     name: `recipe_media${index}`,
-    //   };
-    //   formdata.append('recipe_media[]', photo)
-    // })
-
-    let recipe_media = []
-
-    for (let ind in images) {
-      if (images[ind].path != '') {
-        debugger
-        let IMAGE_CROP = images[ind].path.slice(images[ind].path.lastIndexOf("/"));
-        let image1 = StyleConfig.isIphone ?
-          { "uri": images[ind].path, "filename": IMAGE_CROP, "type": images[ind].mime } :
-          { "uri": images[ind].path, "name": IMAGE_CROP, "type": images[ind].mime };
-        // recipe_media.push(image1)
-        formdata.append('recipe_media', image1)
-      }
-    }
-
-
-    // var photo1 = {
-    //   uri: images[0].path,
-    //   type: 'image/png',
-    //   name: 'image',
-    // };
-    // formdata.append('image', photo1)
-
     formdata.append("description", "Test test");
-
     formdata.append("recipe_method[]", "Test1 Test1");
     formdata.append("recipe_method[]", "Test2 Test2");
     formdata.append("recipe_tags[]", "1");
-    // formdata.append("recipe_tags[]", "3");
     formdata.append("recipe_ingredients[0][quantity]", "1.5");
     formdata.append("recipe_ingredients[0][measure]", "unit");
     formdata.append("recipe_ingredients[0][ingredient]", "Eggs");
+    let recipe_media = []
+    let mainImage = null ;
+    for (let ind in images) {
+      if (images[ind].path != '') {
+        let IMAGE_CROP = images[ind].path.slice(images[ind].path.lastIndexOf("/"));
+        let myImage = StyleConfig.isIphone ?
+          { "uri": images[ind].path, "filename": IMAGE_CROP, "name": IMAGE_CROP } :
+          { "uri": images[ind].path, "name": IMAGE_CROP, "type": images[ind].mime };
 
+        if( mainImage == null ){
+          mainImage = myImage;
+          formdata.append("image", myImage)
+        } else{
+          formdata.append("recipe_media[]", myImage)
+        }
+        
+      }
+    }
     console.log(formdata)
-
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: formdata,
-      redirect: 'follow'
-    };
-
-    fetch("http://3.20.100.25/broadeat/api/recipe/add", requestOptions)
-      .then(response => response.text())
-      .then(result => {
-        loader(false)
-        console.log('result ', result)
-      })
-      .catch(error => {
-        loader(false)
-        console.log('error', error)
-      });
-
+    const response = await fetch("http://3.20.100.25/broadeat/api/recipe/add", {
+      method: "POST",
+      headers: {
+          "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNzRjZTlmYTk0MDcyOTQxMTdkNDQ3NjA4OGMyNGNlY2QyZjNhYjNhNzA3Yzg4YzJkNjBiZWYyODQ0ODJjODI0MjMxNTEzM2IyYjU2NTM0ZGUiLCJpYXQiOjE1OTQxMjI4NDIsIm5iZiI6MTU5NDEyMjg0MiwiZXhwIjoxNjI1NjU4ODQyLCJzdWIiOiI1MCIsInNjb3BlcyI6W119.n2J1YGhnVdilQsv0U15uyp8qxUFg_j_D3TJAOda38TzNeA5zynJDnJ6QS-CZiJA5vKolNq5hacChLuoHcZ3dBHDQyy3Lu3yBBZLvepYiC-TlVGndNaCG6F0_e0NfBFKsYXIcOFpjIOn3JdQCwA7eEGvIL3CXfFfQHm2q_lsXE-N6P8Z85t1AJUVo8DJLAV0YVctYiRp2Mrcn9Fy9dHzxyYlt2yCMOX6-Dz8JdNQyk_L9jnsonSbz2_xz7XiiMmyZ6fRMbDhp6rLPU1Ftx3ExAafb23mDvLp_O2D7x4kP0BcuRsAxzgDEikbkjEI1V13XtITiZcGFNNYJFyNQ9zC4rQDcjBw5yMJW6qmV5esyGSxVsIQz_zHIQ0FiUFEMi-4IWNJDtNPWoBG2QF2Oh-hiADLJEBS8EG97wl6t5SoHYzkUJzLBke3m8nlmMLggdcbLkh3UpffIEUL-Jco1wwaHMc6QqxeZKBKz3FuivSiwW0_Yo2RNIsKICyzcBmxnx1u9b_PDu8W3I8H_I028JJbG2zTULv-366CThlcpOm1KLBwIvXpNU-D6WchY9fZkK6ay4iv7Z4hlYSzKjRbdfTu1KLxUsmDsaUPt0byajBC1LevAh3mD4oPWn59NR8oo8esReTuMhGkp7bv7InMp8_5VrE4DP8YD66JTpkPJb14LpYU",
+          'Content-Type': 'multipart/form-data'
+      },
+      body:formdata
+    });
+    console.log({response})
+    loader(false)
+    const json = await response.json();
+    console.log({json})
+    
   }
 
   render() {
