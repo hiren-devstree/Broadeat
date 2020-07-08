@@ -2,7 +2,7 @@
 import React, { Component, useState } from 'react';
 import {
   StyleSheet, TouchableWithoutFeedback,
-  TouchableOpacity, Image, Alert
+  TouchableOpacity, Image, Alert, View
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
@@ -40,25 +40,38 @@ const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
   const onChange = (value) => (setValue(value));
 
   return (
-    <ViewX style={{ flexDirection: "row" }} >
+    <ViewX style={{ flexDirection: "row", }} >
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Image source={imgBack} style={styles.backBtn} />
+        <Image source={imgBack} style={[styles.backBtn, { tintColor: 'blue', marginHorizontal: 8 }]} />
       </TouchableOpacity>
-      <SearchBar
-        containerStyle={{
-          flex: 1,
-          backgroundColor: "transparent"
-        }}
-        inputStyle={{ color: theme.text }}
-        inputContainerStyle={{
-          // borderWidth: StyleConfig.countPixelRatio(0.6),
-          // borderColor: theme.text,
-          borderRadius: StyleConfig.convertHeightPerVal(20),
-          backgroundColor: "transparent"
-        }}
-        onChange={onChange}
-        value={value}
-      />
+      <View style={{
+        flex: 1,
+        borderColor: 'gray', borderWidth: 1,
+        borderRadius: 50,
+        justifyContent: 'center',
+        paddingVertical: 5
+      }}>
+        <SearchBar
+          containerStyle={{
+            flex: 1,
+            backgroundColor: "transparent",
+
+          }}
+
+          inputStyle={{ color: theme.text }}
+          inputContainerStyle={{
+            // borderWidth: StyleConfig.countPixelRatio(0.6),
+            // borderColor: theme.text,
+            // borderRadius: StyleConfig.convertHeightPerVal(20),
+            backgroundColor: "transparent",
+            alignSelf: 'center',
+            height: 40,
+            marginTop: -15,
+          }}
+          onChange={onChange}
+          value={value}
+        />
+      </View>
       <Button
         title={"Done"}
         buttonStyle={{ backgroundColor: theme.background }}
