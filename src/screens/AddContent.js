@@ -1,12 +1,14 @@
 
 import React, { Component } from 'react';
 import {
-  TouchableOpacity, Image, StyleSheet,
+  TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView,
   ScrollView, TextInput, TextInputProps, TouchableWithoutFeedback
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import AsyncStorage from '@react-native-community/async-storage'
+import DropDownPicker from 'react-native-dropdown-picker'
+import Icon from 'react-native-vector-icons/Feather'
 
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
@@ -110,7 +112,14 @@ class AddContent extends Component {
       ingredients: [{ qty: '', measuremnt: '', ingredient: '' }],
       methods: [{ text: '' }],
       title: '',
-      description: ''
+      description: '',
+      mealPreference: 'vegetarian',
+      noOfPerson: '',
+      nutritionCalories: '',
+      nutritionProtein: '',
+      nutritionFat: '',
+      nutritionCarbs: '',
+      timeDuration: '',
     }
   }
 
@@ -145,61 +154,46 @@ class AddContent extends Component {
   }
 
   _doneButtonPressed = async () => {
-    const { ingredients, methods, images, title, description } = this.state
+    const {
+      ingredients, methods, images, title, description,
+      mealPreference, noOfPerson, nutritionCalories,
+      nutritionProtein, nutritionFat, nutritionCarbs, timeDuration
+    } = this.state
+    const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
 
-    let data = {}
+    loader(true)
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
 
-    // data.recipe_title = title
-    // data.meal_preference = 'vegetarian'
-    // data.description = description
-    // data.recipe_tags = 1
-
-    // methods.forEach((item) => {
-    //   data.recipe_method = item.text
-    // })
-
-    // ingredients.forEach((item, index) => {
-    //   data[`recipe_ingredients[${index}][quantity]`] = item.qty
-    //   data[`recipe_ingredients[${index}][measure]`] = item.measuremnt
-    //   data[`recipe_ingredients[${index}][ingredient]`] = item.ingredient
-    // })
-
-    var formdata = new FormData()
-    formdata.append("recipe_title", title)
-    formdata.append("meal_preference", "vegetarian")
-    formdata.append("description", description)
-    formdata.append('recipe_tags', 1)
-
+    var formdata = new FormData();
+    formdata.append("recipe_title", title);
+    formdata.append("meal_preference", mealPreference);
+    formdata.append("description", description);
     methods.forEach((item) => {
-      formdata.append("recipe_method", item.text)
+      formdata.append("recipe_method[]", item.text)
     })
-
+    formdata.append("recipe_tags[]", "1");
+    // formdata.append("recipe_ingredients[0][quantity]", "1.5");
+    // formdata.append("recipe_ingredients[0][measure]", "unit");
+    // formdata.append("recipe_ingredients[0][ingredient]", "Eggs");
     ingredients.forEach((item, index) => {
       formdata.append(`recipe_ingredients[${index}][quantity]`, item.qty)
       formdata.append(`recipe_ingredients[${index}][measure]`, item.measuremnt)
       formdata.append(`recipe_ingredients[${index}][ingredient]`, item.ingredient)
     })
 
-    const { loader } = this.props
-    loader(true)
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDZlMjdmY2JmNTg2M2IzYTEyNWJkODk5YjVjYWU4YmU5Zjk5MmU3OTFmMmIyMWZmYTAxYWEwM2VjM2QxMDc1NTExMTZiYjBiZDViY2ZjNmQiLCJpYXQiOjE1OTI0ODY4MjgsIm5iZiI6MTU5MjQ4NjgyOCwiZXhwIjoxNjI0MDIyODI4LCJzdWIiOiIzMSIsInNjb3BlcyI6W119.PCwD8jOV1ZjVdnN4q4NGNKpTnXNWhIDT_a6c3tiF7qJ76cQ9jWv91z94Bn12DIzNogY5KJJtu0GOCARlBuNcOPdWX3-xxj-MMCdMGH485gnXKg60k0KlZ0By701Z7Ls8mrzApB9TAkLxZSGpUHAIDlJSoy7oYJ_8nCxHyQG2G3lxNCHCDipJSqvP1DrAaOlG0MSpFjB9EbbFzypp3QzNVqOb2L6oH0Zk_Deo2Q6r8VnQ8fEIKagTY8nv7nsXE6Rg-oe1DQWFffITJrOMfQE-LZs6IKw0AR72uwraDj9ETAkkUQGeVTyvWfMpiYdSoc5_1crPDqMwlUb1DUzMoibN97KF-TKLpJcwbTNc3kwTd50KmwGwqkzHv5SjFWFD809iWu6EWrNMGfnEKWJM-P9gewft_GzUrf-j8-XolLBi_xdK8dFqvj_VsPUkmgNqiyj3GvFh3QziGle8_RLVFAQpaZNh-3As9ICWwAnXVsUMi-k3e0F861i4FvfUJ8NLf7ep3aKuQVcD7WsbDgRjqxPHR4wY-Pfd2j5-abSICym25wgFKHByDjXZowwv_FBvN4qMw3lcJqhuq__QBpLdku-tWNtouNAsI62jYzkcrm77uXc-UGYCll6WGdpSKIOZybvsxk3xoUnw5oG9CPWTvYtYhvO25ioTHP032Y3G2pS9Og8");
-    myHeaders.append("Accept", "application/json");
-    myHeaders.append("Content-Type", "multipart/form-data");
+    formdata.append("nutrition_calories", nutritionCalories)
+    formdata.append("nutrition_protein", nutritionProtein)
+    formdata.append("nutrition_fat", nutritionFat)
+    formdata.append("nutrition_carbs", nutritionCarbs)
+    formdata.append("time_duration", timeDuration)
+    formdata.append("no_of_person", noOfPerson)
 
-    var formdata = new FormData();
-    formdata.append("recipe_title", "New tecipe");
-    formdata.append("meal_preference", "vegetarian");
-    formdata.append("description", "Test test");
-    formdata.append("recipe_method[]", "Test1 Test1");
-    formdata.append("recipe_method[]", "Test2 Test2");
-    formdata.append("recipe_tags[]", "1");
-    formdata.append("recipe_ingredients[0][quantity]", "1.5");
-    formdata.append("recipe_ingredients[0][measure]", "unit");
-    formdata.append("recipe_ingredients[0][ingredient]", "Eggs");
     let recipe_media = []
-    let mainImage = null ;
+    let mainImage = null;
     for (let ind in images) {
       if (images[ind].path != '') {
         let IMAGE_CROP = images[ind].path.slice(images[ind].path.lastIndexOf("/"));
@@ -207,29 +201,31 @@ class AddContent extends Component {
           { "uri": images[ind].path, "filename": IMAGE_CROP, "name": IMAGE_CROP } :
           { "uri": images[ind].path, "name": IMAGE_CROP, "type": images[ind].mime };
 
-        if( mainImage == null ){
+        if (mainImage == null) {
           mainImage = myImage;
           formdata.append("image", myImage)
-        } else{
+        } else {
           formdata.append("recipe_media[]", myImage)
         }
-        
+
       }
     }
     console.log(formdata)
     const response = await fetch("http://3.20.100.25/broadeat/api/recipe/add", {
       method: "POST",
       headers: {
-          "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNzRjZTlmYTk0MDcyOTQxMTdkNDQ3NjA4OGMyNGNlY2QyZjNhYjNhNzA3Yzg4YzJkNjBiZWYyODQ0ODJjODI0MjMxNTEzM2IyYjU2NTM0ZGUiLCJpYXQiOjE1OTQxMjI4NDIsIm5iZiI6MTU5NDEyMjg0MiwiZXhwIjoxNjI1NjU4ODQyLCJzdWIiOiI1MCIsInNjb3BlcyI6W119.n2J1YGhnVdilQsv0U15uyp8qxUFg_j_D3TJAOda38TzNeA5zynJDnJ6QS-CZiJA5vKolNq5hacChLuoHcZ3dBHDQyy3Lu3yBBZLvepYiC-TlVGndNaCG6F0_e0NfBFKsYXIcOFpjIOn3JdQCwA7eEGvIL3CXfFfQHm2q_lsXE-N6P8Z85t1AJUVo8DJLAV0YVctYiRp2Mrcn9Fy9dHzxyYlt2yCMOX6-Dz8JdNQyk_L9jnsonSbz2_xz7XiiMmyZ6fRMbDhp6rLPU1Ftx3ExAafb23mDvLp_O2D7x4kP0BcuRsAxzgDEikbkjEI1V13XtITiZcGFNNYJFyNQ9zC4rQDcjBw5yMJW6qmV5esyGSxVsIQz_zHIQ0FiUFEMi-4IWNJDtNPWoBG2QF2Oh-hiADLJEBS8EG97wl6t5SoHYzkUJzLBke3m8nlmMLggdcbLkh3UpffIEUL-Jco1wwaHMc6QqxeZKBKz3FuivSiwW0_Yo2RNIsKICyzcBmxnx1u9b_PDu8W3I8H_I028JJbG2zTULv-366CThlcpOm1KLBwIvXpNU-D6WchY9fZkK6ay4iv7Z4hlYSzKjRbdfTu1KLxUsmDsaUPt0byajBC1LevAh3mD4oPWn59NR8oo8esReTuMhGkp7bv7InMp8_5VrE4DP8YD66JTpkPJb14LpYU",
-          'Content-Type': 'multipart/form-data'
+        "Authorization": `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
       },
-      body:formdata
+      body: formdata
     });
-    console.log({response})
+    console.log({ response })
     loader(false)
+    debugger
     const json = await response.json();
-    console.log({json})
-    
+    debugger
+    console.log({ json })
+
   }
 
   render() {
@@ -238,144 +234,370 @@ class AddContent extends Component {
 
     return (
       <SafeAreaView {...this.props}>
-        <ScrollView>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}
+          style={{ flex: 1 }}>
+          <ScrollView style={{ paddingBottom: 20 }}>
 
-          <ViewX style={styles.headerTopView}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-              <Image source={imgBack} style={styles.backBtn} />
-            </TouchableOpacity>
+            <ViewX style={styles.headerTopView}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image source={imgBack} style={styles.backBtn} />
+              </TouchableOpacity>
+              <TextX
+                fontSize={StyleConfig.countPixelRatio(16)}
+                style={{ marginLeft: 15 }}
+              >
+                {'Add Content'}
+              </TextX>
+            </ViewX>
+
+            <ViewX style={{
+              paddingVertical: 5,
+              width: StyleConfig.width,
+              flexWrap: "wrap",
+              // justifyContent: "flex-start",
+              flexDirection: "row"
+            }} >
+              {
+                images.map((itm, idx) => <ViewX
+                  style={{
+                    borderRadius: 2,
+                    width: StyleConfig.convertWidthPerVal(120),
+                    height: StyleConfig.convertWidthPerVal(120)
+                  }}>
+                  <Image
+                    key={`images-${idx}`}
+                    style={{ width: "95%", height: "95%" }}
+                    source={{ uri: itm.path }}
+                  />
+                </ViewX>)
+              }
+            </ViewX>
+            <TextInput
+              style={{
+                color: theme.text,
+                fontSize: StyleConfig.fontSizeH3,
+                padding: StyleConfig.convertWidthPerVal(10)
+              }}
+              placeholderTextColor={theme.textHint}
+              onChangeText={(text) => this.setState({ title: text })}
+              placeholder={"Write a title..."}
+
+            />
+            <TextInput
+              multiline
+              style={{
+                color: theme.text,
+                fontSize: StyleConfig.fontSizeH3,
+                padding: StyleConfig.convertWidthPerVal(10)
+              }}
+              placeholderTextColor={theme.textHint}
+              onChangeText={(text) => this.setState({ description: text })}
+              placeholder={"Description"}
+            />
+
             <TextX
-              fontSize={StyleConfig.countPixelRatio(16)}
-              style={{ marginLeft: 15 }}
-            >
-              {'Add Content'}
-            </TextX>
-          </ViewX>
-
-          <ViewX style={{
-            paddingVertical: 5,
-            width: StyleConfig.width,
-            flexWrap: "wrap",
-            // justifyContent: "flex-start",
-            flexDirection: "row"
-          }} >
+              style={{
+                textAlign: "left",
+                color: theme.text,
+                fontSize: StyleConfig.fontSizeH3,
+                padding: StyleConfig.convertWidthPerVal(10)
+              }}
+            >Add Ingredients</TextX>
+            <ViewX style={{
+              flex: 1,
+              paddingVertical: 20,
+              justifyContent: "space-around",
+              alignItems: "center",
+              flexDirection: "row"
+            }} >
+              <TextX style={{ width: StyleConfig.convertWidthPerVal(80), fontSize: StyleConfig.fontSizeH3 }}>Qty</TextX>
+              <TextX style={{
+                // flex: 1,
+                width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
+                fontSize: StyleConfig.fontSizeH3
+              }} >Measure</TextX>
+              <TextX style={{
+                // flex: 1,
+                width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
+                fontSize: StyleConfig.fontSizeH3
+              }} >Ingredient</TextX>
+            </ViewX>
             {
-              images.map((itm, idx) => <ViewX
-                style={{
-                  borderRadius: 2,
-                  width: StyleConfig.convertWidthPerVal(120),
-                  height: StyleConfig.convertWidthPerVal(120)
-                }}>
-                <Image
-                  key={`images-${idx}`}
-                  style={{ width: "95%", height: "95%" }}
-                  source={{ uri: itm.path }}
-                />
-              </ViewX>)
+              ingredients.map((item, idx) => <IngredientsWrapper {...{ idx }} _onChangeIngredients={this._onChangeIngredients} />)
             }
-          </ViewX>
-          <TextInput
-            style={{
-              color: theme.text,
-              fontSize: StyleConfig.fontSizeH3,
-              padding: StyleConfig.convertWidthPerVal(10)
-            }}
-            placeholderTextColor={theme.textHint}
-            onChangeText={(text) => this.setState({ title: text })}
-            placeholder={"Write a title..."}
-
-          />
-          <TextInput
-            multiline
-            style={{
-              color: theme.text,
-              fontSize: StyleConfig.fontSizeH3,
-              padding: StyleConfig.convertWidthPerVal(10)
-            }}
-            placeholderTextColor={theme.textHint}
-            onChangeText={(text) => this.setState({ description: text })}
-            placeholder={"Description"}
-          />
-
-          <TextX
-            style={{
-              textAlign: "left",
-              color: theme.text,
-              fontSize: StyleConfig.fontSizeH3,
-              padding: StyleConfig.convertWidthPerVal(10)
-            }}
-          >Add Ingredients</TextX>
-          <ViewX style={{
-            flex: 1,
-            paddingVertical: 20,
-            justifyContent: "space-around",
-            alignItems: "center",
-            flexDirection: "row"
-          }} >
-            <TextX style={{ width: StyleConfig.convertWidthPerVal(80), fontSize: StyleConfig.fontSizeH3 }}>Qty</TextX>
-            <TextX style={{
-              // flex: 1,
-              width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
-              fontSize: StyleConfig.fontSizeH3
-            }} >Measure</TextX>
-            <TextX style={{
-              // flex: 1,
-              width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
-              fontSize: StyleConfig.fontSizeH3
-            }} >Ingredient</TextX>
-          </ViewX>
-          {
-            ingredients.map((item, idx) => <IngredientsWrapper {...{ idx }} _onChangeIngredients={this._onChangeIngredients} />)
-          }
-          <TouchableWithoutFeedback onPress={() => {
-            this.setState((prevState, props) => {
-              return {
-                ingredients: [...prevState.ingredients, { qty: '', measuremnt: '', ingredient: '' }]
-              }
-            })
-          }} >
+            <TouchableWithoutFeedback onPress={() => {
+              this.setState((prevState, props) => {
+                return {
+                  ingredients: [...prevState.ingredients, { qty: '', measuremnt: '', ingredient: '' }]
+                }
+              })
+            }} >
+              <TextX
+                style={{
+                  textAlign: "left",
+                  color: theme.text,
+                  fontSize: StyleConfig.fontSizeH1,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  paddingVertical: StyleConfig.convertHeightPerVal(10),
+                }}
+              >{"+"}</TextX>
+            </TouchableWithoutFeedback>
             <TextX
               style={{
                 textAlign: "left",
                 color: theme.text,
-                fontSize: StyleConfig.fontSizeH1,
+                fontSize: StyleConfig.fontSizeH3,
                 padding: StyleConfig.convertWidthPerVal(10),
                 paddingVertical: StyleConfig.convertHeightPerVal(10),
               }}
-            >{"+"}</TextX>
-          </TouchableWithoutFeedback>
-          <TextX
-            style={{
-              textAlign: "left",
-              color: theme.text,
-              fontSize: StyleConfig.fontSizeH3,
-              padding: StyleConfig.convertWidthPerVal(10),
-              paddingVertical: StyleConfig.convertHeightPerVal(10),
-            }}
-          >Cooking Method</TextX>
-          {/* STEPS START */}
-          {
-            methods.map((item, idx) => <MethodWrapper {...{ idx }} _onChangeMethods={this._onChangeMethods} />)
-          }
-          <TouchableWithoutFeedback onPress={() => {
-            this.setState((prevState, props) => {
-              return {
-                methods: [...prevState.methods, { text: '' }]
-              }
-            })
-          }} >
+            >Cooking Method</TextX>
+            {/* STEPS START */}
+            {
+              methods.map((item, idx) => <MethodWrapper {...{ idx }} _onChangeMethods={this._onChangeMethods} />)
+            }
+            <TouchableWithoutFeedback onPress={() => {
+              this.setState((prevState, props) => {
+                return {
+                  methods: [...prevState.methods, { text: '' }]
+                }
+              })
+            }} >
+              <TextX
+                style={{
+                  textAlign: "left",
+                  color: theme.text,
+                  fontSize: StyleConfig.fontSizeH1,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  paddingVertical: StyleConfig.convertHeightPerVal(10),
+                }}
+              >{"+"}</TextX>
+            </TouchableWithoutFeedback>
+            {/* STEPS END */}
+
+            {/* MEAL TYPE START */}
+
             <TextX
               style={{
                 textAlign: "left",
                 color: theme.text,
-                fontSize: StyleConfig.fontSizeH1,
+                fontSize: StyleConfig.fontSizeH3,
                 padding: StyleConfig.convertWidthPerVal(10),
                 paddingVertical: StyleConfig.convertHeightPerVal(10),
               }}
-            >{"+"}</TextX>
-          </TouchableWithoutFeedback>
-          {/* STEPS END */}
-        </ScrollView>
+            >Meal Preference</TextX>
+            <DropDownPicker
+              items={[
+                { label: 'Vegetarian', value: 'vegetarian' },
+                { label: 'Vegan', value: 'vegan' },
+              ]}
+              defaultValue={this.state.mealPreference}
+              containerStyle={{ height: 40, marginBottom: 0 }}
+              style={{ backgroundColor: '#fafafa', marginHorizontal: 10, height: 40 }}
+              itemStyle={{
+                justifyContent: 'flex-start'
+              }}
+              dropDownStyle={{ backgroundColor: '#fafafa' }}
+              onChangeItem={item => this.setState({
+                mealPreference: item.value
+              })}
+            />
+
+            {/* MEAL TYPE END */}
+
+            {/* NO OF PERSON START */}
+            <ViewX style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 20
+            }}>
+              <TextX
+                style={{
+                  textAlign: "left",
+                  color: theme.text,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  paddingTop: StyleConfig.convertHeightPerVal(10),
+                  flex: 0.5
+                }}
+              >No of person</TextX>
+
+              <TextInput
+                style={{
+                  color: theme.backgroundColor,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  flex: 0.5,
+                  backgroundColor: theme.textInputBac,
+                  marginRight: 10,
+                  borderRadius: 5
+                }}
+                maxLength={3}
+                keyboardType='number-pad'
+                placeholderTextColor={theme.textHint}
+                onChangeText={(text) => this.setState({ noOfPerson: text })}
+                placeholder={"No of person"}
+                value={this.state.noOfPerson}
+              />
+            </ViewX>
+            {/* NO OF PERSON END */}
+
+            {/* TIME DURATION START */}
+            <ViewX style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+              <TextX
+                style={{
+                  textAlign: "left",
+                  color: theme.text,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  paddingTop: StyleConfig.convertHeightPerVal(10),
+                  flex: 0.5
+                }}
+              >Time Duration</TextX>
+
+              <TextInput
+                style={{
+                  color: theme.backgroundColor,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  flex: 0.5,
+                  backgroundColor: theme.textInputBac,
+                  marginRight: 10,
+                  borderRadius: 5
+                }}
+                placeholderTextColor={theme.textHint}
+                onChangeText={(text) => this.setState({ timeDuration: text })}
+                placeholder={"00:00:00"}
+                value={this.state.timeDuration}
+              />
+            </ViewX>
+            {/* TIME DURATION END */}
+
+            {/* NUTRITION CALORIES START */}
+            <ViewX style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+              <TextX
+                style={{
+                  textAlign: "left",
+                  color: theme.text,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  paddingTop: StyleConfig.convertHeightPerVal(10),
+                  flex: 0.5
+                }}
+              >Nutrition Calories</TextX>
+
+              <TextInput
+                style={{
+                  color: theme.backgroundColor,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  flex: 0.5,
+                  backgroundColor: theme.textInputBac,
+                  marginRight: 10,
+                  borderRadius: 5
+                }}
+                placeholderTextColor={theme.textHint}
+                onChangeText={(text) => this.setState({ nutritionCalories: text })}
+                placeholder={"Nutrition Calories"}
+                value={this.state.nutritionCalories}
+              />
+            </ViewX>
+            {/* NUTRITION CALORIES END */}
+
+            {/* NUTRITION PROTEIN START */}
+            <ViewX style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+              <TextX
+                style={{
+                  textAlign: "left",
+                  color: theme.text,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  paddingTop: StyleConfig.convertHeightPerVal(10),
+                  flex: 0.5
+                }}
+              >Nutrition Protein</TextX>
+
+              <TextInput
+                style={{
+                  color: theme.backgroundColor,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  flex: 0.5,
+                  backgroundColor: theme.textInputBac,
+                  marginRight: 10,
+                  borderRadius: 5
+                }}
+                placeholderTextColor={theme.textHint}
+                onChangeText={(text) => this.setState({ nutritionProtein: text })}
+                placeholder={"Nutrition Protein"}
+                value={this.state.nutritionProtein}
+              />
+            </ViewX>
+            {/* NUTRITION PROTEIN END */}
+
+            {/* NUTRITION FAT START */}
+            <ViewX style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+              <TextX
+                style={{
+                  textAlign: "left",
+                  color: theme.text,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  paddingTop: StyleConfig.convertHeightPerVal(10),
+                  flex: 0.5
+                }}
+              >Nutrition Fat</TextX>
+
+              <TextInput
+                style={{
+                  color: theme.backgroundColor,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  flex: 0.5,
+                  backgroundColor: theme.textInputBac,
+                  marginRight: 10,
+                  borderRadius: 5
+                }}
+                placeholderTextColor={theme.textHint}
+                onChangeText={(text) => this.setState({ nutritionFat: text })}
+                placeholder={"Nutrition Protein"}
+                value={this.state.nutritionFat}
+              />
+            </ViewX>
+            {/* NUTRITION FAT END */}
+
+            {/* NUTRITION CARBS START */}
+            <ViewX style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+              <TextX
+                style={{
+                  textAlign: "left",
+                  color: theme.text,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  paddingTop: StyleConfig.convertHeightPerVal(10),
+                  flex: 0.5
+                }}
+              >Nutrition Carbs</TextX>
+
+              <TextInput
+                style={{
+                  color: theme.backgroundColor,
+                  fontSize: StyleConfig.fontSizeH3,
+                  padding: StyleConfig.convertWidthPerVal(10),
+                  flex: 0.5,
+                  backgroundColor: theme.textInputBac,
+                  marginRight: 10,
+                  borderRadius: 5
+                }}
+                placeholderTextColor={theme.textHint}
+                onChangeText={(text) => this.setState({ nutritionCarbs: text })}
+                placeholder={"Nutrition Carbs"}
+                value={this.state.nutritionCarbs}
+              />
+            </ViewX>
+            {/* NUTRITION CARBS END */}
+
+          </ScrollView>
+        </KeyboardAvoidingView>
 
         <ViewX style={styles.bottomView}>
           <TouchableOpacity style={styles.bottomBtn}>

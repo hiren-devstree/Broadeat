@@ -95,7 +95,7 @@ class HomeScreen extends Component {
         keyExtractor={(_, idx) => `foodGlr-${idx}`}
         renderItem={({ item }) => {
           return (
-            <TouchableOpacity style={{ margin: 3, }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.user_id })}>
+            <TouchableOpacity style={{ margin: 3, }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
               <Image
                 source={{ uri: item.image }}
                 style={{ height: StyleConfig.convertWidthPer(29), width: StyleConfig.convertWidthPer(30) }}

@@ -96,7 +96,7 @@ class UserAccount extends Component {
 
 
   onFoodItemPress(item) {
-    this.props.navigation.navigate('PhotoRecipeDetails', { data: item })
+    this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })
   }
 
   render() {

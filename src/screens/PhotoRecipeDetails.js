@@ -47,7 +47,7 @@ class PhotoRecipeDetails extends Component {
   componentDidMount() {
     let id = this.props.route.params.data
     console.log('dataaaaaaa ', id)
-    this._getRecipeDetailsAPICalling(1)
+    this._getRecipeDetailsAPICalling(id)
   }
 
 
@@ -78,12 +78,14 @@ class PhotoRecipeDetails extends Component {
     let data = {
       id: id
     }
-
+    loader(true)
     let response = await getRcipeDetails(data, token)
-
+    loader(false)
     console.log(response)
     if (response.code === 1) {
-      this.setState({ data: response.data })
+      this.setState({ data: response.data }, () => {
+        this.forceUpdate()
+      })
     } else {
       setTimeout(() => {
         Alert.alert(response.message)
@@ -118,6 +120,7 @@ class PhotoRecipeDetails extends Component {
   }
 
   renderHeaderView = () => {
+    const { data } = this.state
     return (
       <>
         <ViewX style={styles.headerTopView}>
@@ -127,7 +130,7 @@ class PhotoRecipeDetails extends Component {
           <TextX
             fontSize={StyleConfig.countPixelRatio(16)}
           >
-            {'Gourmet Kitchen'}
+            {data ? data.Recipe.creator_name : ''}
           </TextX>
           <ViewX>
             <TouchableOpacity>
@@ -141,11 +144,14 @@ class PhotoRecipeDetails extends Component {
 
   renderHeaderBottomView = () => {
     const { noOfUser, timer, foodType, data } = this.state
-    console.log(data)
+
     return (
       <ViewX style={styles.headerBottomView} {...this.props}>
         <TouchableOpacity onPress={() => this.props.navigation.navigate('Bookmark')}>
-          <Image source={imgFood} />
+          {data ?
+            <Image source={{ uri: data.Recipe.creator_profilepic }} style={{ width: 30, height: 30, borderRadius: 15 }} />
+            : <Image source={imgFood} />
+          }
         </TouchableOpacity>
         <ViewX style={styles.headerContents}>
           <TextX
@@ -160,15 +166,15 @@ class PhotoRecipeDetails extends Component {
               align={'left'}
               color={'#747373'}
             >
-              {'Gourmet Kitchen'}
+              {data ? data.Recipe.creator_name : ''}
             </TextX>
             <ViewX style={{ flexDirection: 'row' }}>
               <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => this.props.navigation.navigate('Profile')}>
                 <Image source={imgUser} style={{ width: 12, height: 12, marginRight: 3 }} />
-                <TextX>{noOfUser}</TextX>
+                <TextX>{data ? data.Recipe.no_of_person : ''}</TextX>
               </TouchableOpacity>
               <Image source={imgTimer} style={{ width: 15, height: 15, marginLeft: 15, marginRight: 3 }} />
-              <TextX>{timer}</TextX>
+              <TextX>{data ? data.Recipe.time_duration : ''}</TextX>
               <TextX style={{ marginLeft: 15 }}>{foodType}</TextX>
             </ViewX>
           </ViewX>
@@ -179,44 +185,45 @@ class PhotoRecipeDetails extends Component {
 
   renderItemMainImage = () => {
     const { data } = this.state
-    console.log('this.props.route.params.data ', this.props.route.params.data.image)
+
     return (
       <Image
         style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(205) }}
         resizeMode='cover'
-        source={{ uri: data ? data.Recipe.image : '' }}
+        source={{ uri: data ? data.Recipe.image : undefined }}
       />
     )
   }
 
   renderDescriptionView = () => {
     const { noOfUser, timer, foodType, data } = this.state
+
     return (
       <ViewX style={{ flex: 1, alignItems: 'flex-start' }}>
         {this.renderHeaderBottomView()}
         <ViewX style={styles.operationView}>
           <ViewX style={{ flexDirection: 'row' }}>
             <Image source={imgView} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.view : 0}</TextX>
           </ViewX>
 
           <ViewX style={{ flexDirection: 'row' }}>
             <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.likes : 0}</TextX>
           </ViewX>
 
           <ViewX style={{ flexDirection: 'row' }}>
             <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, }} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.dislike : 0}</TextX>
           </ViewX>
           <ViewX style={{ flexDirection: 'row' }}>
             <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+            {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}
           </ViewX>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <ViewX style={{ flexDirection: 'row' }}>
               <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
-              <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX>
+              {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}
             </ViewX>
           </TouchableOpacity>
 
@@ -258,39 +265,40 @@ class PhotoRecipeDetails extends Component {
   }
 
   renderIngredientsView = () => {
+    const { data } = this.state
     return (
       <FlatList
         scrollEnabled={false}
         contentContainerStyle={{ paddingHorizontal: StyleConfig.countPixelRatio(15) }}
         ListFooterComponent={this.renderNutritionView}
         keyExtractor={this._keyExtractor}
-        data={[1, 1, 1, 1]}
+        data={data ? data.Rec_Ingredient : []}
         renderItem={this.renderIngredientCellView}
       />
     )
   }
 
-  renderIngredientCellView = () => {
+  renderIngredientCellView = ({ item, index }) => {
     return (
       <>
         <ViewX style={{ flexDirection: 'row', paddingLeft: StyleConfig.countPixelRatio(10), marginTop: StyleConfig.countPixelRatio(7) }}>
-          <TouchableOpacity>
+          <TouchableOpacity activeOpacity={0}>
             <Image source={imgAddCircle} style={{ width: 17, height: 17, marginRight: 3 }} />
           </TouchableOpacity>
           <TextX
             style={{ width: '35%' }}
             align='left'
             fontSize={StyleConfig.countPixelRatio(16)}
-          >{'2 tablespoon'}
+          >{`${item.quantity} ${item.measure}`}
           </TextX>
           <TextX
             style={{ flex: 1 }}
             align='left'
             fontSize={StyleConfig.countPixelRatio(16)}
-          >{'Olive Oil'}
+          >{item.ingredient}
           </TextX>
         </ViewX>
-        <ViewX style={styles.shoppingCellContainer}>
+        {/* <ViewX style={styles.shoppingCellContainer}>
           <TouchableOpacity>
             <Image source={imgRemoveCircle} style={{ width: 17, height: 17, marginRight: 3 }} />
           </TouchableOpacity>
@@ -306,19 +314,20 @@ class PhotoRecipeDetails extends Component {
             fontSize={StyleConfig.countPixelRatio(16)}
           >{'Cream '}
           </TextX>
-        </ViewX>
+        </ViewX> */}
       </>
     )
   }
 
   renderMethodListView = () => {
+    const { data } = this.state
     return (
       <FlatList
         scrollEnabled={false}
         contentContainerStyle={{ paddingHorizontal: StyleConfig.countPixelRatio(15), marginTop: 15 }}
         // ListHeaderComponent={this.renderShoppingListHeader}
         keyExtractor={this._keyExtractor}
-        data={[1, 1, 1, 1]}
+        data={data ? data.Method : []}
         renderItem={this.renderMethodListCellContainer}
       />
     )
@@ -362,13 +371,14 @@ class PhotoRecipeDetails extends Component {
           style={{ flex: 1 }}
           align='left'
           fontSize={StyleConfig.countPixelRatio(16)}
-        >{'Lorem ipsum dolor sit amet, consectetur adipisicin'}
+        >{item.method_description}
         </TextX>
       </ViewX>
     )
   }
 
   renderNutritionView = () => {
+    const { data } = this.state
     return (
       <ViewX style={{ marginVertical: 15, paddingHorizontal: StyleConfig.countPixelRatio(15), }}>
         <TextX
@@ -382,19 +392,19 @@ class PhotoRecipeDetails extends Component {
         <ViewX style={styles.nutritionSubView}>
           <ViewX>
             <Text style={{ color: StyleConfig.grey, fontSize: 12 }}>Calories</Text>
-            <TextX fontSize={StyleConfig.countPixelRatio(19)}>470</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{data ? data.Recipe.nutrition_calories : ''}</TextX>
           </ViewX>
           <ViewX>
             <Text style={{ color: StyleConfig.grey, fontSize: 12 }}>Protein</Text>
-            <TextX fontSize={StyleConfig.countPixelRatio(19)}>40g</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{data ? data.Recipe.nutrition_protein : ''}</TextX>
           </ViewX>
           <ViewX>
             <Text style={{ color: StyleConfig.grey, fontSize: 12 }}>Total Fat</Text>
-            <TextX fontSize={StyleConfig.countPixelRatio(19)}>25g</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{data ? data.Recipe.nutrition_fat : ''}</TextX>
           </ViewX>
           <ViewX>
             <Text style={{ color: StyleConfig.grey, fontSize: 12 }}>Total Carbs</Text>
-            <TextX fontSize={StyleConfig.countPixelRatio(19)}>12g</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{data ? data.Recipe.nutrition_carbs : ''}</TextX>
           </ViewX>
         </ViewX>
       </ViewX >

@@ -15,6 +15,7 @@ const dark = {
     filterOn: "#FA9000",
     cLightCyan: "#CCF7F5",
     cGrey: "#8A8A8F",
+    textInputBac: "#fff",
   }
 }
 

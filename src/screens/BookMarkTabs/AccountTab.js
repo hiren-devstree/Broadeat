@@ -52,7 +52,7 @@ class AccountTab extends React.Component {
   }
 
   componentDidMount() {
-    this._getBookmarListAPICalled()
+    // this._getBookmarListAPICalled()
   }
 
 
@@ -62,7 +62,6 @@ class AccountTab extends React.Component {
   }
 
   static async reloadScreen() {
-    console.log('ajksdakshdjkahdajksdhajksdhkjas')
     let token = await AsyncStorage.getItem('user_token')
     let response = await getUserBookmarkList(token)
 

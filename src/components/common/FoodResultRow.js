@@ -9,11 +9,11 @@ import { IMAGE_PATH } from '../../helper/Constants'
 class FoodResultRow extends PureComponent {
 
   render() {
-    const { data, index } = this.props;
+    const { data, index } = this.props
     return (
       <ViewX>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: data })}
+          onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: data.id })}
           style={{ width: StyleConfig.width * 0.94, paddingVertical: 10 }}
         >
           <Image
