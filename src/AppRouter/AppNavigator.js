@@ -237,7 +237,7 @@ const AppNavigator = ({ theme, ...props }) => {
             backgroundColor: theme.background
           },
           headerTitleStyle: { color: theme.text },
-          headerTintColor: theme.text,
+          headerTintColor: 'blue',
           headerBackTitleVisible: false,
         }}
       >
