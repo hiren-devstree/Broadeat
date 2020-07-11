@@ -19,6 +19,7 @@ let _this
 class SearchScreen extends Component {
   constructor(props) {
     super(props)
+    console.log("SearchScreen called")
     _this = this
     this.state = {
       data: [],

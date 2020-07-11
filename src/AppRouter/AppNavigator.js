@@ -1,8 +1,8 @@
-import * as React from 'react';
+import React, { useState,useEffect } from "react";
 import {
   Image, View, TouchableWithoutFeedback, Text
 } from 'react-native';
-import 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage'
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -226,10 +226,18 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
   )
 })
 
-const AppNavigator = ({ theme, ...props }) => {
+const AppNavigator =  ({ theme, ...props }) => {
+  const [isAlreadyLogin, setAlreadyLogin] = useState(false);
+  useEffect(() => {
+    AsyncStorage.getItem('user_token').then((response)=>{
+      console.log({response});
+      if(response != null && response != undefined){
+        setAlreadyLogin(true);
+      }
+    })
+  });
   return (
     <NavigationContainer>
-
       <Stack.Navigator
         headerMode={'screen'}
         screenOptions={{
@@ -241,10 +249,13 @@ const AppNavigator = ({ theme, ...props }) => {
           headerBackTitleVisible: false,
         }}
       >
+       { !isAlreadyLogin ? <>
         <Stack.Screen options={{ headerShown: false }} name="Init" component={InitScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
+        </> :
+        <>
         <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={TabNavigator} />
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
@@ -259,6 +270,7 @@ const AppNavigator = ({ theme, ...props }) => {
             shadowOpacity: 0
           },
         }} name="UserAccount" component={UserAccount} />
+        </> }
       </Stack.Navigator>
 
     </NavigationContainer >

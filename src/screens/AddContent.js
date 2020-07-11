@@ -176,9 +176,6 @@ class AddContent extends Component {
       formdata.append("recipe_method[]", item.text)
     })
     formdata.append("recipe_tags[]", "1");
-    // formdata.append("recipe_ingredients[0][quantity]", "1.5");
-    // formdata.append("recipe_ingredients[0][measure]", "unit");
-    // formdata.append("recipe_ingredients[0][ingredient]", "Eggs");
     ingredients.forEach((item, index) => {
       formdata.append(`recipe_ingredients[${index}][quantity]`, item.qty)
       formdata.append(`recipe_ingredients[${index}][measure]`, item.measuremnt)
