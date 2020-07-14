@@ -1,10 +1,22 @@
 import React from 'react'
 import {
-  KEY_POST_LOGIN, REGISTER_URL, FORGOT_PASSWORD_URL, CHANGE_PASSWORD_URL,
-  ADD_RECIPE_URL, RECIPE_DATA_URL, USER_DETAILS_URL, UPDATE_USER_DETAILS_URL,
-  FAVOURITE_LIST_URL, BOOKMARK_USER_URL, TAG_URL, SEARCH_RECIPE_URL,
-  GET_RECIPE_DETAILS_URL, GET_USER_WISE_RECIPE_DETAILS_URL, GET_RECENT_SEARCH_URL,
-  DELETE_SEARCH_RECORD_URL, FILTER_URL
+  KEY_POST_LOGIN,
+   REGISTER_URL, 
+   FORGOT_PASSWORD_URL, 
+   CHANGE_PASSWORD_URL,
+  ADD_RECIPE_URL, 
+  RECIPE_DATA_URL, 
+  USER_DETAILS_URL, 
+  UPDATE_USER_DETAILS_URL,
+  FAVOURITE_LIST_URL, 
+  BOOKMARK_USER_URL, TAG_URL, 
+  SEARCH_RECIPE_URL,
+  GET_RECIPE_DETAILS_URL, 
+  GET_USER_WISE_RECIPE_DETAILS_URL, 
+  GET_RECENT_SEARCH_URL,
+  DELETE_SEARCH_RECORD_URL, 
+  FILTER_URL,
+  POST_ADD_UPDATE_ACTIVITY
 } from './../helper/Constants'
 
 
@@ -197,7 +209,6 @@ const ApiManager = {
     });
   },
   getSearchRecipeList: async (data, token) => {
-    console.log('GET SEARCH RECIPE CALLED!!!!', data)
     let myHeaders = new Headers()
     myHeaders.append('Authorization', `Bearer ${token}`)
     myHeaders.append("Content-Type", "application/json")
@@ -290,6 +301,24 @@ const ApiManager = {
     myHeaders.append("Content-Type", "application/json")
 
     return fetch(FILTER_URL, {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(data)
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
+  postFavorite: async (data, token) => {
+    console.log('FAVORITE API CALLED Data: ', data)
+    let myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${token}`)
+    myHeaders.append("Content-Type", "application/json")
+
+    return fetch(POST_ADD_UPDATE_ACTIVITY, {
       method: 'POST',
       headers: myHeaders,
       body: JSON.stringify(data)

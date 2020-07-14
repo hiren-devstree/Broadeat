@@ -232,6 +232,7 @@ const AppNavigator =  ({ theme, ...props }) => {
     AsyncStorage.getItem('user_token').then((response)=>{
       console.log({response});
       if(response != null && response != undefined){
+        console.log("CHANGE STATE---");
         setAlreadyLogin(true);
       }
     })
@@ -249,14 +250,12 @@ const AppNavigator =  ({ theme, ...props }) => {
           headerBackTitleVisible: false,
         }}
       >
-       { !isAlreadyLogin ? <>
         <Stack.Screen options={{ headerShown: false }} name="Init" component={InitScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
-        <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
-        </> :
-        <>
+        
         <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={TabNavigator} />
+        <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
         <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} />
@@ -270,7 +269,7 @@ const AppNavigator =  ({ theme, ...props }) => {
             shadowOpacity: 0
           },
         }} name="UserAccount" component={UserAccount} />
-        </> }
+        
       </Stack.Navigator>
 
     </NavigationContainer >

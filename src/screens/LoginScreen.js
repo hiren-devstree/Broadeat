@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Modal,
+  View, Text, Modal, Switch,
   Image, StyleSheet, ScrollView, Alert, TouchableOpacity
 } from 'react-native';
 import AppImages from '../assets/images';
@@ -30,7 +30,8 @@ class LoginScreen extends BaseComponent {
       showForgotPasswordModal: false,
       email: '',
       password: '',
-      isOpenVeggieModal: false
+      isOpenVeggieModal: false,
+      isRemember:false
     }
   }
 
@@ -46,7 +47,6 @@ class LoginScreen extends BaseComponent {
   _navigateToDashboard = () => {
     const { navigation } = this.props;
     this.setState({ isOpenVeggieModal: false }, () =>
-
       navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Dashboard' }] }))
     )
   }
@@ -54,7 +54,7 @@ class LoginScreen extends BaseComponent {
   _authorizeUser = async () => {
     const { loader, toast, loginSuccess } = this.props
     loader(true)
-    const { email, password } = this.state
+    const { email, password, isRemember } = this.state
     let response = await postLogin(email, password)
 
     loader(false)
@@ -62,6 +62,10 @@ class LoginScreen extends BaseComponent {
     if (response.code === 1) {
       AsyncStorage.setItem('user_token', response.token)
       AsyncStorage.setItem('user_id', `${response.data.id}`)
+      AsyncStorage.setItem('is_remember', isRemember ? '1' : '0')
+      
+      
+      
       loginSuccess(response);
       this.setState({ isOpenVeggieModal: true })
     } else {
@@ -122,6 +126,7 @@ class LoginScreen extends BaseComponent {
   }
 
   render() {
+    const { isRemember } = this.state
     return (
       <SafeAreaViewC>
         <View style={styles.content}>
@@ -158,6 +163,19 @@ class LoginScreen extends BaseComponent {
                 onChangeText={(val) => this.setState({ password: val })}
                 value={this.state.password}
               />
+              <View style={{flexDirection:'row-reverse', alignItems:'center'}}>
+                <Switch  
+                  // trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                  // ios_backgroundColor="#3e3e3e"
+                  onValueChange={()=> this.setState({
+                    isRemember:!isRemember
+                  })}
+                  value={isRemember} />
+                <View style={{width: 16}} />
+                <CTextColor align={'right'} color={"#999"} fontSize={StyleConfig.countPixelRatio(14)} >{'Remember Me'}</CTextColor>
+              </View>
+              
 
               <Button
                 onPress={this.onPressSignIn}

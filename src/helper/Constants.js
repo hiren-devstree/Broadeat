@@ -19,6 +19,7 @@ export const FILTER_URL = `${BASE_URL}recipe/SearchWithTagsFilter`
 export const SEARCH_RECIPE_URL = `${BASE_URL}recipe/search`
 export const GET_RECIPE_DETAILS_URL = `${BASE_URL}recipe/data`
 export const GET_USER_WISE_RECIPE_DETAILS_URL = `${BASE_URL}recipe/UserRecipeList`
+export const POST_ADD_UPDATE_ACTIVITY = `${BASE_URL}recipe/AddUpdateActivity`  
 
 export const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 

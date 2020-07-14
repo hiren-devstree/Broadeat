@@ -7,18 +7,26 @@ import {
     ScrollView
 
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { TextInputWithIcon } from '../components/common/TextInputs';
-import { Button } from '../components/common/Buttons';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
-import styled from 'styled-components/native';
 import { SafeAreaViewC, CButtonColor, CTextColor } from '../components/common';
 import BaseComponent from '../containers/BaseComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { CommonActions } from '@react-navigation/native';
 
 class InitScreen extends BaseComponent {
+
+    componentDidMount= () =>{
+        AsyncStorage.getItem('is_remember').then((response)=>{
+            console.log({response});
+            if(response != null && response != undefined && response != '0'){
+                this.props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Dashboard' }] }))
+            }
+        })
+    }
 
     render() {
         return (
@@ -30,8 +38,6 @@ class InitScreen extends BaseComponent {
                         source={AppImages.ic_broad_eat}
                     />
                     <View style={{ flex: 1 }} />
-
-
                     <View style={{ marginHorizontal: StyleConfig.convertWidthPerVal(46) }} >
                         <Image
                             source={AppImages.welcome_broadeat}
@@ -54,16 +60,13 @@ class InitScreen extends BaseComponent {
                         <CButtonColor
                             color={"#fff"}
                             borderColor={"#83D557"}
-                            onPress={() => this.props.navigation.navigate('Login')}
-
-                        >
+                            onPress={ () => this.props.navigation.navigate('Login') } >
                             <CTextColor style={{ marginTop: 2 }} color={"#83D557"} fontWeight={'bold'} fontSize={StyleConfig.countPixelRatio(20)}>{'LOGIN'}</CTextColor>
                         </CButtonColor>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: StyleConfig.convertHeightPerVal(60), marginBottom: StyleConfig.convertHeightPerVal(20) }}>
                             <Icon name="chevron-up" size={16} color="#8A8A8F" />
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: StyleConfig.convertHeightPerVal(28) }}>
-
                             <CTextColor color={"#8A8A8F"} fontSize={StyleConfig.countPixelRatio(16)}>{'Swipe up to learn more'}</CTextColor>
                         </View>
 

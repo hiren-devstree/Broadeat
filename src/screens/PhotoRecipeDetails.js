@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { getRcipeDetails } from './../apiManager'
+import { getRcipeDetails, postFavorite } from './../apiManager'
 
 // Component Imports
 import {
@@ -40,7 +40,8 @@ class PhotoRecipeDetails extends Component {
       timer: '15-20',
       foodType: 'Vegetarian',
       selectedTab: 1,
-      data: undefined
+      data: undefined, 
+      token:null
     }
   }
 
@@ -49,7 +50,16 @@ class PhotoRecipeDetails extends Component {
     console.log('dataaaaaaa ', id)
     this._getRecipeDetailsAPICalling(id)
   }
-
+componentWillUnmount=async ()=>{
+  this.state = {
+    noOfUser: 0,
+    timer: '',
+    foodType: '',
+    selectedTab:1,
+    data: undefined, 
+    token:null
+  }
+}
 
   render() {
     return this.renderMainView()
@@ -83,9 +93,36 @@ class PhotoRecipeDetails extends Component {
     loader(false)
     console.log(response)
     if (response.code === 1) {
-      this.setState({ data: response.data }, () => {
+      this.setState({ data: response.data, token }, () => {
         this.forceUpdate()
       })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
+
+  _postFavorite= async () =>{
+    const { loader } = this.props
+    let {data, token} = this.state ;
+    if(token == null){
+      token = await AsyncStorage.getItem('user_token')
+    }
+    console.log({data,token})
+    let params = {
+      "rec_id":data.Recipe.id,
+      "flag": data.Activity.favorite == 0 ? "favorite" : "unfavorite",
+      "checkdata":"favorite"
+    }
+    console.log({params})
+    loader(true)
+    let response = await postFavorite(params, token)
+    loader(false)
+    console.log(response)
+    if (response.code === 1) {
+      data.Activity.favorite = data.Activity.favorite == 0 ? 1 : 0 
+      this.setState({ data })
     } else {
       setTimeout(() => {
         Alert.alert(response.message)
@@ -197,6 +234,7 @@ class PhotoRecipeDetails extends Component {
 
   renderDescriptionView = () => {
     const { noOfUser, timer, foodType, data } = this.state
+    console.log({data})
 
     return (
       <ViewX style={{ flex: 1, alignItems: 'flex-start' }}>
@@ -220,9 +258,9 @@ class PhotoRecipeDetails extends Component {
             <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
             {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}
           </ViewX>
-          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <TouchableOpacity onPress={this._postFavorite }>
             <ViewX style={{ flexDirection: 'row' }}>
-              <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+              <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3, tintColor: data && data.Activity.favorite == 0 ? '#555' : 'blue' }} resizeMode='contain' />
               {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}
             </ViewX>
           </TouchableOpacity>
