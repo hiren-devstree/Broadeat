@@ -57,9 +57,7 @@ class SearchScreen extends Component {
     if (response.code === 1) {
       this._getRecentSearchAPICalled()
     } else {
-      setTimeout(() => {
-        Alert.alert(response.message)
-      }, 500)
+      console.log(response.message)
     }
   }
 
@@ -79,9 +77,8 @@ class SearchScreen extends Component {
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {
-      setTimeout(() => {
-        Alert.alert(response.message)
-      }, 500)
+      console.log(response.message)
+      
     }
   }
 

@@ -174,9 +174,7 @@ class ProfileScreen extends Component {
             <TextX fontSize={StyleConfig.countPixelRatio(16)}>Switch Account</TextX>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionbtnContainer} onPress={() => {
-            this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login' }] }))
-          }}>
+          <TouchableOpacity style={styles.optionbtnContainer} onPress={this._onLogout}>
             <TextX fontSize={StyleConfig.countPixelRatio(16)}>Logout</TextX>
           </TouchableOpacity>
 
@@ -184,6 +182,22 @@ class ProfileScreen extends Component {
         <View style={{ height: 6, width: '100%', backgroundColor: StyleConfig.grey, marginTop: StyleConfig.countPixelRatio(12) }} />
       </>
     )
+  }
+  _onLogout = ()=>{
+    Alert.alert(
+      "Do you want to Logout?",
+      "",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login' }] })) }
+      ],
+      { cancelable: false }
+    );
+    
   }
 
   themeChange = async () => {
@@ -201,10 +215,10 @@ class ProfileScreen extends Component {
           <TextX fontSize={StyleConfig.countPixelRatio(16)}>Settings</TextX>
         </TouchableOpacity>
 
-        <ViewX style={styles.hideProfileContainer}>
+        { !StyleConfig.isIphone && <ViewX style={styles.hideProfileContainer}>
           <TextX fontSize={StyleConfig.countPixelRatio(16)}>Dark Theme</TextX>
           <Switch value={isDarkTheme} onValueChange={this.themeChange} />
-        </ViewX>
+        </ViewX>}
 
         <ViewX style={styles.hideProfileContainer}>
           <TextX fontSize={StyleConfig.countPixelRatio(16)}>Notifications</TextX>

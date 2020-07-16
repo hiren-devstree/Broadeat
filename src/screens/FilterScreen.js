@@ -46,7 +46,8 @@ const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
       </TouchableOpacity>
       <View style={{
         flex: 1,
-        borderColor: 'gray', borderWidth: 1,
+        borderColor: 'gray',
+        borderWidth: 1,
         borderRadius: 50,
         justifyContent: 'center',
         paddingVertical: 5
@@ -55,6 +56,8 @@ const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
           containerStyle={{
             flex: 1,
             backgroundColor: "transparent",
+            borderTopWidth:0,
+            borderBottomWidth:0
 
           }}
 

@@ -22,7 +22,7 @@ class SearchResult extends Component {
     this.state = {
       data: []
     }
-    console.log("SearchResult Called..")
+    
   }
 
   componentDidMount() {

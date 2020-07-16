@@ -16,6 +16,7 @@ const light = {
     cLightCyan: "#CCF7F5",
     cGrey: "#8A8A8F",
     textInputBac: "#000",
+    textInputBac2: "#e5e5e6"
   }
 }
 export default light

@@ -6,7 +6,7 @@ import lightTheme from './themes/light'
 import darkTheme from './themes/dark'
 import {KEY_PREF_ANDROID_THEME} from './../helper/Constants'
 import StyleConfig from '../assets/styles/StyleConfig'
-const defaultMode = 'dark';
+const defaultMode = 'light';
 const ThemeContext = createContext({
   mode: defaultMode,
   setMode: mode => console.log(mode)

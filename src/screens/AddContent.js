@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import {
   TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView,
-  ScrollView, TextInput, TextInputProps, TouchableWithoutFeedback
+  ScrollView, TextInput, TextInputProps, TouchableWithoutFeedback, Alert
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
@@ -26,8 +26,13 @@ const IngredientTextInput = (props: TextInputProps) => <InputTextX {...props} >{
 const InputTextX = styled.TextInput`
     paddingVertical: ${StyleConfig.convertHeightPerVal(10)}px;
     font-size: ${StyleConfig.fontSizeH3}px;
-    background: ${props => props.theme.text};
+    background: ${props => props.theme.textInputBac2};
+    color:${props => props.theme.text};
     text-align: center;
+    border-width: 0.5px;
+    border-radius: 5px;
+    border-color: ${props => props.theme.borderAlt};
+
 `
 const MultiTextInputX = (props: TextInputProps) => <MultiTextInput multiline {...props}>{props.children}</MultiTextInput>
 const MultiTextInput = styled.TextInput`
@@ -52,12 +57,12 @@ const IngredientsWrapper = withTheme(({ theme, idx, _onChangeIngredients, ...pro
         width: StyleConfig.convertWidthPerVal(80)
       }}
       placeholder={"Qty"}
+      keyboardType={'numeric'}
       onChangeText={(text) => _onChangeIngredients(idx, 'q', text)}
     />
     <IngredientTextInput
       style={{
         width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
-        backgroundColor: theme.text,
         textAlign: "center"
       }}
       placeholder={"Measure"}
@@ -66,7 +71,6 @@ const IngredientsWrapper = withTheme(({ theme, idx, _onChangeIngredients, ...pro
     <IngredientTextInput
       style={{
         width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
-        backgroundColor: theme.text,
         textAlign: "center"
       }}
       placeholder={"Ingredient"}
@@ -95,8 +99,9 @@ const MethodWrapper = withTheme(({ theme, idx, _onChangeMethods, ...props }) => 
       <MultiTextInputX
         style={{
           minHeight: StyleConfig.convertHeightPerVal(50),
-          margin: 5,
-          width: '97%'
+          marginHorizontal:12,
+          marginVertical:4,
+          width: StyleConfig.width-24
         }}
         onChangeText={(text) => _onChangeMethods(idx, text)}
       />
@@ -125,6 +130,7 @@ class AddContent extends Component {
 
   componentDidMount() {
     const _ = this.props.route.params;
+    
     this.setState({ images: _.images })
   }
 
@@ -152,7 +158,7 @@ class AddContent extends Component {
       console.log(this.state.methods)
     })
   }
-
+  showAlert =(msg) => Alert.alert(msg)
   _doneButtonPressed = async () => {
     const {
       ingredients, methods, images, title, description,
@@ -161,32 +167,116 @@ class AddContent extends Component {
     } = this.state
     const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
-
-    loader(true)
+    let hasError = false ;
+   
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "multipart/form-data");
 
     var formdata = new FormData();
+    if(title.length == 0){
+      hasError = true ;
+      this.showAlert("Please Enter Title")
+      return ;
+    }
     formdata.append("recipe_title", title);
     formdata.append("meal_preference", mealPreference);
+   
+    if(description.length == 0){
+      hasError = true ;
+      this.showAlert("Please Enter Description")
+      return ;
+    }
+   
     formdata.append("description", description);
-    methods.forEach((item) => {
-      formdata.append("recipe_method[]", item.text)
-    })
     formdata.append("recipe_tags[]", "1");
+    formdata.append("recipe_tags[]", "3");
+    let hasAnyIngredients = false ;
     ingredients.forEach((item, index) => {
-      formdata.append(`recipe_ingredients[${index}][quantity]`, item.qty)
-      formdata.append(`recipe_ingredients[${index}][measure]`, item.measuremnt)
-      formdata.append(`recipe_ingredients[${index}][ingredient]`, item.ingredient)
+      if(item.qty.length > 0 || item.measuremnt.length > 0 || item.ingredient.length > 0){
+        hasAnyIngredients = true ;
+        formdata.append(`recipe_ingredients[${index}][quantity]`, item.qty)
+        formdata.append(`recipe_ingredients[${index}][measure]`, String(item.measuremnt))
+        formdata.append(`recipe_ingredients[${index}][ingredient]`, String(item.ingredient))
+      }
+      
     })
+    if(!hasAnyIngredients){
+      hasError = true ;
+      this.showAlert("Please Enter Ingredients")
+      return ;
+    }
 
+    let hasAnyMethod = false ;
+    methods.forEach((item) => {
+      if(item.text.length > 0){
+        hasAnyMethod = true ;
+        formdata.append("recipe_method[]", item.text)
+      }
+    })
+    if(!hasAnyMethod){
+      hasError = true ;
+      this.showAlert("Please Enter Cooking Method.")
+      return ;
+    }
+    
+    if(nutritionCalories.length == 0 ){
+      hasError = true ;
+      this.showAlert("Please Enter Nutrition Calories")
+      return ;
+    } else  if(Number(nutritionCalories).toString() == "NaN" ){
+      hasError = true ;
+      this.showAlert("Please Enter Valid Nutrition Calories")
+      return ;
+    }
     formdata.append("nutrition_calories", nutritionCalories)
+
+    if(nutritionProtein.length == 0 ){
+      hasError = true ;
+      this.showAlert("Please Enter Nutrition Protein")
+      return ;
+    } else  if(Number(nutritionProtein).toString() == "NaN" ){
+      hasError = true ;
+      this.showAlert("Please Enter Valid Nutrition Protein")
+      return ;
+    }
     formdata.append("nutrition_protein", nutritionProtein)
+    if(nutritionFat.length == 0 ){
+      hasError = true ;
+      this.showAlert("Please Enter Nutrition Fat")
+      return ;
+    } else  if(Number(nutritionFat).toString() == "NaN" ){
+      hasError = true ;
+      this.showAlert("Please Enter Valid Nutrition Fat")
+      return ;
+    }
     formdata.append("nutrition_fat", nutritionFat)
+    if(nutritionCarbs.length == 0 ){
+      hasError = true ;
+      this.showAlert("Please Enter Nutrition Carbs")
+      return ;
+    } else  if(Number(nutritionCarbs).toString() == "NaN" ){
+      hasError = true ;
+      this.showAlert("Please Enter Valid Nutrition Carbs")
+      return ;
+    }
     formdata.append("nutrition_carbs", nutritionCarbs)
+    if(timeDuration.length == 0 ){
+      hasError = true ;
+      this.showAlert("Please Enter Time Duration")
+      return ;
+    } 
     formdata.append("time_duration", timeDuration)
+    if(noOfPerson.length == 0 ){
+      hasError = true ;
+      this.showAlert("Please Enter No Of Person")
+      return ;
+    } else  if(Number(noOfPerson).toString() == "NaN" ){
+      hasError = true ;
+      this.showAlert("Please Enter Valid No Of Person")
+      return ;
+    }
     formdata.append("no_of_person", noOfPerson)
 
     let recipe_media = []
@@ -208,21 +298,33 @@ class AddContent extends Component {
       }
     }
     console.log(formdata)
-    const response = await fetch("http://3.20.100.25/broadeat/api/recipe/add", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
-      },
-      body: formdata
-    });
-    console.log({ response })
-    loader(false)
-    debugger
-    const json = await response.json();
-    debugger
-    console.log({ json })
-
+    if(!hasError){
+      loader(true)
+      const response = await fetch("http://3.20.100.25/broadeat/api/recipe/add", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        },
+        body: formdata
+      });
+      console.log({ response })
+      loader(false)
+      const json = await response.json();
+      console.log({ json })
+      if(json.code == 1){
+        Alert.alert(
+          "Receipe Added Successfully",
+          "",
+          [
+            { text: "OK", onPress: () => this.props.navigation.navigate('PhotoRecipeDetails', { data: json.data.id }) }
+          ],
+          { cancelable: false }
+        );
+      }else{
+        Alert.alert(json.message)
+      }
+    }
   }
 
   render() {
@@ -420,16 +522,20 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.backgroundColor,
+                  color: theme.text,
                   fontSize: StyleConfig.fontSizeH3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
-                  backgroundColor: theme.textInputBac,
+                  backgroundColor: theme.textInputBac2,
                   marginRight: 10,
-                  borderRadius: 5
+                  borderRadius: 5,
+                  borderWidth:0.5,
+                  borderColor: theme.borderAlt
+
                 }}
                 maxLength={3}
                 keyboardType='number-pad'
+                returnKeyType='done'
                 placeholderTextColor={theme.textHint}
                 onChangeText={(text) => this.setState({ noOfPerson: text })}
                 placeholder={"No of person"}
@@ -453,13 +559,16 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.backgroundColor,
+                  color: theme.text,
                   fontSize: StyleConfig.fontSizeH3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
-                  backgroundColor: theme.textInputBac,
+                  backgroundColor: theme.textInputBac2,
                   marginRight: 10,
-                  borderRadius: 5
+                  borderRadius: 5,
+                  borderWidth:0.5,
+                  borderColor: theme.borderAlt
+
                 }}
                 placeholderTextColor={theme.textHint}
                 onChangeText={(text) => this.setState({ timeDuration: text })}
@@ -484,16 +593,21 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.backgroundColor,
+                  color: theme.text,
                   fontSize: StyleConfig.fontSizeH3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
-                  backgroundColor: theme.textInputBac,
+                  backgroundColor: theme.textInputBac2,
                   marginRight: 10,
-                  borderRadius: 5
+                  borderRadius: 5,
+                  borderWidth:0.5,
+                  borderColor: theme.borderAlt
+
                 }}
                 placeholderTextColor={theme.textHint}
                 onChangeText={(text) => this.setState({ nutritionCalories: text })}
+                keyboardType='number-pad'
+                returnKeyType='done'
                 placeholder={"Nutrition Calories"}
                 value={this.state.nutritionCalories}
               />
@@ -515,16 +629,21 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.backgroundColor,
+                  color: theme.text,
                   fontSize: StyleConfig.fontSizeH3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
-                  backgroundColor: theme.textInputBac,
+                  backgroundColor: theme.textInputBac2,
                   marginRight: 10,
-                  borderRadius: 5
+                  borderRadius: 5,
+                  borderWidth:0.5,
+                  borderColor: theme.borderAlt
+
                 }}
                 placeholderTextColor={theme.textHint}
                 onChangeText={(text) => this.setState({ nutritionProtein: text })}
+                keyboardType='number-pad'
+                returnKeyType='done'
                 placeholder={"Nutrition Protein"}
                 value={this.state.nutritionProtein}
               />
@@ -546,15 +665,20 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.backgroundColor,
+                  color: theme.text,
                   fontSize: StyleConfig.fontSizeH3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
-                  backgroundColor: theme.textInputBac,
+                  backgroundColor: theme.textInputBac2,
                   marginRight: 10,
-                  borderRadius: 5
+                  borderRadius: 5,
+                  borderWidth:0.5,
+                  borderColor: theme.borderAlt
+
                 }}
                 placeholderTextColor={theme.textHint}
+                keyboardType='number-pad'
+                returnKeyType='done'
                 onChangeText={(text) => this.setState({ nutritionFat: text })}
                 placeholder={"Nutrition Protein"}
                 value={this.state.nutritionFat}
@@ -577,15 +701,20 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.backgroundColor,
+                  color: theme.text,
                   fontSize: StyleConfig.fontSizeH3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
-                  backgroundColor: theme.textInputBac,
+                  backgroundColor: theme.textInputBac2,
                   marginRight: 10,
-                  borderRadius: 5
+                  borderRadius: 5,
+                  borderWidth:0.5,
+                  borderColor: theme.borderAlt
+
                 }}
                 placeholderTextColor={theme.textHint}
+                keyboardType='number-pad'
+                returnKeyType='done'
                 onChangeText={(text) => this.setState({ nutritionCarbs: text })}
                 placeholder={"Nutrition Carbs"}
                 value={this.state.nutritionCarbs}
@@ -629,7 +758,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     paddingVertical: 7,
-    backgroundColor: '#151515',
+   
   },
   bottomBtn: {
     paddingHorizontal: 15,

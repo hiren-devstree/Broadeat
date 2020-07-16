@@ -113,8 +113,7 @@ class EditAccount extends Component {
         if (response.code === 1) {
           setTimeout(() => {
             Alert.alert(
-              'Alert',
-              `${response.message}`,
+              `Profile Updated Successfully`,
               [{
                 text: 'Okay', onPress: () => {
                   ProfileScreen.reloadScreen()

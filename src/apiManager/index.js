@@ -94,13 +94,12 @@ const ApiManager = {
   },
   addContentApiCalling: async (data, token) => {
     console.log('addContect Data: ', data)
-    let myHeaders = new Headers();
-    myHeaders.append('Authorization', `Bearer ${token}`)
-    myHeaders.append('Content-Type', 'application/json')
-
-    return fetch(ADD_RECIPE_URL, {
-      method: 'POST',
-      headers: myHeaders,
+    await fetch("http://3.20.100.25/broadeat/api/recipe/add", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      },
       body: data
     }).then((response) => {
       return response.json()
