@@ -310,13 +310,13 @@ componentWillUnmount=async ()=>{
           </ViewX>
           <TouchableOpacity onPress={this._postLike }>
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3, tintColor: data && data.Activity.likes == 0 ? '#555' : 'blue' }} resizeMode='contain' />
+            <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3, tintColor: data && data.Activity.likes == 1 ? 'blue' : '#555' }} resizeMode='contain' />
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.likes : 0}</TextX>
           </ViewX>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._postDisLike }>
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, tintColor: data && data.Activity.dislike == 0 ? '#555' : 'blue'}} resizeMode='contain' />
+            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, tintColor: data && data.Activity.dislike == 1 ? 'blue' : '#555'}} resizeMode='contain' />
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.dislike : 0}</TextX>
           </ViewX>
           </TouchableOpacity>
@@ -326,7 +326,7 @@ componentWillUnmount=async ()=>{
           </ViewX>
           <TouchableOpacity onPress={this._postFavorite }>
             <ViewX style={{ flexDirection: 'row' }}>
-              <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3, tintColor: data && data.Activity.favorite == 0 ? '#555' : 'blue' }} resizeMode='contain' />
+              <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3, tintColor: data && data.Activity.favorite == 1 ? 'blue' : '#555' }} resizeMode='contain' />
               {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}
             </ViewX>
           </TouchableOpacity>
