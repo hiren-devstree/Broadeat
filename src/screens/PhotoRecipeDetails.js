@@ -102,6 +102,60 @@ componentWillUnmount=async ()=>{
       }, 500)
     }
   }
+  _postLike= async () =>{
+    const { loader } = this.props
+    let {data, token} = this.state ;
+    if(token == null){
+      token = await AsyncStorage.getItem('user_token')
+    }
+    console.log({data,token})
+    let params = {
+      "rec_id":data.Recipe.id,
+      "flag": "like",
+      "checkdata":"like"
+    }
+    console.log({params})
+    loader(true)
+    let response = await postFavorite(params, token)
+    loader(false)
+    console.log(response)
+    if (response.code === 1) {
+      data.Activity.likes = 1
+      this.setState({ data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
+
+  
+  _postDisLike= async () =>{
+    const { loader } = this.props
+    let {data, token} = this.state ;
+    if(token == null){
+      token = await AsyncStorage.getItem('user_token')
+    }
+    console.log({data,token})
+    let params = {
+      "rec_id":data.Recipe.id,
+      "flag": "dislike",
+      "checkdata":"like"
+    }
+    console.log({params})
+    loader(true)
+    let response = await postFavorite(params, token)
+    loader(false)
+    console.log(response)
+    if (response.code === 1) {
+      data.Activity.dislike = 1 
+      this.setState({ data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
 
   _postFavorite= async () =>{
     const { loader } = this.props
@@ -122,7 +176,17 @@ componentWillUnmount=async ()=>{
     console.log(response)
     if (response.code === 1) {
       data.Activity.favorite = data.Activity.favorite == 0 ? 1 : 0 
-      this.setState({ data })
+      
+      Alert.alert(
+        data.Activity.favorite == 0 ? "Recipe removed from bookmark" :"Recipe added to bookmark",
+        "",
+              [{
+                onPress: this.setState({ data }),
+                text: 'Okay', 
+                
+              }],
+              { cancelable: false }
+            )
     } else {
       setTimeout(() => {
         Alert.alert(response.message)
@@ -244,18 +308,20 @@ componentWillUnmount=async ()=>{
             <Image source={imgView} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.view : 0}</TextX>
           </ViewX>
-
+          <TouchableOpacity onPress={this._postLike }>
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+            <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3, tintColor: data && data.Activity.likes == 0 ? '#555' : 'blue' }} resizeMode='contain' />
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.likes : 0}</TextX>
           </ViewX>
-
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this._postDisLike }>
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, }} resizeMode='contain' />
+            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, tintColor: data && data.Activity.dislike == 0 ? '#555' : 'blue'}} resizeMode='contain' />
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.dislike : 0}</TextX>
           </ViewX>
+          </TouchableOpacity>
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
+            <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3, }} resizeMode='contain' />
             {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}
           </ViewX>
           <TouchableOpacity onPress={this._postFavorite }>

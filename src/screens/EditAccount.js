@@ -74,7 +74,7 @@ class EditAccount extends Component {
   }
 
   _updateProfileAPICalled = async () => {
-    const { loader } = this.props
+    const { loader,navigation } = this.props
     const { name, email, website, mobile, description, location, proPic } = this.state
     let token = await AsyncStorage.getItem('user_token')
 
@@ -114,11 +114,11 @@ class EditAccount extends Component {
           setTimeout(() => {
             Alert.alert(
               `Profile Updated Successfully`,
+              "",
               [{
-                text: 'Okay', onPress: () => {
-                  ProfileScreen.reloadScreen()
-                  this.props.navigation.goBack()
-                }
+                onPress: this.onDoneSuccess,
+                text: 'Okay', 
+                
               }],
               { cancelable: false }
             )
@@ -137,7 +137,10 @@ class EditAccount extends Component {
         }, 500)
       });
   }
-
+  onDoneSuccess=()=>{
+    ProfileScreen.reloadScreen()
+    this.props.navigation.goBack()
+  }
   render() {
     return this.renderMainView()
   }

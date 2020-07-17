@@ -34,6 +34,7 @@ class BookmarkScreen extends Component {
     super(props);
     this.state = {
       index: 0,
+      search:'',
       routes: [
         { key: 'recipes', title: 'Recipes' },
         { key: 'account', title: 'Accounts' },
@@ -50,9 +51,9 @@ class BookmarkScreen extends Component {
     const { navigation } = this.props;
     switch (route.key) {
       case "recipes":
-        return <RecipesTab {...{ navigation }} />;
+        return <RecipesTab {...{ navigation, search:this.state.search }} />;
       case 'account':
-        return <AccountTab {...{ navigation }} />;
+        return <AccountTab {...{ navigation, search:this.state.search }} />;
       default:
         return <View />;
     }
@@ -106,7 +107,6 @@ class BookmarkScreen extends Component {
     return (
       <TabBar
         labelStyle={{ height: TABBAR_HEIGHT }}
-        // onTabPress={({ route }) => setIndex(route.key)}
         renderLabel={(rest) => this._renderTabLabel(rest)}
         renderIndicator={(rest) => this._renderTabOverlayIndicator(rest)}
         indicatorStyle={{ backgroundColor: theme.filterOn }}
@@ -131,7 +131,7 @@ class BookmarkScreen extends Component {
 
   render() {
 
-    const { index, routes } = this.state;
+    const { index, routes, search } = this.state;
     const { theme } = this.props;
 
     return (
@@ -156,9 +156,9 @@ class BookmarkScreen extends Component {
           textContentType={"name"}
           placeholder="Search"
           returnKeyType="search"
-        // onChangeText={this.updateSearch}
-        // onSubmitEditing={this.moveToSearchResults}
-        // value={search}
+          onChangeText={(search)=> this.setState({search})}
+          //onSubmitEditing={this.moveToSearchResults}
+          value={search}
         />
         <TabView
           style={{ flex: 1 }}

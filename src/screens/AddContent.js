@@ -16,7 +16,7 @@ import { SafeAreaView, TextX, ViewX } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
 import styled, { withTheme, ThemeConsumer } from 'styled-components';
 
-import { addContentApiCalling } from './../apiManager'
+import { addContentApiCalling, getTagList } from './../apiManager'
 
 import imgBack from '../assets/images/ic_back.png'
 
@@ -125,13 +125,29 @@ class AddContent extends Component {
       nutritionFat: '',
       nutritionCarbs: '',
       timeDuration: '',
+      tagData:[]
     }
   }
 
-  componentDidMount() {
+  componentDidMount= async () => {
     const _ = this.props.route.params;
-    
-    this.setState({ images: _.images })
+    const {loader} = this.props ;
+    let token = await AsyncStorage.getItem('user_token')
+
+    let response = await getTagList(token)
+
+    let tempArr = []
+    response.data.category_list.forEach(item => {
+      let temp = []
+      response.data.tag_list[`${item.category_type}`].forEach((ele) => {
+        temp.push({ ...ele, isSelected: false })
+      })
+      tempArr.push({ title: item.category_type, data: temp })
+    })
+    console.log(JSON.stringify(tempArr))
+    // this.setState({ data: tempArr })
+
+    this.setState({ images: _.images, tagData:tempArr })
   }
 
   _onChangeIngredients = (index, type, text) => {
@@ -163,12 +179,14 @@ class AddContent extends Component {
     const {
       ingredients, methods, images, title, description,
       mealPreference, noOfPerson, nutritionCalories,
-      nutritionProtein, nutritionFat, nutritionCarbs, timeDuration
+      nutritionProtein, nutritionFat, nutritionCarbs, timeDuration,
+      tagData
     } = this.state
     const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
     let hasError = false ;
-   
+    let selectedTag = [];
+    
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
     myHeaders.append("Accept", "application/json");
@@ -190,8 +208,6 @@ class AddContent extends Component {
     }
    
     formdata.append("description", description);
-    formdata.append("recipe_tags[]", "1");
-    formdata.append("recipe_tags[]", "3");
     let hasAnyIngredients = false ;
     ingredients.forEach((item, index) => {
       if(item.qty.length > 0 || item.measuremnt.length > 0 || item.ingredient.length > 0){
@@ -278,7 +294,25 @@ class AddContent extends Component {
       return ;
     }
     formdata.append("no_of_person", noOfPerson)
-
+    for(let groupInd in tagData){
+      let groupData = tagData[groupInd].data
+      for(let ind in groupData){
+        if(groupData[ind].isSelected){
+          selectedTag.push(groupData[ind].id);
+        }
+      }
+    }
+    
+    if(selectedTag.length == 0){
+      hasError = true ;
+      this.showAlert("Please Select one Tag")
+      return ;
+    } else{
+      for(let ind in selectedTag){
+        formdata.append("recipe_tags[]", String(selectedTag[ind]));  
+      }
+    }
+    
     let recipe_media = []
     let mainImage = null;
     for (let ind in images) {
@@ -722,6 +756,10 @@ class AddContent extends Component {
             </ViewX>
             {/* NUTRITION CARBS END */}
 
+
+            {/* Select TAG */}
+            {this.renderTag()}
+
           </ScrollView>
         </KeyboardAvoidingView>
 
@@ -737,6 +775,55 @@ class AddContent extends Component {
         </ViewX>
       </SafeAreaView >
     );
+  }
+  renderTag=()=>{
+    let { tagData } = this.state;
+    const { theme } = this.props;
+    return(
+      <ViewX style={{marginVertical:4,  alignItems:'flex-start'}}>
+        {tagData.map((groupItem, groupIndex)=>{
+          return (
+            <ViewX>
+            <TextX style={{
+              width: StyleConfig.width,
+              textAlign: "left",
+              color: theme.text,
+              backgroundColor: theme.headerBack,
+              fontSize: StyleConfig.fontSizeH3,
+              padding: StyleConfig.convertWidthPerVal(10),
+              paddingVertical: StyleConfig.convertHeightPerVal(10),
+            }}>{groupItem.title}</TextX>
+            <ViewX style={{flexDirection: 'row', flexWrap: "wrap", alignItems:'flex-start',justifyContent:'flex-start', margin:4}}>
+              {groupItem.data.map((item, itemIndex)=>{
+                return(
+                  <TouchableOpacity onPress={()=>{
+                    tagData[groupIndex]["data"][itemIndex].isSelected = !tagData[groupIndex]["data"][itemIndex].isSelected 
+                    this.setState({tagData})
+                  }}>
+                    <ViewX style={{
+                      borderWidth:0.8,
+                      borderRadius:8,
+                      marginHorizontal:4,
+                      backgroundColor: item.isSelected ? theme.selectedIconColor : theme.tabBackground
+                    }}>
+                    <TextX style={{
+                      textAlign: "left",
+                      color: theme.text,
+                      fontSize: StyleConfig.fontSizeH3,
+                      padding: StyleConfig.convertWidthPerVal(10),
+                      paddingVertical: StyleConfig.convertHeightPerVal(10),
+                    }}>{item.tag_name}</TextX>
+                    </ViewX>
+                  </TouchableOpacity>
+                )
+              })}
+              </ViewX>
+            </ViewX>
+          )
+        })}
+      </ViewX>
+    )
+    
   }
 }
 

@@ -50,7 +50,7 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
               width: "90%",
               height: "90%"
             }}
-            source={{ uri: IMAGE_PATH + item.image }}
+            source={{ uri: item.image }}
           />
         </ViewX>
         <TextX style={{
@@ -85,7 +85,7 @@ class RecipesTab extends Component {
   _getFavouriteListAPICalled = async () => {
     let token = await AsyncStorage.getItem('user_token')
     let response = await getFavouriteListRecipe(token)
-
+    console.log({"favoriteRes":response.data})
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {
@@ -99,6 +99,12 @@ class RecipesTab extends Component {
 
   render() {
     const { filters, data } = this.state;
+    const { search } =this.props;
+    let afterSearch = data;
+    console.log({afterSearch})
+    if(search.length > 0 && afterSearch.length > 0){
+      afterSearch = afterSearch.filter((item)=> item.recipe_title.toLowerCase().includes(search.toLowerCase()));
+    }
 
     return (
       <SafeAreaView {...this.props}>
@@ -121,7 +127,8 @@ class RecipesTab extends Component {
           contentContainerStyle={{ paddingVertical: 20, alignSelf: "center" }}
           numColumns={2}
           keyExtractor={(_, idx) => `foodGlr-${idx}`}
-          data={data}
+          data={afterSearch}
+          extraData={this.props|this.state}
           renderItem={({ item, idx }) => <FavoriteFood {...{ item, idx }} onPres={() => this.onFoodItemPress(item)} />}
         />
       </SafeAreaView>

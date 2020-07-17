@@ -101,9 +101,10 @@ const ApiManager = {
         'Content-Type': 'multipart/form-data'
       },
       body: data
-    }).then((response) => {
-      return response.json()
-    }, function (error) {
+    }).then((response) => response.json()).then((json)=>{
+      console.log({"ADD_CONTANT_RES":json})
+      return json;
+    }, (error)=> {
       console.log('error', error)
     }).catch((error) => {
       console.log('error', error)
