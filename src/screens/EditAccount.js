@@ -14,9 +14,9 @@ import ProfileScreen from './ProfileScreen'
 
 import StyleConfig from '../assets/styles/StyleConfig'
 import { SafeAreaView, ViewX, TEXTINPUT, TextX } from '../components/common'
-
+import { withTheme } from 'styled-components';
 import imgDummy from '../assets/images/ic_dummy.png'
-
+const BUTTON_TEXT = StyleConfig.convertHeightPerVal(18);
 class EditAccount extends Component {
 
   constructor(props) {
@@ -162,10 +162,10 @@ class EditAccount extends Component {
     return (
       <ViewX style={styles.headerTopView}>
         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-          <TextX fontSize={StyleConfig.countPixelRatio(16)}>Cancel</TextX>
+          <TextX fontSize={BUTTON_TEXT}>Cancel</TextX>
         </TouchableOpacity>
         <TextX
-          fontSize={StyleConfig.countPixelRatio(16)}
+          fontSize={BUTTON_TEXT}
           align={'center'}
           style={{ marginLeft: 15, flex: 1 }}
         >
@@ -180,6 +180,7 @@ class EditAccount extends Component {
 
   renderUserDetailsView = () => {
     const { proPic } = this.state
+    const { theme } = this.props
     return (
       <>
         <ViewX style={styles.userDetails}>
@@ -196,17 +197,18 @@ class EditAccount extends Component {
               this.setState({ proPic: Platform.OS == 'ios' ? images : images[0] })
             });
           }}>
-            <Text style={{ color: StyleConfig.blue, fontSize: StyleConfig.countPixelRatio(16) }}>{'Change Profile Image'}</Text>
+            <Text style={{ color: StyleConfig.blue, fontSize: BUTTON_TEXT }}>{'Change Profile Image'}</Text>
           </TouchableOpacity>
 
         </ViewX>
-        <View style={{ height: 6, width: '100%', backgroundColor: StyleConfig.grey, }} />
+        <View style={{ height: 6, width: '100%', backgroundColor: theme.profileDeviderColor, }} />
       </>
     )
   }
 
   renderUserPersonalDetails = () => {
     const { name, username, website, description } = this.state
+    const {theme} = this.props 
     return (
       <>
         <ViewX style={{ paddingRight: StyleConfig.countPixelRatio(15) }}>
@@ -214,10 +216,11 @@ class EditAccount extends Component {
             <TextX
               style={{ width: '35%' }}
               align='left'
-              fontSize={StyleConfig.countPixelRatio(16)}>
+              fontSize={BUTTON_TEXT}>
               {'Name'}
             </TextX>
             <TEXTINPUT
+              fontSize={BUTTON_TEXT}
               align={'left'}
               placeholder={'Enter your name'}
               value={name}
@@ -229,10 +232,11 @@ class EditAccount extends Component {
             <TextX
               style={{ width: '35%' }}
               align='left'
-              fontSize={StyleConfig.countPixelRatio(16)}>
+              fontSize={BUTTON_TEXT}>
               {'Username'}
             </TextX>
             <TEXTINPUT
+            fontSize={BUTTON_TEXT}
               editable={false}
               align={'left'}
               placeholder={'Enter your username'}
@@ -245,11 +249,11 @@ class EditAccount extends Component {
             <TextX
               style={{ width: '35%' }}
               align='left'
-              fontSize={StyleConfig.countPixelRatio(16)}>
+              fontSize={BUTTON_TEXT}>
               {'Website'}
             </TextX>
             <TEXTINPUT
-              // editable={false}
+              fontSize={BUTTON_TEXT}
               align={'left'}
               placeholder={'htttp://www.website.com…'}
               value={website}
@@ -261,11 +265,11 @@ class EditAccount extends Component {
             <TextX
               style={{ width: '35%' }}
               align='left'
-              fontSize={StyleConfig.countPixelRatio(16)}>
+              fontSize={BUTTON_TEXT}>
               {'Description'}
             </TextX>
             <TEXTINPUT
-              // editable={false}
+              fontSize={BUTTON_TEXT}
               multiline
               align={'left'}
               placeholder={'Description'}
@@ -274,7 +278,7 @@ class EditAccount extends Component {
             />
           </ViewX>
         </ViewX>
-        <View style={{ height: 6, width: '100%', backgroundColor: StyleConfig.grey, marginVertical: StyleConfig.countPixelRatio(15) }} />
+        <View style={{ height: 6, width: '100%', backgroundColor: theme.profileDeviderColor, marginVertical: StyleConfig.countPixelRatio(15) }} />
       </>
     )
   }
@@ -286,13 +290,13 @@ class EditAccount extends Component {
         <ViewX style={styles.userInformation}>
           <TextX
             align='left'
-            fontSize={StyleConfig.countPixelRatio(16)}>
+            fontSize={BUTTON_TEXT}>
             {'User Information'}
           </TextX>
           <TouchableOpacity onPress={() => this.setState({ isHiddenUserInformation: !isHiddenUserInformation })}>
             <TextX
               align='left'
-              fontSize={StyleConfig.countPixelRatio(16)}>
+              fontSize={BUTTON_TEXT}>
               {!isHiddenUserInformation ? 'Show' : 'Hide'}
             </TextX>
           </TouchableOpacity>
@@ -311,11 +315,11 @@ class EditAccount extends Component {
             <TextX
               style={{ width: '35%' }}
               align='left'
-              fontSize={StyleConfig.countPixelRatio(16)}>
+              fontSize={BUTTON_TEXT}>
               {'Email'}
             </TextX>
             <TEXTINPUT
-              editable={false}
+              fontSize={BUTTON_TEXT}
               align={'left'}
               placeholder={'user@email.com'}
               value={email}
@@ -327,11 +331,11 @@ class EditAccount extends Component {
             <TextX
               style={{ width: '35%' }}
               align='left'
-              fontSize={StyleConfig.countPixelRatio(16)}>
+              fontSize={BUTTON_TEXT}>
               {'Mobile'}
             </TextX>
             <TEXTINPUT
-              // editable={false}
+              fontSize={BUTTON_TEXT}
               align={'left'}
               placeholder={'+1-999-999-9999'}
               value={mobile}
@@ -343,11 +347,11 @@ class EditAccount extends Component {
             <TextX
               style={{ width: '35%' }}
               align='left'
-              fontSize={StyleConfig.countPixelRatio(16)}>
+              fontSize={BUTTON_TEXT}>
               {'Location'}
             </TextX>
             <TEXTINPUT
-              // editable={false}
+              fontSize={BUTTON_TEXT}
               multiline
               align={'left'}
               placeholder={'1900 Street, New York, NY, United States - zip-code'}
@@ -362,7 +366,7 @@ class EditAccount extends Component {
 
 }
 
-export default withLoader(withToast(EditAccount))
+export default withTheme( withLoader(withToast(EditAccount)))
 
 const styles = StyleSheet.create({
   headerTopView: {

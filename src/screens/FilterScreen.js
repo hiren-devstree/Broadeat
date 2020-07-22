@@ -2,7 +2,7 @@
 import React, { Component, useState } from 'react';
 import {
   StyleSheet, TouchableWithoutFeedback,
-  TouchableOpacity, Image, Alert, View
+  TouchableOpacity, Image, Alert, View, ScrollView
 } from 'react-native';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
@@ -13,9 +13,10 @@ import { getTagList, applyFilters } from './../apiManager'
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, ViewX, TextX } from '../components/common';
 import { withTheme } from 'styled-components';
-import { ScrollView } from 'react-native-gesture-handler';
+
 import { SearchBar, Button } from 'react-native-elements';
 import imgBack from '../assets/images/ic_back.png'
+import { FlatList } from 'react-native-gesture-handler';
 
 const FilterBubble = withTheme(({ theme, ...props }) => {
   const { name, onPress, isSelected } = props
@@ -173,9 +174,33 @@ class FilterScreen extends Component {
   render() {
     const { theme, navigation } = this.props;
     const { data } = this.state
+    let selectedTag = [];
+    for(let ind in data){
+      for(let subInd in data[ind].data){
+        if(data[ind]['data'][subInd].select){
+          selectedTag.push(data[ind]['data'][subInd])
+        }
+      }
+    }
     return (
       <SafeAreaView  {...this.props}>
         <FilterHeader {...{ navigation }} onPress={() => this._applyFilters()} />
+        {selectedTag.length > 0 && 
+          <View style={{height: StyleConfig.convertHeightPerVal(54)}}>
+          <FlatList
+            horizontal 
+            data={selectedTag}
+            extraData={this.state}
+            renderItem={({item,index})=>(
+              <View key={`header-${index}`}>
+              <FilterBubble
+                name={item.tag_name}
+                isSelected={item.select}
+            />
+          </View>
+            )}
+          />
+        </View>}
         <ScrollView>
           <ViewX style={{ alignItems: 'flex-start' }}  {...this.props} >
             {

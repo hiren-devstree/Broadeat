@@ -17,7 +17,8 @@ const light = {
     cGrey: "#8A8A8F",
     textInputBac: "#000",
     textInputBac2: "#e5e5e6",
-    headerBack: "#eee"
+    headerBack: "#eee",
+    profileDeviderColor: "#00000055"
   }
 }
 export default light

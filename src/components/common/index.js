@@ -113,11 +113,11 @@ export const TEXTINPUT = styled.TextInput.attrs(props => ({
   placeholder: props.placeholder,
   secureTextEntry: props.secureTextEntry ? props.secureTextEntry : false,
   underlineColorAndroid: "#00000000",
-  textAlign: props.align ? props.align : 'center'
+  textAlign: props.align ? props.align : 'center',
+  fontSize: props.fontSize? props.fontSize : 16,
 }))`
   color: ${props => props.color ? props.color : props.theme.text};
   flex: 1;
-  font-size: ${StyleConfig.countPixelRatio(16)}px;
   height: 50px;
 `;
 

@@ -18,7 +18,8 @@ const dark = {
     cGrey: "#8A8A8F",
     textInputBac: "#fff",
     textInputBac2: "#5a5a66",
-    headerBack: "#1f1f1f"
+    headerBack: "#1f1f1f",
+    profileDeviderColor: "#ffffff55"
   }
 }
 

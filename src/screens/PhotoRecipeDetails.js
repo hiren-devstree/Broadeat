@@ -47,7 +47,6 @@ class PhotoRecipeDetails extends Component {
 
   componentDidMount() {
     let id = this.props.route.params.data
-    console.log('dataaaaaaa ', id)
     this._getRecipeDetailsAPICalling(id)
   }
 componentWillUnmount=async ()=>{
@@ -102,6 +101,33 @@ componentWillUnmount=async ()=>{
       }, 500)
     }
   }
+  _postView= async () =>{
+    const { loader } = this.props
+    let {data, token} = this.state ;
+    if(token == null){
+      token = await AsyncStorage.getItem('user_token')
+    }
+    console.log({data,token})
+    let params = {
+      "rec_id":data.Recipe.id,
+      "flag": "view",
+      "checkdata":"view"
+    }
+    console.log({params})
+    loader(true)
+    let response = await postFavorite(params, token)
+    loader(false)
+    console.log(response)
+    if (response.code === 1) {
+      data.Activity.likes = 1
+      this.setState({ data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
+
   _postLike= async () =>{
     const { loader } = this.props
     let {data, token} = this.state ;
@@ -248,7 +274,14 @@ componentWillUnmount=async ()=>{
 
     return (
       <ViewX style={styles.headerBottomView} {...this.props}>
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('Bookmark')}>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('UserAccount',{
+          userDetails:{
+            "profilepic": data.Recipe.creator_profilepic,
+            "name": data ? data.Recipe.creator_name : '',
+            "description": ''
+          },
+          userId: data? data.Recipe.user_id: null
+        })}>
           {data ?
             <Image source={{ uri: data.Recipe.creator_profilepic }} style={{ width: 30, height: 30, borderRadius: 15 }} />
             : <Image source={imgFood} />

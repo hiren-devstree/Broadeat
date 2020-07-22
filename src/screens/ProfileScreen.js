@@ -17,8 +17,9 @@ import { SafeAreaView, View1CC, ViewX, CText, TextX } from '../components/common
 
 import imgBack from '../assets/images/ic_back.png'
 import imgDummy from '../assets/images/ic_dummy.png'
-
+import { withTheme } from 'styled-components';
 let _this
+const BUTTON_TEXT = StyleConfig.convertHeightPerVal(18);
 class ProfileScreen extends Component {
   constructor(props) {
     super(props)
@@ -114,7 +115,7 @@ class ProfileScreen extends Component {
           fontSize={StyleConfig.countPixelRatio(16)}
           style={{ marginLeft: 15 }}
         >
-          {'My Account'}
+          {'Account'}
         </TextX>
       </ViewX>
     )
@@ -122,7 +123,7 @@ class ProfileScreen extends Component {
 
   renderUserDetailsView = () => {
     const { userDetails } = this.state
-    console.log(userDetails)
+    const {theme} = this.props
     return (
       <>
         <ViewX style={styles.userDetails}>
@@ -132,8 +133,8 @@ class ProfileScreen extends Component {
           }
 
           <ViewX style={styles.userDetailTextContainer}>
-            <TextX fontSize={StyleConfig.countPixelRatio(16)}>{userDetails ? userDetails.name : ''}</TextX>
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{userDetails ? userDetails.email : ''}</TextX>
+            <TextX fontSize={BUTTON_TEXT}>{userDetails ? userDetails.name : ''}</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(14)}>{userDetails ? userDetails.email : ''}</TextX>
           </ViewX>
 
           <TouchableOpacity onPress={() => this.props.navigation.push('EditAccount', { userDetails: userDetails })}>
@@ -141,45 +142,46 @@ class ProfileScreen extends Component {
           </TouchableOpacity>
 
         </ViewX>
-        <View style={{ height: 6, width: '100%', backgroundColor: StyleConfig.grey, }} />
+        <View style={{ height: StyleConfig.convertHeightPerVal(6), width: '100%', backgroundColor: theme.profileDeviderColor,marginTop:8 }} />
       </>
     )
   }
 
   renderMiddleContainer = () => {
     const { isHideProfile, userDetails } = this.state
+    const { theme } = this.props;
     return (
       <>
         <ViewX style={styles.optionContainer}>
           <TouchableOpacity style={styles.optionbtnContainer} onPress={() => {
             this.props.navigation.navigate('UserAccount', { userDetails: userDetails })
           }}>
-            <TextX fontSize={StyleConfig.countPixelRatio(16)}>View Profile</TextX>
+            <TextX fontSize={BUTTON_TEXT}>View Profile</TextX>
           </TouchableOpacity>
 
           <ViewX style={styles.hideProfileContainer}>
-            <TextX fontSize={StyleConfig.countPixelRatio(16)}>Hide Profile</TextX>
+            <TextX fontSize={BUTTON_TEXT}>Hide Profile</TextX>
             <Switch value={isHideProfile} onValueChange={() => this.setState({ isHideProfile: !isHideProfile })} />
           </ViewX>
 
           <TouchableOpacity onPress={() => this.addContent()} style={styles.optionbtnContainer}>
-            <TextX fontSize={StyleConfig.countPixelRatio(16)}>Add Content</TextX>
+            <TextX fontSize={BUTTON_TEXT}>Add Content</TextX>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionbtnContainer}>
-            <TextX fontSize={StyleConfig.countPixelRatio(16)}>Promote Content</TextX>
+            <TextX fontSize={BUTTON_TEXT}>Promote Content</TextX>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionbtnContainer}>
-            <TextX fontSize={StyleConfig.countPixelRatio(16)}>Switch Account</TextX>
+            <TextX fontSize={BUTTON_TEXT}>Switch Account</TextX>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionbtnContainer} onPress={this._onLogout}>
-            <TextX fontSize={StyleConfig.countPixelRatio(16)}>Logout</TextX>
+            <TextX fontSize={BUTTON_TEXT}>Logout</TextX>
           </TouchableOpacity>
 
         </ViewX>
-        <View style={{ height: 6, width: '100%', backgroundColor: StyleConfig.grey, marginTop: StyleConfig.countPixelRatio(12) }} />
+        <View style={{ height: StyleConfig.convertHeightPerVal(6), width: '100%', backgroundColor: theme.profileDeviderColor, marginTop: StyleConfig.countPixelRatio(12) }} />
       </>
     )
   }
@@ -209,24 +211,25 @@ class ProfileScreen extends Component {
 
   renderSettingsOptions = () => {
     const { isEnableNotifiation, isDarkTheme } = this.state
+    
     return (
       <ViewX style={styles.optionContainer}>
         <TouchableOpacity style={styles.optionbtnContainer} onPress={() => this.props.navigation.navigate('ChangePassword')}>
-          <TextX fontSize={StyleConfig.countPixelRatio(16)}>Settings</TextX>
+          <TextX fontSize={BUTTON_TEXT}>Settings</TextX>
         </TouchableOpacity>
 
         { !StyleConfig.isIphone && <ViewX style={styles.hideProfileContainer}>
-          <TextX fontSize={StyleConfig.countPixelRatio(16)}>Dark Theme</TextX>
+          <TextX fontSize={BUTTON_TEXT}>Dark Theme</TextX>
           <Switch value={isDarkTheme} onValueChange={this.themeChange} />
         </ViewX>}
 
         <ViewX style={styles.hideProfileContainer}>
-          <TextX fontSize={StyleConfig.countPixelRatio(16)}>Notifications</TextX>
+          <TextX fontSize={BUTTON_TEXT}>Notifications</TextX>
           <Switch value={isEnableNotifiation} onValueChange={() => this.setState({ isEnableNotifiation: !isEnableNotifiation })} />
         </ViewX>
 
         <TouchableOpacity style={styles.optionbtnContainer}>
-          <TextX fontSize={StyleConfig.countPixelRatio(16)}>About</TextX>
+          <TextX fontSize={BUTTON_TEXT}>About</TextX>
         </TouchableOpacity>
       </ViewX>
     )
@@ -235,7 +238,7 @@ class ProfileScreen extends Component {
 }
 
 
-export default withLoader(withToast(ProfileScreen))
+export default withTheme(withLoader(withToast(ProfileScreen)))
 const styles = StyleSheet.create({
   headerTopView: {
     flexDirection: 'row',
@@ -255,9 +258,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   imgProfile: {
-    height: StyleConfig.countPixelRatio(56),
-    width: StyleConfig.countPixelRatio(56),
-    borderRadius: StyleConfig.countPixelRatio(28)
+    height: StyleConfig.countPixelRatio(60),
+    width: StyleConfig.countPixelRatio(60),
+    borderRadius: StyleConfig.countPixelRatio(30)
   },
   userDetailTextContainer: {
     paddingHorizontal: StyleConfig.countPixelRatio(10),
@@ -270,7 +273,7 @@ const styles = StyleSheet.create({
     marginTop: StyleConfig.countPixelRatio(15),
   },
   optionbtnContainer: {
-    paddingVertical: StyleConfig.countPixelRatio(10),
+    paddingVertical: StyleConfig.countPixelRatio(16),
   },
   hideProfileContainer: {
     paddingVertical: StyleConfig.countPixelRatio(5),

@@ -14,7 +14,7 @@ import { SafeAreaView, View1CC, Devider, CText, CTextColor, TextX } from '../com
 import { FlatList } from 'react-native-gesture-handler';
 import withUser from '../redux/actionCreator/withUser';
 import HeaderSearchBar from '../components/common/HeaderSearchBar';
-
+import AppImages from '../assets/images';
 class HomeScreen extends Component {
 
   constructor(props) {
@@ -36,16 +36,19 @@ class HomeScreen extends Component {
               justifyContent: 'center',
               borderRadius: 10,
               borderWidth: 1,
-              borderColor: 'white',
+              borderColor: '#777',
               height: StyleConfig.convertHeightPerVal(38),
               width: StyleConfig.width * 0.4,
               // backgroundColor: 'black'
-            }}
-          >
-            <Icon
-              style={{ position: "absolute", alignSelf: "center", left: 10 }}
-              name={"search"}
+            }} >
+            <View style={{position: "absolute", alignSelf: "center", left: 10 }}>
+            <Image 
+              source={AppImages.ic_search}
+              style={{ 
+                height: StyleConfig.convertHeightPerVal(20),
+              width: StyleConfig.convertHeightPerVal(20), tintColor:'#777' }}
             />
+            </View>
             <Text style={{}} > {"Search"} </Text>
           </View>
         </TouchableWithoutFeedback>
@@ -88,16 +91,20 @@ class HomeScreen extends Component {
 
   renderFlatList = () => {
     const { data } = this.state
+    const width = (StyleConfig.convertWidthPer(100)-6)/3 ;
     return (
       <FlatList
         data={data}
         numColumns={3}
         keyExtractor={(_, idx) => `foodGlr-${idx}`}
-        renderItem={({ item }) => (
-            <TouchableOpacity style={{ margin: 3, }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
+        ItemSeparatorComponent={
+          () => <View style={{ height: 3, }}/>
+        }
+        renderItem={({ item, index }) => (
+            <TouchableOpacity style={{marginLeft: index >0 ? 3 : 0}} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
               <Image
                 source={{ uri: item.image }}
-                style={{ height: StyleConfig.convertWidthPer(29), width: StyleConfig.convertWidthPer(30) }}
+                style={{ height: width, width: width }}
               /></TouchableOpacity>
           )
         }

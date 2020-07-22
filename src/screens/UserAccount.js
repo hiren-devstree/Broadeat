@@ -78,7 +78,11 @@ class UserAccount extends Component {
   async componentDidMount() {
     const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
-    let userId = await AsyncStorage.getItem('user_id')
+    let userId = this.props.route.params.userId
+    
+    if(userId == undefined){
+      userId = await AsyncStorage.getItem('user_id')
+    }
     let data = {
       user_id: userId
     }
@@ -103,6 +107,7 @@ class UserAccount extends Component {
     const { theme } = this.props
     const { filters, data } = this.state;
     let userDetails = this.props.route.params.userDetails
+    
     // let data = []
     // for (let ind = 0; ind < 20; ind++) {
     //   let ii = ind % 13;
