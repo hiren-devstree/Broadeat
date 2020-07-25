@@ -58,16 +58,17 @@ class HomeScreen extends Component {
 
   async componentDidMount() {
     const { loader } = this.props
-    let token = await AsyncStorage.getItem('user_token')
+    
 
     loader(true)
+    let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
-    loader(false)
-
     console.log(response)
     if (response.code === 1) {
+      loader(false)
       this.setState({ data: response.data })
     } else {
+      loader(false)
       setTimeout(() => {
         Alert.alert(response.message)
       }, 500)
@@ -91,17 +92,18 @@ class HomeScreen extends Component {
 
   renderFlatList = () => {
     const { data } = this.state
-    const width = (StyleConfig.convertWidthPer(100)-6)/3 ;
+    const width = (StyleConfig.convertWidthPer(100) - 8)/3 ;
     return (
       <FlatList
         data={data}
         numColumns={3}
+        bounces={false}
         keyExtractor={(_, idx) => `foodGlr-${idx}`}
         ItemSeparatorComponent={
           () => <View style={{ height: 3, }}/>
         }
         renderItem={({ item, index }) => (
-            <TouchableOpacity style={{marginLeft: index >0 ? 3 : 0}} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
+            <TouchableOpacity style={{marginLeft: index > 0 ? 3 : 0}} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
               <Image
                 source={{ uri: item.image }}
                 style={{ height: width, width: width }}
