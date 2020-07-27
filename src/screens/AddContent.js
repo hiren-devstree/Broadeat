@@ -19,7 +19,12 @@ import styled, { withTheme, ThemeConsumer } from 'styled-components';
 import { addContentApiCalling, getTagList } from './../apiManager'
 
 import imgBack from '../assets/images/ic_back.png'
-
+const HASH_TAGS = [
+  { _id:1, name:"Pastas", isSelected: false},
+  { _id:2, name:"Salads", isSelected: false},
+  { _id:3, name:"Desserts", isSelected: false},
+  { _id:4, name:"Vegetarian", isSelected: false}
+]
 
 const IngredientTextInput = (props: TextInputProps) => <InputTextX {...props} >{props.children}</InputTextX>
 
@@ -125,7 +130,8 @@ class AddContent extends Component {
       nutritionFat: '',
       nutritionCarbs: '',
       timeDuration: '',
-      tagData:[]
+      tagData:[],
+      hashTag: HASH_TAGS
     }
   }
 
@@ -180,7 +186,7 @@ class AddContent extends Component {
       ingredients, methods, images, title, description,
       mealPreference, noOfPerson, nutritionCalories,
       nutritionProtein, nutritionFat, nutritionCarbs, timeDuration,
-      tagData
+      tagData, hashTag
     } = this.state
     const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
@@ -310,6 +316,17 @@ class AddContent extends Component {
     } else{
       for(let ind in selectedTag){
         formdata.append("recipe_tags[]", String(selectedTag[ind]));  
+      }
+    }
+
+    let selectedHashTag = hashTag.filter((item) => item.isSelected == true);
+    if(selectedHashTag.length == 0){
+      hasError = true ;
+      this.showAlert("Please Select one Hash Tag")
+      return ;
+    } else{
+      for(let ind in selectedHashTag){
+        formdata.append("recipe_hashtags[]", String(selectedHashTag[ind].name));  
       }
     }
     
@@ -777,7 +794,7 @@ class AddContent extends Component {
     );
   }
   renderTag=()=>{
-    let { tagData } = this.state;
+    let { tagData, hashTag } = this.state;
     const { theme } = this.props;
     return(
       <ViewX style={{marginVertical:4,  alignItems:'flex-start'}}>
@@ -821,6 +838,40 @@ class AddContent extends Component {
             </ViewX>
           )
         })}
+         <TextX style={{
+              width: StyleConfig.width,
+              textAlign: "left",
+              color: theme.text,
+              backgroundColor: theme.headerBack,
+              fontSize: StyleConfig.fontSizeH3,
+              padding: StyleConfig.convertWidthPerVal(10),
+              paddingVertical: StyleConfig.convertHeightPerVal(10),
+            }}>Select Tag</TextX>
+        <ViewX style={{flexDirection: 'row', flexWrap: "wrap", alignItems:'flex-start',justifyContent:'flex-start', margin:4}}>
+              {hashTag.map((item, itemIndex)=>{
+                return(
+                  <TouchableOpacity onPress={()=>{
+                    hashTag[itemIndex].isSelected = !hashTag[itemIndex].isSelected ; 
+                    this.setState({hashTag})
+                  }}>
+                    <ViewX style={{
+                      borderWidth:0.8,
+                      borderRadius:8,
+                      marginHorizontal:4,
+                      backgroundColor: item.isSelected ? theme.selectedIconColor : theme.tabBackground
+                    }}>
+                    <TextX style={{
+                      textAlign: "left",
+                      color: theme.text,
+                      fontSize: StyleConfig.fontSizeH3,
+                      padding: StyleConfig.convertWidthPerVal(10),
+                      paddingVertical: StyleConfig.convertHeightPerVal(10),
+                    }}>{item.name}</TextX>
+                    </ViewX>
+                  </TouchableOpacity>
+                )
+              })}
+              </ViewX>
       </ViewX>
     )
     

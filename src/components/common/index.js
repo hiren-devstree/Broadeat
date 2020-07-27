@@ -95,7 +95,15 @@ export const CTextInputWithIcon = props => <INPUT_WRAPPER {...props}>
   <TEXTINPUT
     {...props}
   />
-  <View style={{ width: StyleConfig.countPixelRatio(28) }} />
+  <TouchableOpacity 
+    onPress={props.onRightPress}
+    style={{ width: StyleConfig.countPixelRatio(22), marginRight: 8 }} >
+    {props.rightIcon && <Image source={props.rightIcon} resizeMode={'contain'} style={{
+    height: StyleConfig.countPixelRatio(18),
+    width: StyleConfig.countPixelRatio(22),
+    marginRight: 8
+  }} />}
+  </TouchableOpacity>
 </INPUT_WRAPPER>
 const INPUT_WRAPPER = styled.View` 
 border-radius: 10px;

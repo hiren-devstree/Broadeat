@@ -38,22 +38,22 @@ class PhotoRecipeDetails extends Component {
     this.state = {
       noOfUser: 2,
       timer: '15-20',
-      foodType: 'Vegetarian',
       selectedTab: 1,
       data: undefined, 
-      token:null
+      token:null,
+      user_id:''
     }
   }
 
   componentDidMount() {
     let id = this.props.route.params.data
     this._getRecipeDetailsAPICalling(id)
+    AsyncStorage.getItem("user_id").then((user_id)=> this.setState({user_id}))
   }
 componentWillUnmount=async ()=>{
   this.state = {
     noOfUser: 0,
     timer: '',
-    foodType: '',
     selectedTab:1,
     data: undefined, 
     token:null
@@ -270,8 +270,8 @@ componentWillUnmount=async ()=>{
   }
 
   renderHeaderBottomView = () => {
-    const { noOfUser, timer, foodType, data } = this.state
-
+    const { noOfUser, timer,  data } = this.state
+    console.log({data})
     return (
       <ViewX style={styles.headerBottomView} {...this.props}>
         <TouchableOpacity onPress={() => this.props.navigation.navigate('UserAccount',{
@@ -309,7 +309,7 @@ componentWillUnmount=async ()=>{
               </TouchableOpacity>
               <Image source={imgTimer} style={{ width: 15, height: 15, marginLeft: 15, marginRight: 3 }} />
               <TextX>{data ? data.Recipe.time_duration : ''}</TextX>
-              <TextX style={{ marginLeft: 15 }}>{foodType}</TextX>
+              <TextX style={{ marginLeft: 15 }}>{data? data.Recipe.meal_preference: ''}</TextX>
             </ViewX>
           </ViewX>
         </ViewX>
@@ -322,7 +322,7 @@ componentWillUnmount=async ()=>{
 
     return (
       <Image
-        style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(205) }}
+        style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }}
         resizeMode='cover'
         source={{ uri: data ? data.Recipe.image : undefined }}
       />
@@ -331,26 +331,31 @@ componentWillUnmount=async ()=>{
 
   renderDescriptionView = () => {
     const { noOfUser, timer, foodType, data } = this.state
-    console.log({data})
-
+    let view=0, likes=0, dislike=0;
+    if(data){
+      view = data.Activity[0].view;
+      likes = data.Activity[0].likes;
+      dislike = data.Activity[0].dislike
+    }
+    console.log("1",{data, view, likes,dislike})
     return (
       <ViewX style={{ flex: 1, alignItems: 'flex-start' }}>
         {this.renderHeaderBottomView()}
         <ViewX style={styles.operationView}>
           <ViewX style={{ flexDirection: 'row' }}>
             <Image source={imgView} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.view : 0}</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{view ? view : "0"}</TextX>
           </ViewX>
           <TouchableOpacity onPress={this._postLike }>
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3, tintColor: data && data.Activity.likes == 1 ? 'blue' : '#555' }} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.likes : 0}</TextX>
+            <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3, tintColor: likes == 1 ? 'blue' : '#555' }} resizeMode='contain' />
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{likes ? likes : '0'}</TextX>
           </ViewX>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._postDisLike }>
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, tintColor: data && data.Activity.dislike == 1 ? 'blue' : '#555'}} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{data ? data.Activity.dislike : 0}</TextX>
+            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, tintColor: dislike == 1 ? 'blue' : '#555'}} resizeMode='contain' />
+            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{dislike ? dislike : "0"}</TextX>
           </ViewX>
           </TouchableOpacity>
           <ViewX style={{ flexDirection: 'row' }}>
