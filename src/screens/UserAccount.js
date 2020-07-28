@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native";
 import withLoader from '../redux/actionCreator/withLoader'
-import { getUserWiseRcipeDetails, postUserBookmark } from '../apiManager'
+import { getUserWiseRcipeDetails, getUserBookmarkList, postUserBookmark } from '../apiManager'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import { withTheme } from "styled-components";
@@ -84,9 +84,12 @@ class UserAccount extends Component {
       filteredData:[],
       hashTagAvailable:[
         INIT_FILTER[0],
-      ]
+      ],
+      isAlreadyBookMarked:false
     }
   }
+  
+
 
   async componentDidMount() {
     const { loader } = this.props
@@ -94,9 +97,15 @@ class UserAccount extends Component {
     let token = await AsyncStorage.getItem('user_token')
     let currentUserId = await AsyncStorage.getItem('user_id')
     let userId = this.props.route.params.userId
-    
+    let isAlreadyBookMarked = false;
     if(userId == undefined){
       userId = currentUserId
+    } else {
+      bookMarkedCooks = await getUserBookmarkList(token)
+      if(!bookMarkedCooks.error){
+        let filteredBookMarkedCooks = bookMarkedCooks.data.filter((item)=> item.id == userId)
+        isAlreadyBookMarked = filteredBookMarkedCooks.length == 0 ? false :true;
+      }
     }
     let data = {
       user_id: userId
@@ -117,7 +126,7 @@ class UserAccount extends Component {
           hashTagAvailable.push(this.state.filters[ind]);
         }
       }
-      this.setState({ data: response.data, filteredData: response.data, hashTagAvailable, user_id:currentUserId})
+      this.setState({ data: response.data, filteredData: response.data, hashTagAvailable, isAlreadyBookMarked, user_id:currentUserId})
     } else {
       Alert.alert(response.message)
     }
@@ -159,17 +168,19 @@ class UserAccount extends Component {
   }
   _onBookmarkUser=async ()=>{
     const { loader } = this.props
+    const { isAlreadyBookMarked } = this.state
     loader(true);
     let token = await AsyncStorage.getItem('user_token')
     let user_id = this.props.route.params.userId
-    let response = await postUserBookmark({ "isboolmark":true,
+    let response = await postUserBookmark({ "isboolmark": !isAlreadyBookMarked,
     "User_bookmark_id":user_id}, token);
     console.log("USER_BOOKMARK-> ", response)
     loader(false);
+    this.setState({isAlreadyBookMarked:!isAlreadyBookMarked})
   }
   render() {
     const { theme } = this.props
-    const { hashTagAvailable, filteredData,user_id  } = this.state;
+    const { hashTagAvailable, filteredData, user_id, isAlreadyBookMarked  } = this.state;
     let userDetails = this.props.route.params.userDetails
     let showBookmark = true ;
     if(this.props.route.params.userId == undefined || this.props.route.params.userId == user_id) {
@@ -205,7 +216,7 @@ class UserAccount extends Component {
             {showBookmark && <TouchableOpacity onPress={ this._onBookmarkUser }>
             <Image
               resizeMode="contain"
-              style={{ width: StyleConfig.iconSize, aspectRatio: 1 }}
+              style={{ width: StyleConfig.iconSize, aspectRatio: 1, tintColor:isAlreadyBookMarked? 'blue' : 'grey' }}
               source={AppImages.ic_bookmark}
             />
             </TouchableOpacity> }

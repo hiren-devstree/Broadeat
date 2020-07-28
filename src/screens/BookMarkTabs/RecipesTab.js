@@ -14,7 +14,12 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { ViewX, TextX, SafeAreaView } from "../../components/common";
 import StyleConfig from "../../assets/styles/StyleConfig";
 import AppImages from '../../assets/images';
-
+const INIT_FILTER = [
+  {"name":"View All", isSelected:false},
+  {"name":"Pastas", isSelected:false},
+  {"name":"Salads", isSelected:false},
+  {"name":"Deserts", isSelected:false},
+  {"name":"Vegetarian", isSelected:false}] ;
 const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
   return (
@@ -70,13 +75,12 @@ class RecipesTab extends Component {
     super()
     _this = this
     this.state = {
-      filters: [
-        {"name":"View All", isSelected:false},
-        {"name":"Pastas", isSelected:false},
-        {"name":"Salads", isSelected:false},
-        {"name":"Deserts", isSelected:false},
-        {"name":"Vegetarian", isSelected:false}],
-      data: []
+      filters: INIT_FILTER,
+      data: [],
+      filteredData:[],
+      hashTagAvailable:[
+        INIT_FILTER[0],
+      ]
     }
   }
 
@@ -92,9 +96,20 @@ class RecipesTab extends Component {
   _getFavouriteListAPICalled = async () => {
     let token = await AsyncStorage.getItem('user_token')
     let response = await getFavouriteListRecipe(token)
-    console.log({"RES":response.data})
     if (response.code === 1) {
-      this.setState({ data: response.data, filteredData: response.data,})
+      let hashTagAvailable = [INIT_FILTER[0]];
+      let strHash = [];
+      for(let ind in response.data){
+        for(let subInd in response.data[ind].recipe_hashtags){
+          strHash.push(response.data[ind].recipe_hashtags[subInd].hashtag_name)
+        }
+      }
+      for( let ind in this.state.filters){
+        if(strHash.includes(this.state.filters[ind].name)){
+          hashTagAvailable.push(this.state.filters[ind]);
+        }
+      }
+      this.setState({ data: response.data, filteredData: response.data, hashTagAvailable})
     } else {
       Alert.alert(response.message)
     }
@@ -113,10 +128,13 @@ class RecipesTab extends Component {
     } 
     if(fil.length > 0){
       let filteredData = [];
-      // for(let inde in data){
-
-      // }
-
+      for(let ind in data){
+        for(let subInd in data[ind].recipe_hashtags){
+          if(fil.includes(data[ind].recipe_hashtags[subInd].hashtag_name)){
+            filteredData.push(data[ind])
+          }
+        }
+      }
       this.setState({ filteredData: filteredData, filters});
     } else {
       this.setState({ filteredData: data, filters});
@@ -124,9 +142,9 @@ class RecipesTab extends Component {
 
   }
   render() {
-    const { filters, data } = this.state;
+    const {  hashTagAvailable, filteredData } = this.state;
     const { search } =this.props;
-    let afterSearch = data;
+    let afterSearch = filteredData;
     console.log({afterSearch})
     if(search.length > 0 && afterSearch.length > 0){
       afterSearch = afterSearch.filter((item)=> item.recipe_title.toLowerCase().includes(search.toLowerCase()));
@@ -134,7 +152,7 @@ class RecipesTab extends Component {
 
     return (
       <SafeAreaView {...this.props}>
-        <ViewX>
+        <ViewX style={{flexDirection:'row'}}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -144,7 +162,7 @@ class RecipesTab extends Component {
               flexDirection: "row"
             }} >
               {
-                filters.map((item, idx) => <FilterBubble 
+                hashTagAvailable.map((item, idx) => <FilterBubble 
                 onPress={()=> this._onFilterChange(idx)}
                 key={`filter-${idx}`} {...{ item }} />)
               }
