@@ -9,23 +9,25 @@ import withLoader from '../../redux/actionCreator/withLoader'
 import { getFavouriteListRecipe } from '../../apiManager'
 import { IMAGE_PATH } from '../../helper/Constants'
 import { withTheme } from "styled-components";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 
 import { ViewX, TextX, SafeAreaView } from "../../components/common";
 import StyleConfig from "../../assets/styles/StyleConfig";
 import AppImages from '../../assets/images';
 
-const FilterBubble = withTheme(({ theme, item }) => {
+const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
   return (
+    <TouchableOpacity onPress={onPress}>
     <ViewX style={{
       marginHorizontal: StyleConfig.convertWidthPerVal(5),
       padding: StyleConfig.convertWidthPerVal(8),
-      backgroundColor: cLightCyan,
+      backgroundColor: item.isSelected ? filterOn : cLightCyan,
       borderRadius: 20
     }}>
-      <TextX style={{ fontSize: StyleConfig.fontSizeH3_4, color: filterOn }} >{item}</TextX>
+      <TextX style={{ fontSize: StyleConfig.fontSizeH3_4, color: !item.isSelected ? filterOn : cLightCyan, }} >{item.name}</TextX>
     </ViewX>
+    </TouchableOpacity>
   )
 })
 
@@ -68,7 +70,12 @@ class RecipesTab extends Component {
     super()
     _this = this
     this.state = {
-      filters: ["View All", "Pastas", "Salads", "Deserts", "Vegetarian"],
+      filters: [
+        {"name":"View All", isSelected:false},
+        {"name":"Pastas", isSelected:false},
+        {"name":"Salads", isSelected:false},
+        {"name":"Deserts", isSelected:false},
+        {"name":"Vegetarian", isSelected:false}],
       data: []
     }
   }
@@ -85,9 +92,9 @@ class RecipesTab extends Component {
   _getFavouriteListAPICalled = async () => {
     let token = await AsyncStorage.getItem('user_token')
     let response = await getFavouriteListRecipe(token)
-    console.log({"favoriteRes":response.data})
+    console.log({"RES":response.data})
     if (response.code === 1) {
-      this.setState({ data: response.data })
+      this.setState({ data: response.data, filteredData: response.data,})
     } else {
       Alert.alert(response.message)
     }
@@ -96,7 +103,26 @@ class RecipesTab extends Component {
   onFoodItemPress(item) {
     this.props.navigation.navigate('PhotoRecipeDetails', { data: item })
   }
+  _onFilterChange = (index) =>{
+    let { data,  filters} = this.state
+    filters[index].isSelected = !filters[index].isSelected;
+    let fil = []
+    for(let ind in filters){
+      if(filters[ind].isSelected == true )
+        fil.push(filters[ind].name);
+    } 
+    if(fil.length > 0){
+      let filteredData = [];
+      // for(let inde in data){
 
+      // }
+
+      this.setState({ filteredData: filteredData, filters});
+    } else {
+      this.setState({ filteredData: data, filters});
+    }
+
+  }
   render() {
     const { filters, data } = this.state;
     const { search } =this.props;
@@ -118,7 +144,9 @@ class RecipesTab extends Component {
               flexDirection: "row"
             }} >
               {
-                filters.map((item, idx) => <FilterBubble key={`filter-${idx}`} {...{ item }} />)
+                filters.map((item, idx) => <FilterBubble 
+                onPress={()=> this._onFilterChange(idx)}
+                key={`filter-${idx}`} {...{ item }} />)
               }
             </ViewX>
           </ScrollView>

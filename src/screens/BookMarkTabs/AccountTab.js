@@ -57,10 +57,9 @@ class AccountTab extends React.Component {
 
 
   _goToBookamrk = (item) => {
-    console.log(item)
-    this.props.navigation.navigate('UserAccount', { userDetails: item })
+    console.log("_goToBookamrk",item)
+    this.props.navigation.navigate('UserAccount', { userDetails: item, userId:item.id })
   }
-
   static async reloadScreen() {
     let token = await AsyncStorage.getItem('user_token')
     let response = await getUserBookmarkList(token)
@@ -75,7 +74,6 @@ class AccountTab extends React.Component {
   _getBookmarListAPICalled = async () => {
     let token = await AsyncStorage.getItem('user_token')
     let response = await getUserBookmarkList(token)
-
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {

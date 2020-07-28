@@ -14,6 +14,8 @@ const AppImages = {
     ic_filter: require('./tabIcon/filter.png'),
     ic_bookmark: require('./tabIcon/bookmark.png'),
     ic_profile: require('./tabIcon/profile.png'),
+    ic_eye_show: require('./ic_eye_show.png'),
+    ic_eye_hide: require('./ic_eye_hide.png'),
 
     homeItems: [
         require('./home/item1.png'),

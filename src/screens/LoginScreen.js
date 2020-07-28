@@ -14,10 +14,11 @@ import styled from 'styled-components/native';
 import { SafeAreaViewC, CTextColor, Devider, CText, CTextInputWithIcon, TextX } from '../components/common';
 import BaseComponent from '../containers/BaseComponent';
 import ForgotPasswordModal from '../components/hybridComponents/ForgotPasswordModal';
-import { postLogin } from '../apiManager'
+import { postLogin, updateProfile } from '../apiManager'
 import AsyncStorage from '@react-native-community/async-storage'
 //api
-import { BASE_URL, EMAIL_REGEX } from '../helper/Constants'
+
+import { BASE_URL, EMAIL_REGEX, UPDATE_USER_DETAILS_URL } from '../helper/Constants'
 import { CommonActions } from '@react-navigation/native';
 
 const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down', 'landscape', 'landscape-left', 'landscape-right'];
@@ -31,7 +32,8 @@ class LoginScreen extends BaseComponent {
       email: '',
       password: '',
       isOpenVeggieModal: false,
-      isRemember:false
+      isRemember:false,
+      showPassText:false
     }
   }
 
@@ -44,11 +46,64 @@ class LoginScreen extends BaseComponent {
     }, 1000)
   }
 
-  _navigateToDashboard = () => {
-    const { navigation } = this.props;
-    this.setState({ isOpenVeggieModal: false }, () =>
-      navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Dashboard' }] }))
-    )
+  _navigateToDashboard = async (meal) => {
+    const { navigation, loader } = this.props;
+    const { name,
+      website,
+      mobile_number,
+      description,
+      location ,email} = this.state.responseData.data;
+
+      let myHeaders = new Headers()
+      myHeaders.append('Authorization', `Bearer ${this.state.responseData.token}`)
+
+      var formdata = new FormData();
+      formdata.append("email", email);
+      formdata.append("name", name);
+      formdata.append("location", location);
+      formdata.append("website", website);
+      formdata.append("description", description);
+      formdata.append("mobile_number", mobile_number);
+      formdata.append("meal_preference", meal);
+  
+      console.log(formdata)
+  
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow'
+      };
+      loader(true)
+      fetch(UPDATE_USER_DETAILS_URL, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+          loader(false)
+          let response = JSON.parse(result)
+          if (response.code === 1) {
+            this.setState({ isOpenVeggieModal: false }, () =>
+              navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Dashboard' }] }))
+            )
+          } else {
+            Alert.alert("update Meal Preferance failed..");
+          }
+        }); 
+  
+
+
+
+    // loader(true);
+    // let res = await updateProfile({name,
+    //   website,
+    //   mobile_number,
+    //   description,
+    //   location,
+    //   meal_preference: meal});
+    //   console.log("update profile res=>:", res)
+    // loader(false);
+    // this.setState({ isOpenVeggieModal: false }, () =>
+    //   navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Dashboard' }] }))
+    // )
   }
 
   _authorizeUser = async () => {
@@ -67,7 +122,7 @@ class LoginScreen extends BaseComponent {
       
       
       loginSuccess(response);
-      this.setState({ isOpenVeggieModal: true })
+      this.setState({ isOpenVeggieModal: true, responseData: response  })
     } else {
       setTimeout(() => {
         Alert.alert(response.message)
@@ -107,15 +162,15 @@ class LoginScreen extends BaseComponent {
           <View style={styles.modalMainView}>
             <Text style={styles.modalHeaderText} >Meal Preferences</Text>
 
-            <TouchableOpacity style={[styles.popUpBtn, { marginTop: StyleConfig.countPixelRatio(40) }]} onPress={() => this._navigateToDashboard()}>
+            <TouchableOpacity style={[styles.popUpBtn, { marginTop: StyleConfig.countPixelRatio(40) }]} onPress={() => this._navigateToDashboard("all_meals")}>
               <Text style={styles.popUpBtnText} >All Meals</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.popUpBtn} onPress={() => this._navigateToDashboard()}>
+            <TouchableOpacity style={styles.popUpBtn} onPress={() => this._navigateToDashboard("vegetarian")}>
               <Text style={styles.popUpBtnText} >Vegetarian</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.popUpBtn, { marginBottom: StyleConfig.countPixelRatio(40) }]} onPress={() => this._navigateToDashboard()}>
+            <TouchableOpacity style={[styles.popUpBtn, { marginBottom: StyleConfig.countPixelRatio(40) }]} onPress={() => this._navigateToDashboard("vegan")}>
               <Text style={styles.popUpBtnText} >Vegan</Text>
             </TouchableOpacity>
 
@@ -126,7 +181,7 @@ class LoginScreen extends BaseComponent {
   }
 
   render() {
-    const { isRemember } = this.state
+    const { isRemember, showPassText } = this.state
     return (
       <SafeAreaViewC>
         <View style={styles.content}>
@@ -155,8 +210,10 @@ class LoginScreen extends BaseComponent {
 
               <CTextInputWithIcon
                 icon={AppImages.ic_lock}
+                rightIcon={showPassText ? AppImages.ic_eye_hide : AppImages.ic_eye_show}
+                onRightPress={()=>{this.setState({showPassText:!showPassText})}}
                 placeholder={'Password'}
-                secureTextEntry={true}
+                secureTextEntry={!showPassText}
                 color={'#111'}
                 placeholderTextColor={'#444'}
                 background={'#fff'}
