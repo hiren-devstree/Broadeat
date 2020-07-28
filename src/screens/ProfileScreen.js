@@ -19,7 +19,8 @@ import imgBack from '../assets/images/ic_back.png'
 import imgDummy from '../assets/images/ic_dummy.png'
 import { withTheme } from 'styled-components';
 let _this
-const BUTTON_TEXT = StyleConfig.convertHeightPerVal(18);
+const BUTTON_TEXT = StyleConfig.convertHeightPerVal(16);
+
 class ProfileScreen extends Component {
   constructor(props) {
     super(props)

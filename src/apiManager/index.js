@@ -16,7 +16,8 @@ import {
   GET_RECENT_SEARCH_URL,
   DELETE_SEARCH_RECORD_URL, 
   FILTER_URL,
-  POST_ADD_UPDATE_ACTIVITY
+  POST_ADD_UPDATE_ACTIVITY,
+  POST_USER_BOOKMARK
 } from './../helper/Constants'
 
 
@@ -214,6 +215,23 @@ const ApiManager = {
     myHeaders.append("Content-Type", "application/json")
 
     return fetch(SEARCH_RECIPE_URL, {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(data)
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
+  postUserBookmark: async (data, token) => {
+    let myHeaders = new Headers()
+    myHeaders.append('Authorization', `Bearer ${token}`)
+    myHeaders.append("Content-Type", "application/json")
+
+    return fetch(POST_USER_BOOKMARK, {
       method: 'POST',
       headers: myHeaders,
       body: JSON.stringify(data)

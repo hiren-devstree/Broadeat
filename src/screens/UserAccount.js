@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native";
 import withLoader from '../redux/actionCreator/withLoader'
-import { getUserWiseRcipeDetails } from '../apiManager'
+import { getUserWiseRcipeDetails, postUserBookmark } from '../apiManager'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import { withTheme } from "styled-components";
@@ -19,19 +19,22 @@ import StyleConfig from "../assets/styles/StyleConfig";
 import AppImages from '../assets/images';
 import { Account } from "./BookMarkTabs/AccountTab";
 
-const FilterBubble = withTheme(({ theme, item }) => {
+const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
   return (
+    <TouchableOpacity onPress={onPress}>
     <ViewX style={{
       marginHorizontal: StyleConfig.convertWidthPerVal(5),
       padding: StyleConfig.convertWidthPerVal(8),
-      backgroundColor: cLightCyan,
+      backgroundColor: item.isSelected ? filterOn : cLightCyan,
       borderRadius: 20
     }}>
-      <TextX style={{ fontSize: StyleConfig.fontSizeH3_4, color: filterOn }} >{item}</TextX>
+      <TextX style={{ fontSize: StyleConfig.fontSizeH3_4, color: !item.isSelected ? filterOn : cLightCyan, }} >{item.name}</TextX>
     </ViewX>
+    </TouchableOpacity>
   )
 })
+
 
 // const POST_SIZE = StyleConfig.width / 2;
 const POST_SIZE = (StyleConfig.width - 15) / 2;
@@ -64,50 +67,114 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
     </TouchableWithoutFeedback>
   )
 })
+const INIT_FILTER = [
+  {"name":"View All", isSelected:false},
+  {"name":"Pastas", isSelected:false},
+  {"name":"Salads", isSelected:false},
+  {"name":"Deserts", isSelected:false},
+  {"name":"Vegetarian", isSelected:false}] ;
 
 class UserAccount extends Component {
 
   constructor() {
     super()
     this.state = {
-      filters: ["View All", "Pastas", "Salads", "Deserts", "Vegetarian"],
-      data: []
+      filters: INIT_FILTER,
+      data: [],
+      filteredData:[],
+      hashTagAvailable:[
+        INIT_FILTER[0],
+      ]
     }
   }
 
   async componentDidMount() {
     const { loader } = this.props
+    loader(true);
     let token = await AsyncStorage.getItem('user_token')
+    let currentUserId = await AsyncStorage.getItem('user_id')
     let userId = this.props.route.params.userId
     
     if(userId == undefined){
-      userId = await AsyncStorage.getItem('user_id')
+      userId = currentUserId
     }
     let data = {
       user_id: userId
     }
     let response = await getUserWiseRcipeDetails(data, token)
-
-    console.log(response)
+    loader(false)
+    console.log("RES1=>",response)
     if (response.code === 1) {
-      this.setState({ data: response.data })
+      let hashTagAvailable = [INIT_FILTER[0]];
+      let strHash = [];
+      for(let ind in response.data){
+        for(let subInd in response.data[ind].recipe_hashtags){
+          strHash.push(response.data[ind].recipe_hashtags[subInd].hashtag_name)
+        }
+      }
+      for( let ind in this.state.filters){
+        if(strHash.includes(this.state.filters[ind].name)){
+          hashTagAvailable.push(this.state.filters[ind]);
+        }
+      }
+      this.setState({ data: response.data, filteredData: response.data, hashTagAvailable, user_id:currentUserId})
     } else {
-      setTimeout(() => {
-        Alert.alert(response.message)
-      }, 500)
+      Alert.alert(response.message)
     }
+    // if (response.code === 1) {
+    //   this.setState({ data: response.data })
+    // } else {
+    //   setTimeout(() => {
+    //     Alert.alert(response.message)
+    //   }, 500)
+    // }
   }
 
 
   onFoodItemPress(item) {
     this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })
   }
+  _onFilterChange = (index) =>{
+    let { data,  filters} = this.state
+    filters[index].isSelected = !filters[index].isSelected;
+    let fil = []
+    for(let ind in filters){
+      if(filters[ind].isSelected == true )
+        fil.push(filters[ind].name);
+    } 
+    if(fil.length > 0){
+      let filteredData = [];
+      for(let ind in data){
+        for(let subInd in data[ind].recipe_hashtags){
+          if(fil.includes(data[ind].recipe_hashtags[subInd].hashtag_name)){
+            filteredData.push(data[ind])
+          }
+        }
+      }
+      this.setState({ filteredData: filteredData, filters});
+    } else {
+      this.setState({ filteredData: data, filters});
+    }
 
+  }
+  _onBookmarkUser=async ()=>{
+    const { loader } = this.props
+    loader(true);
+    let token = await AsyncStorage.getItem('user_token')
+    let user_id = this.props.route.params.userId
+    let response = await postUserBookmark({ "isboolmark":true,
+    "User_bookmark_id":user_id}, token);
+    console.log("USER_BOOKMARK-> ", response)
+    loader(false);
+  }
   render() {
     const { theme } = this.props
-    const { filters, data } = this.state;
+    const { hashTagAvailable, filteredData,user_id  } = this.state;
     let userDetails = this.props.route.params.userDetails
-    
+    let showBookmark = true ;
+    if(this.props.route.params.userId == undefined || this.props.route.params.userId == user_id) {
+      showBookmark = false;
+    }
     // let data = []
     // for (let ind = 0; ind < 20; ind++) {
     //   let ii = ind % 13;
@@ -135,26 +202,32 @@ class UserAccount extends Component {
                 </ViewX>
               </ViewX>
             </TouchableOpacity>
+            {showBookmark && <TouchableOpacity onPress={ this._onBookmarkUser }>
             <Image
               resizeMode="contain"
               style={{ width: StyleConfig.iconSize, aspectRatio: 1 }}
               source={AppImages.ic_bookmark}
             />
+            </TouchableOpacity> }
           </ViewX>
 
 
         </ViewX>
-        <ViewX>
+        <ViewX style={{
+              flexDirection: "row"
+            }}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
           >
             <ViewX style={{
-              marginVertical: StyleConfig.convertHeightPerVal(5),
+              margin: StyleConfig.convertHeightPerVal(5),
               flexDirection: "row"
             }} >
               {
-                filters.map((item, idx) => <FilterBubble key={`filter-${idx}`} {...{ item }} />)
+                hashTagAvailable.map((item, idx) => <FilterBubble 
+                onPress={()=> this._onFilterChange(idx)}
+                key={`filter-${idx}`} {...{ item }} />)
               }
             </ViewX>
           </ScrollView>
@@ -163,14 +236,14 @@ class UserAccount extends Component {
           contentContainerStyle={{ paddingVertical: 20, alignSelf: "center" }}
           numColumns={2}
           keyExtractor={(_, idx) => `foodGlr-${idx}`}
-          data={data}
+          data={filteredData  }
           renderItem={({ item, idx }) => <FavoriteFood {...{ item, idx }} onPres={() => this.onFoodItemPress(item)} />}
         />
       </SafeAreaView>
     );
   }
 }
-export default withTheme(UserAccount);
+export default withLoader(withTheme(UserAccount));
 
 const styles = StyleSheet.create({
   container: {
