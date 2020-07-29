@@ -44,7 +44,7 @@ const MultiTextInput = styled.TextInput`
     color: ${props => props.theme.text};
     border-radius: ${StyleConfig.convertHeightPerVal(10)}px;
     paddingVertical: ${StyleConfig.convertHeightPerVal(10)}px;
-    font-size: ${StyleConfig.fontSizeH3_4}px;
+    font-size: ${StyleConfig.fontSizeH2_3}px;
     background: ${props => props.theme.tabBackground};
     padding: 10px;
 `

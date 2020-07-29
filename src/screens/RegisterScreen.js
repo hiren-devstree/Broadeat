@@ -111,6 +111,7 @@ class RegisterScreen extends Component {
                 placeholder={'Email'}
                 onChangeText={(val) => this.setState({ email: val })}
                 autoCapitalize="none"
+                keyboardType={"email-address"}
                 value={this.state.email}
               />
               <CTextInputWithIcon

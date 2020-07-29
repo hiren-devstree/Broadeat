@@ -320,7 +320,7 @@ componentWillUnmount=async ()=>{
   renderDescriptionView = () => {
     const { noOfUser, timer, foodType, data } = this.state
     let view=0, likes=0, dislike=0, isLike=false, isDisLike=false, isBookmark=false;
-    if(data){
+    if(data && data.Activity.length > 0){
       view = data.Activity[0].view;
       likes = data.Activity[0].likes;
       dislike = data.Activity[0].dislike;

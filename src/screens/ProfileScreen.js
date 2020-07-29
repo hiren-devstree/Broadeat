@@ -173,7 +173,9 @@ class ProfileScreen extends Component {
             <TextX fontSize={BUTTON_TEXT}>Promote Content</TextX>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionbtnContainer}>
+          <TouchableOpacity 
+            disabled={true}
+          style={styles.optionbtnContainer}>
             <TextX fontSize={BUTTON_TEXT}>Switch Account</TextX>
           </TouchableOpacity>
 
@@ -186,7 +188,7 @@ class ProfileScreen extends Component {
       </>
     )
   }
-  _onLogout = ()=>{
+  _onLogout = async ()=>{
     Alert.alert(
       "Do you want to Logout?",
       "",
@@ -196,7 +198,11 @@ class ProfileScreen extends Component {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
-        { text: "OK", onPress: () => this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login' }] })) }
+        { text: "OK", onPress: async () => {
+          await AsyncStorage.setItem("is_remember","0");
+          this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login' }] })) 
+          }
+        }
       ],
       { cancelable: false }
     );

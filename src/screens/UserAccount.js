@@ -102,7 +102,8 @@ class UserAccount extends Component {
       userId = currentUserId
     } else {
       bookMarkedCooks = await getUserBookmarkList(token)
-      if(!bookMarkedCooks.error){
+      console.log({bookMarkedCooks})
+      if(!bookMarkedCooks.error && bookMarkedCooks.data.length > 0){
         let filteredBookMarkedCooks = bookMarkedCooks.data.filter((item)=> item.id == userId)
         isAlreadyBookMarked = filteredBookMarkedCooks.length == 0 ? false :true;
       }

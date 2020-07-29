@@ -172,6 +172,25 @@ const FIlterStackNavigator = withTheme(({ theme, ...props }) => {
   )
 })
 
+const ProfileNavigator = createStackNavigator();
+
+const ProfileStackNavigator = withTheme(({ theme, ...props }) => {
+  return (
+    <ProfileNavigator.Navigator>
+      <ProfileNavigator.Screen
+        options={{ headerShown: false }}
+        name={'Profile'} component={ProfileScreen}
+      />
+      <ProfileNavigator.Screen
+        options={{ headerShown: false }}
+        name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
+      />
+
+    </ProfileNavigator.Navigator >
+  )
+})
+
+
 const TabNavigator = withTheme(({ theme, ...props }) => {
   return (
     <Tab.Navigator
@@ -208,7 +227,11 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
         }
       }}
     >
-      <Tab.Screen name="Home" component={HomeStackNavigator} />
+      <Tab.Screen listeners={{
+        tabPress: e => {
+          HomeScreen.reloadScreen()
+        }
+      }}  name="Home" component={HomeStackNavigator} />
       <Tab.Screen listeners={{
         tabPress: e => {
           SearchScreen.reloadScreen()

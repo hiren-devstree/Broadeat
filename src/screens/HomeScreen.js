@@ -55,27 +55,39 @@ class HomeScreen extends Component {
       )
     })
   }
-
-  async componentDidMount() {
+  static reloadScreen = async () => {
     const { loader } = this.props
-    
-
     loader(true)
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
-    console.log(response)
+    console.log("Loader",false)
+    loader(false)
+    console.log("getRecipeData",response)
     if (response.code === 1) {
-      loader(false)
       this.setState({ data: response.data })
     } else {
-      loader(false)
       setTimeout(() => {
         Alert.alert(response.message)
       }, 500)
     }
   }
-
-
+  componentDidMount= async () => {
+    const { loader } = this.props
+    loader(true)
+    let token = await AsyncStorage.getItem('user_token')
+    let response = await getRecipeData(token)
+    console.log("Loader",false)
+    loader(false)
+    console.log("getRecipeData",response)
+    if (response.code === 1) {
+      this.setState({ data: response.data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
+  
   render() {
     return this.renderMainView()
   }

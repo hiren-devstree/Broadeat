@@ -74,15 +74,13 @@ class LoginScreen extends BaseComponent {
         body: formdata,
         redirect: 'follow'
       };
-      loader(true)
       fetch(UPDATE_USER_DETAILS_URL, requestOptions)
         .then(response => response.text())
         .then(result => {
-          loader(false)
           let response = JSON.parse(result)
           if (response.code === 1) {
             this.setState({ isOpenVeggieModal: false }, () =>
-              navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Dashboard' }] }))
+              navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Dashboard' }] }))
             )
           } else {
             Alert.alert("update Meal Preferance failed..");
@@ -111,16 +109,11 @@ class LoginScreen extends BaseComponent {
     loader(true)
     const { email, password, isRemember } = this.state
     let response = await postLogin(email, password)
-
     loader(false)
-
     if (response.code === 1) {
       AsyncStorage.setItem('user_token', response.token)
       AsyncStorage.setItem('user_id', `${response.data.id}`)
       AsyncStorage.setItem('is_remember', isRemember ? '1' : '0')
-      
-      
-      
       loginSuccess(response);
       this.setState({ isOpenVeggieModal: true, responseData: response  })
     } else {
@@ -205,6 +198,7 @@ class LoginScreen extends BaseComponent {
                 background={'#fff'}
                 onChangeText={(val) => this.setState({ email: val })}
                 autoCapitalize="none"
+                keyboardType={"email-address"}
                 value={this.state.email}
               />
 
