@@ -132,11 +132,8 @@ class FilterScreen extends Component {
 
 
   _getFilterAPICalling = async () => {
-
     let token = await AsyncStorage.getItem('user_token')
-
     let response = await getTagList(token)
-
     let tempArr = []
     response.data.category_list.forEach(item => {
       let temp = []
@@ -194,6 +191,19 @@ class FilterScreen extends Component {
             renderItem={({item,index})=>(
               <View key={`header-${index}`}>
               <FilterBubble
+                onPress={() => {
+                  item.select = !item.select
+                  let selectedTag = this.state.selectedTag
+                  if (selectedTag.includes(item.tag_name)) {
+                    let index = selectedTag.indexOf(item.tag_name)
+                    if (index !== -1) {
+                      selectedTag.splice(index, 1)
+                    }
+                  } else {
+                    selectedTag.push(item.tag_name)
+                  }
+                  this.setState({ data: data, selectedTag: selectedTag })
+                }}
                 name={item.tag_name}
                 isSelected={item.select}
             />

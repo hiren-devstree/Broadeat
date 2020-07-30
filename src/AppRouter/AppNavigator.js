@@ -100,6 +100,7 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
       <HomeNavigator.Screen
         options={{ headerShown: false }}
         name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
+        path={'receipe_details/:receipeId'}
       />
     </HomeNavigator.Navigator >
   )
@@ -129,6 +130,7 @@ const SearchStackNavigator = withTheme(({ theme, ...props }) => {
       <SearchNavigator.Screen
         options={{ headerShown: false }}
         name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
+        path={'receipe_details/:receipeId'}
       />
     </SearchNavigator.Navigator >
   )
@@ -146,6 +148,7 @@ const BookmarkStackNavigator = withTheme(({ theme, ...props }) => {
       <BookmarkNavigator.Screen
         options={{ headerShown: false }}
         name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
+        path={'receipe_details/:receipeId'}
       />
 
     </BookmarkNavigator.Navigator >
@@ -184,12 +187,27 @@ const ProfileStackNavigator = withTheme(({ theme, ...props }) => {
       <ProfileNavigator.Screen
         options={{ headerShown: false }}
         name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
+        path={'receipe_details/:receipeId'}
       />
 
     </ProfileNavigator.Navigator >
   )
 })
 
+const DetailsNavigator = createStackNavigator();
+
+const DetailsStackNavigator = withTheme(({ theme, ...props }) => {
+  return (
+    <DetailsNavigator.Navigator path={'receipe_details/:receipeId'} >
+      // broadeat://receipe_details/77
+      <ProfileNavigator.Screen
+        options={{ headerShown: false }}
+        name={'receipe_details'} component={PhotoRecipeDetails}
+      />
+
+    </DetailsNavigator.Navigator >
+  )
+})
 
 const TabNavigator = withTheme(({ theme, ...props }) => {
   return (
@@ -250,16 +268,7 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
 })
 
 const AppNavigator =  ({ theme, ...props }) => {
-  const [isAlreadyLogin, setAlreadyLogin] = useState(false);
-  useEffect(() => {
-    AsyncStorage.getItem('user_token').then((response)=>{
-      console.log({response});
-      if(response != null && response != undefined){
-        console.log("CHANGE STATE---");
-        setAlreadyLogin(true);
-      }
-    })
-  });
+  
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -273,7 +282,7 @@ const AppNavigator =  ({ theme, ...props }) => {
           headerBackTitleVisible: false,
         }}
       >
-        <Stack.Screen options={{ headerShown: false }} name="Init" component={InitScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Init" component={InitScreen} path={'init'}/>
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
         
@@ -282,6 +291,11 @@ const AppNavigator =  ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
         <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} />
+        <Stack.Screen
+        options={{ headerShown: false }}
+        name={'receipe'} 
+        component={DetailsStackNavigator}
+      />
         <Stack.Screen options={{ headerShown: false }} name="ChangePassword" component={ChangePassword} />
         <Stack.Screen options={{
           headerShown: true,
@@ -298,7 +312,8 @@ const AppNavigator =  ({ theme, ...props }) => {
     </NavigationContainer >
   );
 }
-export default withTheme(AppNavigator)
-// const TabNavigator = styled.Tab.Navigator`
-//     color: ${props => props.theme.background};
-// `
+const AppContainer =  withTheme(AppNavigator)
+export default () => {
+  const prefix = 'broadeat://'
+  return <AppContainer uriPrefix={prefix} />
+}

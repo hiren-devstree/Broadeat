@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import {
   View, StyleSheet, Image, TouchableOpacity,
-  ScrollView, FlatList, Text, Alert
+  ScrollView, FlatList, Text, Alert, Share
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 
@@ -46,6 +46,8 @@ class PhotoRecipeDetails extends Component {
   }
 
   componentDidMount() {
+    //const item = this.props.route.params.data
+    
     let id = this.props.route.params.data
     this._getRecipeDetailsAPICalling(id)
     AsyncStorage.getItem("user_id").then((user_id)=> this.setState({user_id}))
@@ -208,7 +210,25 @@ componentWillUnmount=async ()=>{
       }, 500)
     }
   }
-
+  _onShare= async () => {
+    let {data} = this.state ;
+    try {
+      const result = await Share.share({
+        message: `broadeat://receipe_details/${data.Recipe.id}`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
   /*
   ..######...#######..##.....##.########...#######..##....##.########.##....##.########..######.
   .##....##.##.....##.###...###.##.....##.##.....##.###...##.##.......###...##....##....##....##
@@ -348,10 +368,11 @@ componentWillUnmount=async ()=>{
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>{dislike ? dislike : "0"}</TextX>
           </ViewX>
           </TouchableOpacity>
+          <TouchableOpacity  onPress={this._onShare }>
           <ViewX style={{ flexDirection: 'row' }}>
             <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3, }} resizeMode='contain' />
-            {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}
           </ViewX>
+          </TouchableOpacity>
           <TouchableOpacity onPress={this._postFavorite }>
             <ViewX style={{ flexDirection: 'row' }}>
               <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3, tintColor: isBookmark ? 'blue' : '#555' }} resizeMode='contain' />

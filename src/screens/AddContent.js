@@ -62,7 +62,6 @@ const IngredientsWrapper = withTheme(({ theme, idx, _onChangeIngredients, ...pro
         width: StyleConfig.convertWidthPerVal(80)
       }}
       placeholder={"Qty"}
-      keyboardType={'numeric'}
       onChangeText={(text) => _onChangeIngredients(idx, 'q', text)}
     />
     <IngredientTextInput
@@ -207,13 +206,14 @@ class AddContent extends Component {
     formdata.append("recipe_title", title);
     formdata.append("meal_preference", mealPreference);
    
-    if(description.length == 0){
-      hasError = true ;
-      this.showAlert("Please Enter Description")
-      return ;
+    // if(description.length == 0){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Description")
+    //   return ;
+    // }
+    if(description.length != 0){
+      formdata.append("description", description);
     }
-   
-    formdata.append("description", description);
     let hasAnyIngredients = false ;
     ingredients.forEach((item, index) => {
       if(item.qty.length > 0 || item.measuremnt.length > 0 || item.ingredient.length > 0){
@@ -243,63 +243,83 @@ class AddContent extends Component {
       return ;
     }
     
-    if(nutritionCalories.length == 0 ){
-      hasError = true ;
-      this.showAlert("Please Enter Nutrition Calories")
-      return ;
-    } else  if(Number(nutritionCalories).toString() == "NaN" ){
-      hasError = true ;
-      this.showAlert("Please Enter Valid Nutrition Calories")
-      return ;
+    // if(nutritionCalories.length == 0 ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Nutrition Calories")
+    //   return ;
+    // } else  if(Number(nutritionCalories).toString() == "NaN" ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Valid Nutrition Calories")
+    //   return ;
+    // }
+    if(nutritionCalories.length != 0 && Number(nutritionCalories).toString() != "NaN"  ){
+      formdata.append("nutrition_calories", nutritionCalories)
     }
-    formdata.append("nutrition_calories", nutritionCalories)
+    
 
-    if(nutritionProtein.length == 0 ){
-      hasError = true ;
-      this.showAlert("Please Enter Nutrition Protein")
-      return ;
-    } else  if(Number(nutritionProtein).toString() == "NaN" ){
-      hasError = true ;
-      this.showAlert("Please Enter Valid Nutrition Protein")
-      return ;
+    // if(nutritionProtein.length == 0 ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Nutrition Protein")
+    //   return ;
+    // } else  if(Number(nutritionProtein).toString() == "NaN" ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Valid Nutrition Protein")
+    //   return ;
+    // }
+    if( nutritionProtein.length != 0 && Number(nutritionProtein).toString() != "NaN" ){
+      formdata.append("nutrition_protein", nutritionProtein)
     }
-    formdata.append("nutrition_protein", nutritionProtein)
-    if(nutritionFat.length == 0 ){
-      hasError = true ;
-      this.showAlert("Please Enter Nutrition Fat")
-      return ;
-    } else  if(Number(nutritionFat).toString() == "NaN" ){
-      hasError = true ;
-      this.showAlert("Please Enter Valid Nutrition Fat")
-      return ;
+    
+    // if(nutritionFat.length == 0 ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Nutrition Fat")
+    //   return ;
+    // } else  if(Number(nutritionFat).toString() == "NaN" ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Valid Nutrition Fat")
+    //   return ;
+    // }
+    if( nutritionFat.length != 0 && Number(nutritionFat).toString() != "NaN" ){
+      formdata.append("nutrition_fat", nutritionFat)
     }
-    formdata.append("nutrition_fat", nutritionFat)
-    if(nutritionCarbs.length == 0 ){
-      hasError = true ;
-      this.showAlert("Please Enter Nutrition Carbs")
-      return ;
-    } else  if(Number(nutritionCarbs).toString() == "NaN" ){
-      hasError = true ;
-      this.showAlert("Please Enter Valid Nutrition Carbs")
-      return ;
+    
+    // if(nutritionCarbs.length == 0 ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Nutrition Carbs")
+    //   return ;
+    // } else  if(Number(nutritionCarbs).toString() == "NaN" ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Valid Nutrition Carbs")
+    //   return ;
+    // }
+    if( nutritionCarbs.length != 0 && Number(nutritionCarbs).toString() != "NaN" ){
+      formdata.append("nutrition_carbs", nutritionCarbs)
     }
-    formdata.append("nutrition_carbs", nutritionCarbs)
-    if(timeDuration.length == 0 ){
-      hasError = true ;
-      this.showAlert("Please Enter Time Duration")
-      return ;
-    } 
-    formdata.append("time_duration", timeDuration)
-    if(noOfPerson.length == 0 ){
-      hasError = true ;
-      this.showAlert("Please Enter No Of Person")
-      return ;
-    } else  if(Number(noOfPerson).toString() == "NaN" ){
-      hasError = true ;
-      this.showAlert("Please Enter Valid No Of Person")
-      return ;
+    
+    // if(timeDuration.length == 0 ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Time Duration")
+    //   return ;
+    // } 
+
+    if(timeDuration.length > 0 ){
+      formdata.append("time_duration", timeDuration.length == 0 ? '' : timeDuration);
     }
-    formdata.append("no_of_person", noOfPerson)
+    
+
+    // if(noOfPerson.length == 0 ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter No Of Person")
+    //   return ;
+    // } else  if(Number(noOfPerson).toString() == "NaN" ){
+    //   hasError = true ;
+    //   this.showAlert("Please Enter Valid No Of Person")
+    //   return ;
+    // }
+    if( noOfPerson.length != 0 && Number(noOfPerson).toString() != "NaN" ){
+      formdata.append("no_of_person", noOfPerson)
+    }
+    
     for(let groupInd in tagData){
       let groupData = tagData[groupInd].data
       for(let ind in groupData){
@@ -310,9 +330,9 @@ class AddContent extends Component {
     }
     
     if(selectedTag.length == 0){
-      hasError = true ;
-      this.showAlert("Please Select one Tag")
-      return ;
+      // hasError = true ;
+      // this.showAlert("Please Select one Tag")
+      // return ;
     } else{
       for(let ind in selectedTag){
         formdata.append("recipe_tags[]", String(selectedTag[ind]));  
@@ -321,9 +341,9 @@ class AddContent extends Component {
 
     let selectedHashTag = hashTag.filter((item) => item.isSelected == true);
     if(selectedHashTag.length == 0){
-      hasError = true ;
-      this.showAlert("Please Select one Hash Tag")
-      return ;
+      // hasError = true ;
+      // this.showAlert("Please Select one Hash Tag")
+      // return ;
     } else{
       for(let ind in selectedHashTag){
         formdata.append("recipe_hashtags[]", String(selectedHashTag[ind].name));  
@@ -338,14 +358,12 @@ class AddContent extends Component {
         let myImage = StyleConfig.isIphone ?
           { "uri": images[ind].path, "filename": IMAGE_CROP, "name": IMAGE_CROP } :
           { "uri": images[ind].path, "name": IMAGE_CROP, "type": images[ind].mime };
-
         if (mainImage == null) {
           mainImage = myImage;
           formdata.append("image", myImage)
         } else {
           formdata.append("recipe_media[]", myImage)
         }
-
       }
     }
     console.log(formdata)
@@ -537,6 +555,7 @@ class AddContent extends Component {
             >Meal Preference</TextX>
             <DropDownPicker
               items={[
+                { label: 'All Meals', value: 'all_meals' },
                 { label: 'Vegetarian', value: 'vegetarian' },
                 { label: 'Vegan', value: 'vegan' },
               ]}
