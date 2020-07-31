@@ -15,11 +15,11 @@ import { ViewX, TextX, SafeAreaView } from "../../components/common";
 import StyleConfig from "../../assets/styles/StyleConfig";
 import AppImages from '../../assets/images';
 const INIT_FILTER = [
-  {"name":"View All", isSelected:false},
-  {"name":"Pastas", isSelected:false},
-  {"name":"Salads", isSelected:false},
-  {"name":"Deserts", isSelected:false},
-  {"name":"Vegetarian", isSelected:false}] ;
+  {"_id":0, "name":"View All", isSelected:false},
+  {"_id":1,"name":"Pastas", isSelected:false},
+  {"_id":2,"name":"Salads", isSelected:false},
+  {"_id":3,"name":"Deserts", isSelected:false},
+  {"_id":4,"name":"Vegetarian", isSelected:false}] ;
 const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
   return (
@@ -44,7 +44,8 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
     <TouchableWithoutFeedback onPress={onPres} >
       <ViewX
         style={{
-          width: POST_SIZE
+          width: POST_SIZE,
+          justifyContent:'flex-start'
         }}>
         <ViewX
           style={{
@@ -61,8 +62,9 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
           />
         </ViewX>
         <TextX style={{
+          width: "90%",
           fontSize: StyleConfig.fontSizeH3
-        }} >{item.recipe_title}</TextX>
+        }} >{`${item.recipe_title}`}</TextX>
       </ViewX>
     </TouchableWithoutFeedback>
   )
@@ -89,8 +91,27 @@ class RecipesTab extends Component {
   }
 
 
-  static reloadScreen() {
-    _this._getFavouriteListAPICalled()
+  static reloadScreen= async()=> {
+    console.log('Receipe Tag Reload screen')
+    let token = await AsyncStorage.getItem('user_token')
+    let response = await getFavouriteListRecipe(token)
+    if (response.code === 1) {
+      let hashTagAvailable = [INIT_FILTER[0]];
+      let strHash = [];
+      for(let ind in response.data){
+        for(let subInd in response.data[ind].recipe_hashtags){
+          strHash.push(response.data[ind].recipe_hashtags[subInd].hashtag_name)
+        }
+      }
+      for( let ind in INIT_FILTER){
+        if(strHash.includes(INIT_FILTER[ind].name)){
+          hashTagAvailable.push(INIT_FILTER[ind]);
+        }
+      }
+      _this.setState({ data: response.data, filteredData: response.data, hashTagAvailable})
+    } else {
+      Alert.alert(response.message)
+    }
   }
 
   _getFavouriteListAPICalled = async () => {
@@ -116,36 +137,53 @@ class RecipesTab extends Component {
   }
 
   onFoodItemPress(item) {
-    this.props.navigation.navigate('PhotoRecipeDetails', { data: item })
+    console.log({item})
+    this.props.navigation.navigate('PhotoRecipeDetails', { data: item.recipe_id })
   }
-  _onFilterChange = (index) =>{
+  _onFilterChange = (item) =>{
     let { data,  filters} = this.state
-    filters[index].isSelected = !filters[index].isSelected;
+    
+    for(let filInd in filters ){
+      if(filters[filInd].name == item.name){
+        filters[filInd].isSelected = !filters[filInd].isSelected;    
+      }
+    }
+    if(item._id == 0){
+      for(let filInd in filters ){
+        filters[filInd].isSelected = filInd == 0 ? true : false
+      } 
+    } else if(item._id != 0 && filters[0].isSelected ){
+      filters[0].isSelected = false
+    }
+
     let fil = []
     for(let ind in filters){
       if(filters[ind].isSelected == true )
         fil.push(filters[ind].name);
     } 
-    if(fil.length > 0){
+    console.log({fil, filters})
+    if(fil.length == 0 || (fil.length ==1 && fil[0] == filters[0].name)){
+      console.log("State 1", data)
+      this.setState({ filteredData: data, filters});
+    } else {
+      console.log("State 2")
       let filteredData = [];
       for(let ind in data){
         for(let subInd in data[ind].recipe_hashtags){
           if(fil.includes(data[ind].recipe_hashtags[subInd].hashtag_name)){
             filteredData.push(data[ind])
+            break;
           }
         }
       }
       this.setState({ filteredData: filteredData, filters});
-    } else {
-      this.setState({ filteredData: data, filters});
-    }
-
+    } 
   }
   render() {
     const {  hashTagAvailable, filteredData } = this.state;
     const { search } =this.props;
     let afterSearch = filteredData;
-    console.log({afterSearch})
+    
     if(search.length > 0 && afterSearch.length > 0){
       afterSearch = afterSearch.filter((item)=> item.recipe_title.toLowerCase().includes(search.toLowerCase()));
     }
@@ -163,14 +201,14 @@ class RecipesTab extends Component {
             }} >
               {
                 hashTagAvailable.map((item, idx) => <FilterBubble 
-                onPress={()=> this._onFilterChange(idx)}
+                onPress={()=> this._onFilterChange(item)}
                 key={`filter-${idx}`} {...{ item }} />)
               }
             </ViewX>
           </ScrollView>
         </ViewX>
         <FlatList
-          contentContainerStyle={{ paddingVertical: 20, alignSelf: "center" }}
+          contentContainerStyle={{ paddingVertical: 20,  }}
           numColumns={2}
           keyExtractor={(_, idx) => `foodGlr-${idx}`}
           data={afterSearch}

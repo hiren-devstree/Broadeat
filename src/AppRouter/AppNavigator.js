@@ -19,6 +19,7 @@ import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import FilterScreen from '../screens/FilterScreen';
 import BookmarkScreen from '../screens/BookmarkScreen';
+import RecipesTab from '../screens/BookMarkTabs/RecipesTab';
 import ProfileScreen from '../screens/ProfileScreen';
 import PhotoRecipeDetails from '../screens/PhotoRecipeDetails';
 import EditAccount from '../screens/EditAccount';
@@ -256,7 +257,12 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
         }
       }} name="Search" component={SearchStackNavigator} />
       <Tab.Screen name="Filter" component={FIlterStackNavigator} />
-      <Tab.Screen name="Bookmark" component={BookmarkStackNavigator} />
+      <Tab.Screen name="Bookmark" component={BookmarkStackNavigator}
+      listeners={{
+        tabPress: e => {
+          RecipesTab.reloadScreen()
+        }
+      }} />
       <Tab.Screen listeners={{
         tabPress: e => {
           ProfileScreen.reloadScreen()

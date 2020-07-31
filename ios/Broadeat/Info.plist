@@ -20,6 +20,19 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>broadeat</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>broadeat</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -35,6 +48,11 @@
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
 			<key>xxx.yyyyy.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
@@ -44,15 +62,14 @@
 				<key>NSTemporaryExceptionMinimumTLSVersion</key>
 				<string>TLSv1.1</string>
 			</dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) requires camera access to collect picture for content</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) requires gallery access to collect picture for content</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fontisto.ttf</string>
@@ -82,10 +99,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) requires gallery access to collect picture for content</string>
-	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) requires camera access to collect picture for content</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

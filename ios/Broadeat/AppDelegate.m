@@ -11,7 +11,7 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
-
+#import <React/RCTLinkingManager.h>
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
   SKDescriptorMapper *layoutDescriptorMapper = [[SKDescriptorMapper alloc] initWithDefaults];
@@ -48,11 +48,17 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
-#if DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-#else
-  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-#endif
+  #if DEBUG
+    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  #else
+    return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  #endif
+  //return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+}
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url
+ options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+ return [RCTLinkingManager application:app openURL:url options:options];
 }
 
 @end

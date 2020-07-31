@@ -83,8 +83,8 @@ componentWillUnmount=async ()=>{
   _keyExtractor = (item, index) => index.toString()
 
   _getRecipeDetailsAPICalling = async (id) => {
-    const { loader } = this.props
-    let token = await AsyncStorage.getItem('user_token')
+    const { loader } = this.props ;
+    let token = await AsyncStorage.getItem('user_token');
 
     let data = {
       id: id
