@@ -77,7 +77,7 @@ class SearchScreen extends Component {
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {
-      console.log(response.message)
+      //console.log(response.message)
       
     }
   }
@@ -90,9 +90,9 @@ class SearchScreen extends Component {
     if (response.code === 1) {
       _this.setState({ data: response.data })
     } else {
-      setTimeout(() => {
-        Alert.alert(response.message)
-      }, 500)
+      // setTimeout(() => {
+      //   Alert.alert(response.message)
+      // }, 500)
     }
   }
 
