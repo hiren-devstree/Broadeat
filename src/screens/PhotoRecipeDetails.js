@@ -363,7 +363,7 @@ componentWillUnmount=async ()=>{
     return (
       <ViewX style={{ flex: 1, alignItems: 'flex-start' }}>
         {this.renderHeaderBottomView()}
-        <ViewX style={styles.operationView}>
+        {data && data.Recipe.id != 0 && <ViewX style={styles.operationView}>
           <ViewX style={{ flexDirection: 'row' }}>
             <Image source={imgView} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>{view ? view : "0"}</TextX>
@@ -393,6 +393,7 @@ componentWillUnmount=async ()=>{
           </TouchableOpacity>
 
         </ViewX>
+        }
         <TextX
           fontSize={StyleConfig.countPixelRatio(14)}
           style={{ marginLeft: 15 }}
