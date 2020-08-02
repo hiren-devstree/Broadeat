@@ -185,12 +185,16 @@ const ProfileStackNavigator = withTheme(({ theme, ...props }) => {
         options={{ headerShown: false }}
         name={'Profile'} component={ProfileScreen}
       />
+      <Stack.Screen 
+        options={{ headerShown: false }} 
+        name="AddContent" 
+        component={AddContent} />
+
       <ProfileNavigator.Screen
         options={{ headerShown: false }}
-        name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
-        path={'receipe_details/:receipeId'}
+        name={'PreviewReceipe'} component={PhotoRecipeDetails}
+        
       />
-
     </ProfileNavigator.Navigator >
   )
 })
@@ -267,7 +271,7 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
         tabPress: e => {
           ProfileScreen.reloadScreen()
         }
-      }} name="Profile" component={ProfileScreen} />
+      }} name="Profile" component={ProfileStackNavigator} />
     </Tab.Navigator>
 
   )
@@ -296,7 +300,7 @@ const AppNavigator =  ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
-        <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} />
+        {/* <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} /> */}
         <Stack.Screen
         options={{ headerShown: false }}
         name={'receipe'} 

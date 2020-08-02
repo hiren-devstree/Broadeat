@@ -46,10 +46,14 @@ class PhotoRecipeDetails extends Component {
   }
 
   componentDidMount() {
-    //const item = this.props.route.params.data
-    
     let id = this.props.route.params.data
-    this._getRecipeDetailsAPICalling(id)
+    if(id == 0){
+      this.setState({
+        data:this.props.route.params.ReceipeData
+      });
+    }else{
+      this._getRecipeDetailsAPICalling( id, true )
+    }
     AsyncStorage.getItem("user_id").then((user_id)=> this.setState({user_id}))
   }
 componentWillUnmount=async ()=>{
@@ -82,15 +86,17 @@ componentWillUnmount=async ()=>{
 
   _keyExtractor = (item, index) => index.toString()
 
-  _getRecipeDetailsAPICalling = async (id) => {
+  _getRecipeDetailsAPICalling = async (id, showLoader = false) => {
     const { loader } = this.props ;
     let token = await AsyncStorage.getItem('user_token');
 
     let data = {
       id: id
     }
-    loader(true)
+    loader( showLoader && true)
     let response = await getRcipeDetails(data, token)
+    console.log({RECEIPE: JSON.stringify(response.data)})
+    
     loader(false)
     if (response.code === 1) {
       this.setState({ data: response.data, token }, () => {
@@ -137,13 +143,13 @@ componentWillUnmount=async ()=>{
       "flag": "like",
       "checkdata":"like"
     }
-    loader(true)
+    //loader(true)
     let response = await postFavorite(params, token)
     if (response.code === 1) {
       let id = this.props.route.params.data
       this._getRecipeDetailsAPICalling(id)
     } else {
-      loader(false)
+      // loader(false)
       setTimeout(() => {
         Alert.alert(response.message)
       }, 500)
@@ -162,13 +168,13 @@ componentWillUnmount=async ()=>{
       "flag": "dislike",
       "checkdata":"like"
     }
-    loader(true)
+    //loader(true)
     let response = await postFavorite(params, token)
     if (response.code === 1) {
       let id = this.props.route.params.data
       this._getRecipeDetailsAPICalling(id)
     } else {
-      loader(false)
+      //loader(false)
       setTimeout(() => {
         Alert.alert(response.message)
       }, 500)
@@ -186,7 +192,7 @@ componentWillUnmount=async ()=>{
       "flag": data.Recipe.bookmarked ?  "unfavorite":"favorite" ,
       "checkdata":"favorite"
     }
-    loader(true)
+    //loader(true)
     let response = await postFavorite(params, token)
     
     if (response.code === 1) {
@@ -204,7 +210,7 @@ componentWillUnmount=async ()=>{
       let id = this.props.route.params.data
       this._getRecipeDetailsAPICalling(id)
     } else {
-      loader(false)
+      //loader(false)
       setTimeout(() => {
         Alert.alert(response.message)
       }, 500)
@@ -254,13 +260,19 @@ componentWillUnmount=async ()=>{
       </SafeAreaView>
     )
   }
-
+  onBack = () =>{
+    if(this.state.data && this.state.data.Recipe.id == 0){
+      this.props.navigation.navigate('AddContent')
+    }else{
+      this.props.navigation.goBack()
+    }
+  }
   renderHeaderView = () => {
     const { data } = this.state
     return (
       <>
         <ViewX style={styles.headerTopView}>
-          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <TouchableOpacity onPress={this.onBack}>
             <Image source={imgBack} style={styles.backBtn} />
           </TouchableOpacity>
           <TextX

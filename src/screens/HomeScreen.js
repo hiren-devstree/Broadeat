@@ -56,12 +56,13 @@ class HomeScreen extends Component {
     })
   }
   static reloadScreen = async () => {
+    console.log("reload screen")
     const { loader } = this.props
     loader(true)
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
     console.log("Loader",false)
-    loader(false)
+    this.props.loader(false)
     console.log("getRecipeData",response)
     if (response.code === 1) {
       this.setState({ data: response.data })
@@ -73,12 +74,15 @@ class HomeScreen extends Component {
   }
   componentDidMount= async () => {
     const { loader } = this.props
+    console.log("componentDidMount before loader ON")
     loader(true)
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
     console.log("Loader",false)
-    loader(false)
-    console.log("getRecipeData",response)
+    setTimeout(() => {
+      loader(false)
+    }, 500)
+    //console.log("getRecipeData",response)
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {

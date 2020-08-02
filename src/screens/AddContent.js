@@ -366,7 +366,6 @@ class AddContent extends Component {
         }
       }
     }
-    console.log(formdata)
     if(!hasError){
       loader(true)
       const response = await fetch("http://3.20.100.25/broadeat/api/recipe/add", {
@@ -395,7 +394,75 @@ class AddContent extends Component {
       }
     }
   }
+  _onPreview=()=>{
+    const {
+      ingredients, methods, images, title, description,
+      mealPreference, noOfPerson, nutritionCalories,
+      nutritionProtein, nutritionFat, nutritionCarbs, timeDuration,
+      tagData, hashTag
+    } = this.state
+    let Method = [];
+    for(let ind in methods){
+      Method.push({
+        "method_step": Number(ind)+1,
+          "method_description": methods[ind].text 
+      })
+    }
+    let Rac_Tag = []
+    for(let ind in tagData){
+      for(let subInd in tagData[ind].data){
+        if(tagData[ind].data[subInd].isSelected){
+          Rac_Tag.push({
+            "category_type": tagData[ind].title,
+            "tag_name": tagData[ind].data[subInd].tag_name
+          });
+        }
+      }
+    }
+    let Rec_Ingredient = [];
+    for( let ind in ingredients){
+      Rec_Ingredient.push({
+        "ingredient": ingredients[ind].ingredient ,
+          "quantity": ingredients[ind].qty ,
+          "measure": ingredients[ind].measuremnt
+      })
+    }
 
+    console.log({Rec_Ingredient, Method, images, title, description,
+      mealPreference, noOfPerson, nutritionCalories,
+      nutritionProtein, nutritionFat, nutritionCarbs, timeDuration,
+      Rac_Tag, hashTag})
+
+    let data = {
+      "Recipe": {
+        "id": 0,
+        "user_id": 0,
+        "recipe_title": title,
+        "image": images[0].path,
+        "meal_preference": mealPreference,
+        "description": description,
+        "nutrition_calories": nutritionCalories.length > 0 ? nutritionCalories : null ,
+        "nutrition_protein": nutritionProtein.length > 0 ? nutritionProtein : null ,
+        "nutrition_fat": nutritionFat.length > 0 ? nutritionFat : null ,
+        "nutrition_carbs": nutritionCarbs.length > 0 ? nutritionCarbs : null ,
+        "time_duration": timeDuration,
+        "no_of_person": noOfPerson,
+        "creator_name": "",
+        "creator_profilepic": images[0].path,
+        "like": false,
+        "dislike": false,
+        "bookmarked": true
+      },
+      "Media": [],
+      "Method": Method,
+      "Rac_Tag": Rac_Tag,
+      "Rec_Ingredient": Rec_Ingredient,
+      "Activity": [ ],
+      "Activity_data": [ ]
+    }
+    this.props.navigation.navigate("PreviewReceipe", { data: 0, ReceipeData: data});
+
+  }
   render() {
     const { images, ingredients, methods } = this.state;
     const { theme } = this.props;
@@ -800,7 +867,7 @@ class AddContent extends Component {
         </KeyboardAvoidingView>
 
         <ViewX style={styles.bottomView}>
-          <TouchableOpacity style={styles.bottomBtn}>
+          <TouchableOpacity onPress={this._onPreview} style={styles.bottomBtn}>
             <TextX fontSize={16}>Preview</TextX>
           </TouchableOpacity>
 
