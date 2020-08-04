@@ -261,8 +261,11 @@ componentWillUnmount=async ()=>{
     )
   }
   onBack = () =>{
+    console.log(this.props.route.params)
     if(this.state.data && this.state.data.Recipe.id == 0){
       this.props.navigation.navigate('AddContent')
+    }else if(this.props.route.params.backKey == "AddContent"){
+      this.props.navigation.navigate('Dashboard')
     }else{
       this.props.navigation.goBack()
     }

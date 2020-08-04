@@ -180,21 +180,22 @@ const ProfileNavigator = createStackNavigator();
 
 const ProfileStackNavigator = withTheme(({ theme, ...props }) => {
   return (
-    <ProfileNavigator.Navigator>
+    <ProfileNavigator.Navigator options={
+      {tabBarOnPress: (tab, jumpToIndex) => {
+        jumpToIndex(tab.index)
+        navigation.dispatch(NavigationActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Profile' }) // go to first screen of the StackNavigator
+          ]
+        }))
+      }}
+    }>
       <ProfileNavigator.Screen
         options={{ headerShown: false }}
         name={'Profile'} component={ProfileScreen}
       />
-      <Stack.Screen 
-        options={{ headerShown: false }} 
-        name="AddContent" 
-        component={AddContent} />
 
-      <ProfileNavigator.Screen
-        options={{ headerShown: false }}
-        name={'PreviewReceipe'} component={PhotoRecipeDetails}
-        
-      />
     </ProfileNavigator.Navigator >
   )
 })
@@ -300,6 +301,15 @@ const AppNavigator =  ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
+        <Stack.Screen 
+        options={{ headerShown: false }} 
+        name="AddContent" 
+        component={AddContent} />
+
+      <ProfileNavigator.Screen
+        options={{ headerShown: false }}
+        name={'PreviewReceipe'} component={PhotoRecipeDetails}
+      />
         {/* <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} /> */}
         <Stack.Screen
         options={{ headerShown: false }}

@@ -15,7 +15,7 @@ import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, TextX, ViewX } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
 import styled, { withTheme, ThemeConsumer } from 'styled-components';
-
+import { CommonActions } from '@react-navigation/native';
 import { addContentApiCalling, getTagList } from './../apiManager'
 
 import imgBack from '../assets/images/ic_back.png'
@@ -133,6 +133,7 @@ class AddContent extends Component {
       hashTag: HASH_TAGS
     }
   }
+  
 
   componentDidMount= async () => {
     const _ = this.props.route.params;
@@ -379,16 +380,25 @@ class AddContent extends Component {
       console.log({ response })
       loader(false)
       const json = await response.json();
-      console.log({ json })
-      if(json.code == 1){
-        Alert.alert(
-          "Receipe Added Successfully",
-          "",
-          [
-            { text: "OK", onPress: () => this.props.navigation.navigate('PhotoRecipeDetails', { data: json.data.id }) }
-          ],
-          { cancelable: false }
-        );
+      //alert(JSON.stringify(json))
+      if(json.code == 1 && json.code == '1'){
+        setTimeout(()=>{
+          Alert.alert(
+            "Receipe Added Successfully",
+            "",
+            [
+              { text: "OK", onPress: () => { 
+                this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'PreviewReceipe', params:{ 
+                data: json.data.id, backKey: "AddContent" } }] }))
+                }
+              }
+                
+            ],
+            { cancelable: false }
+          );
+        },500)
+        
+        
       }else{
         Alert.alert(json.message)
       }
