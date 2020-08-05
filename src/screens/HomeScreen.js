@@ -119,7 +119,7 @@ class HomeScreen extends Component {
           () => <View style={{ height: 3, }}/>
         }
         renderItem={({ item, index }) => (
-            <TouchableOpacity style={{marginLeft: index > 0 ? 3 : 0}} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
+            <TouchableOpacity style={{marginLeft: index %3 == 0 ? 0 : 3}} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
               <Image
                 source={{ uri: item.image }}
                 style={{ height: width, width: width }}
