@@ -19,7 +19,7 @@ let _this
 class SearchScreen extends Component {
   constructor(props) {
     super(props)
-    
+
     _this = this
     this.state = {
       data: [],
@@ -73,12 +73,12 @@ class SearchScreen extends Component {
     let response = await getRecentSearch(token)
     loader(false)
 
-    console.log("response ==> ",response)
-    if (response.code === 1) {
+    console.log("response ==> ", response)
+    if (response && response.code === 1) {
       this.setState({ data: response.data })
     } else {
       //console.log(response.message)
-      
+
     }
   }
 
@@ -105,7 +105,7 @@ class SearchScreen extends Component {
     }
     let response = await getSearchRecipeList(data, token)
 
-    console.log("getSearchRecipeList ==>" , response)
+    console.log("getSearchRecipeList ==>", response)
     if (response.code === 1) {
       if (response.data.length > 0) {
         this.props.navigation.navigate("SearchResult", { data: response.data })

@@ -5,6 +5,7 @@ import {
   ScrollView, FlatList, Text, Alert, Share
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
+import FastImage from 'react-native-fast-image'
 
 // File Imports
 import withLoader from '../redux/actionCreator/withLoader';
@@ -39,32 +40,33 @@ class PhotoRecipeDetails extends Component {
       noOfUser: 2,
       timer: '15-20',
       selectedTab: 1,
-      data: undefined, 
-      token:null,
-      user_id:''
+      data: undefined,
+      token: null,
+      user_id: ''
     }
   }
 
   componentDidMount() {
     let id = this.props.route.params.data
-    if(id == 0){
+    debugger
+    if (id == 0) {
       this.setState({
-        data:this.props.route.params.ReceipeData
+        data: this.props.route.params.ReceipeData
       });
-    }else{
-      this._getRecipeDetailsAPICalling( id, true )
+    } else {
+      this._getRecipeDetailsAPICalling(id, true)
     }
-    AsyncStorage.getItem("user_id").then((user_id)=> this.setState({user_id}))
+    AsyncStorage.getItem("user_id").then((user_id) => this.setState({ user_id }))
   }
-componentWillUnmount=async ()=>{
-  this.state = {
-    noOfUser: 0,
-    timer: '',
-    selectedTab:1,
-    data: undefined, 
-    token:null
+  componentWillUnmount = async () => {
+    this.state = {
+      noOfUser: 0,
+      timer: '',
+      selectedTab: 1,
+      data: undefined,
+      token: null
+    }
   }
-}
 
   render() {
     return this.renderMainView()
@@ -87,16 +89,16 @@ componentWillUnmount=async ()=>{
   _keyExtractor = (item, index) => index.toString()
 
   _getRecipeDetailsAPICalling = async (id, showLoader = false) => {
-    const { loader } = this.props ;
+    const { loader } = this.props;
     let token = await AsyncStorage.getItem('user_token');
 
     let data = {
       id: id
     }
-    loader( showLoader && true)
+    loader(showLoader && true)
     let response = await getRcipeDetails(data, token)
-    console.log({RECEIPE: JSON.stringify(response.data)})
-    
+    console.log({ RECEIPE: response.data })
+
     loader(false)
     if (response.code === 1) {
       this.setState({ data: response.data, token }, () => {
@@ -108,16 +110,16 @@ componentWillUnmount=async ()=>{
       }, 500)
     }
   }
-  _postView= async () =>{
+  _postView = async () => {
     const { loader } = this.props
-    let {data, token} = this.state ;
-    if(token == null){
+    let { data, token } = this.state;
+    if (token == null) {
       token = await AsyncStorage.getItem('user_token')
     }
     let params = {
-      "rec_id":data.Recipe.id,
+      "rec_id": data.Recipe.id,
       "flag": "view",
-      "checkdata":"view"
+      "checkdata": "view"
     }
     loader(true)
     let response = await postFavorite(params, token)
@@ -132,16 +134,16 @@ componentWillUnmount=async ()=>{
     }
   }
 
-  _postLike= async () =>{
+  _postLike = async () => {
     const { loader } = this.props
-    let {data, token} = this.state ;
-    if(token == null){
+    let { data, token } = this.state;
+    if (token == null) {
       token = await AsyncStorage.getItem('user_token')
     }
     let params = {
-      "rec_id":data.Recipe.id,
+      "rec_id": data.Recipe.id,
       "flag": "like",
-      "checkdata":"like"
+      "checkdata": "like"
     }
     //loader(true)
     let response = await postFavorite(params, token)
@@ -156,17 +158,17 @@ componentWillUnmount=async ()=>{
     }
   }
 
-  
-  _postDisLike= async () =>{
+
+  _postDisLike = async () => {
     const { loader } = this.props
-    let {data, token} = this.state ;
-    if(token == null){
+    let { data, token } = this.state;
+    if (token == null) {
       token = await AsyncStorage.getItem('user_token')
     }
     let params = {
-      "rec_id":data.Recipe.id,
+      "rec_id": data.Recipe.id,
       "flag": "dislike",
-      "checkdata":"like"
+      "checkdata": "like"
     }
     //loader(true)
     let response = await postFavorite(params, token)
@@ -181,20 +183,20 @@ componentWillUnmount=async ()=>{
     }
   }
 
-  _postFavorite= async () =>{
+  _postFavorite = async () => {
     const { loader } = this.props
-    let {data, token} = this.state ;
-    if(token == null){
+    let { data, token } = this.state;
+    if (token == null) {
       token = await AsyncStorage.getItem('user_token')
     }
     let params = {
-      "rec_id":data.Recipe.id,
-      "flag": data.Recipe.bookmarked ?  "unfavorite":"favorite" ,
-      "checkdata":"favorite"
+      "rec_id": data.Recipe.id,
+      "flag": data.Recipe.bookmarked ? "unfavorite" : "favorite",
+      "checkdata": "favorite"
     }
     //loader(true)
     let response = await postFavorite(params, token)
-    
+
     if (response.code === 1) {
       // data.Activity.favorite = data.Activity.favorite == 0 ? 1 : 0 
       // Alert.alert(
@@ -203,7 +205,7 @@ componentWillUnmount=async ()=>{
       //         [{
       //           onPress: this.setState({ data }),
       //           text: 'Okay', 
-                
+
       //         }],
       //         { cancelable: false }
       //       )
@@ -216,8 +218,8 @@ componentWillUnmount=async ()=>{
       }, 500)
     }
   }
-  _onShare= async () => {
-    let {data} = this.state ;
+  _onShare = async () => {
+    let { data } = this.state;
     try {
       const result = await Share.share({
         message: `broadeat://receipe_details/${data.Recipe.id}`,
@@ -260,13 +262,13 @@ componentWillUnmount=async ()=>{
       </SafeAreaView>
     )
   }
-  onBack = () =>{
+  onBack = () => {
     console.log(this.props.route.params)
-    if(this.state.data && this.state.data.Recipe.id == 0){
+    if (this.state.data && this.state.data.Recipe.id == 0) {
       this.props.navigation.navigate('AddContent')
-    }else if(this.props.route.params.backKey == "AddContent"){
+    } else if (this.props.route.params.backKey == "AddContent") {
       this.props.navigation.navigate('Dashboard')
-    }else{
+    } else {
       this.props.navigation.goBack()
     }
   }
@@ -294,16 +296,16 @@ componentWillUnmount=async ()=>{
   }
 
   renderHeaderBottomView = () => {
-    const { noOfUser, timer,  data } = this.state
+    const { noOfUser, timer, data } = this.state
     return (
       <ViewX style={styles.headerBottomView} {...this.props}>
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('UserAccount',{
-          userDetails:{
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('UserAccount', {
+          userDetails: {
             "profilepic": data.Recipe.creator_profilepic,
             "name": data ? data.Recipe.creator_name : '',
             "description": ''
           },
-          userId: data? data.Recipe.user_id: null
+          userId: data ? data.Recipe.user_id : null
         })}>
           {data ?
             <Image source={{ uri: data.Recipe.creator_profilepic }} style={{ width: 30, height: 30, borderRadius: 15 }} />
@@ -332,7 +334,7 @@ componentWillUnmount=async ()=>{
               </TouchableOpacity>
               <Image source={imgTimer} style={{ width: 15, height: 15, marginLeft: 15, marginRight: 3 }} />
               <TextX>{data ? data.Recipe.time_duration : ''}</TextX>
-              <TextX style={{ marginLeft: 15 }}>{data? data.Recipe.meal_preference: ''}</TextX>
+              <TextX style={{ marginLeft: 15 }}>{data ? data.Recipe.meal_preference : ''}</TextX>
             </ViewX>
           </ViewX>
         </ViewX>
@@ -342,26 +344,29 @@ componentWillUnmount=async ()=>{
 
   renderItemMainImage = () => {
     const { data } = this.state
-
+    debugger
     return (
-      <Image
+      <FastImage
         style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }}
-        resizeMode='cover'
-        source={{ uri: data ? data.Recipe.image : undefined }}
+        source={{
+          uri: data ? data.Recipe.image : undefined,
+          priority: FastImage.priority.high,
+        }}
+        resizeMode={FastImage.resizeMode.cover}
       />
     )
   }
 
   renderDescriptionView = () => {
     const { noOfUser, timer, foodType, data } = this.state
-    let view=0, likes=0, dislike=0, isLike=false, isDisLike=false, isBookmark=false;
-    if(data && data.Activity.length > 0){
+    let view = 0, likes = 0, dislike = 0, isLike = false, isDisLike = false, isBookmark = false;
+    if (data && data.Activity.length > 0) {
       view = data.Activity[0].view;
       likes = data.Activity[0].likes;
       dislike = data.Activity[0].dislike;
-      isLike=data.Recipe.like; 
-      isDisLike=data.Recipe.dislike;
-      isBookmark=data.Recipe.bookmarked;
+      isLike = data.Recipe.like;
+      isDisLike = data.Recipe.dislike;
+      isBookmark = data.Recipe.bookmarked;
     }
     return (
       <ViewX style={{ flex: 1, alignItems: 'flex-start' }}>
@@ -371,24 +376,24 @@ componentWillUnmount=async ()=>{
             <Image source={imgView} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
             <TextX fontSize={StyleConfig.countPixelRatio(12)}>{view ? view : "0"}</TextX>
           </ViewX>
-          <TouchableOpacity disabled={isLike} onPress={this._postLike }>
-          <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3, tintColor: isLike ? 'blue' : '#555' }} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{likes ? likes : '0'}</TextX>
-          </ViewX>
+          <TouchableOpacity disabled={isLike} onPress={this._postLike}>
+            <ViewX style={{ flexDirection: 'row' }}>
+              <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3, tintColor: isLike ? 'blue' : '#555' }} resizeMode='contain' />
+              <TextX fontSize={StyleConfig.countPixelRatio(12)}>{likes ? likes : '0'}</TextX>
+            </ViewX>
           </TouchableOpacity>
-          <TouchableOpacity disabled={isDisLike} onPress={this._postDisLike }>
-          <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, tintColor: isDisLike ? 'blue' : '#555'}} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{dislike ? dislike : "0"}</TextX>
-          </ViewX>
+          <TouchableOpacity disabled={isDisLike} onPress={this._postDisLike}>
+            <ViewX style={{ flexDirection: 'row' }}>
+              <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, tintColor: isDisLike ? 'blue' : '#555' }} resizeMode='contain' />
+              <TextX fontSize={StyleConfig.countPixelRatio(12)}>{dislike ? dislike : "0"}</TextX>
+            </ViewX>
           </TouchableOpacity>
-          <TouchableOpacity  onPress={this._onShare }>
-          <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3, }} resizeMode='contain' />
-          </ViewX>
+          <TouchableOpacity onPress={this._onShare}>
+            <ViewX style={{ flexDirection: 'row' }}>
+              <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3, }} resizeMode='contain' />
+            </ViewX>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this._postFavorite }>
+          <TouchableOpacity onPress={this._postFavorite}>
             <ViewX style={{ flexDirection: 'row' }}>
               <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3, tintColor: isBookmark ? 'blue' : '#555' }} resizeMode='contain' />
               {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}

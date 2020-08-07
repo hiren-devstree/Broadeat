@@ -4,6 +4,7 @@ import {
   Image, StyleSheet, TouchableOpacity, Text
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather'
+import FastImage from 'react-native-fast-image'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import { getRecipeData } from './../apiManager'
@@ -41,13 +42,14 @@ class HomeScreen extends Component {
               width: StyleConfig.width * 0.4,
               // backgroundColor: 'black'
             }} >
-            <View style={{position: "absolute", alignSelf: "center", left: 10 }}>
-            <Image 
-              source={AppImages.ic_search}
-              style={{ 
-                height: StyleConfig.convertHeightPerVal(20),
-              width: StyleConfig.convertHeightPerVal(20), tintColor:'#777' }}
-            />
+            <View style={{ position: "absolute", alignSelf: "center", left: 10 }}>
+              <Image
+                source={AppImages.ic_search}
+                style={{
+                  height: StyleConfig.convertHeightPerVal(20),
+                  width: StyleConfig.convertHeightPerVal(20), tintColor: '#777'
+                }}
+              />
             </View>
             <Text style={{}} > {"Search"} </Text>
           </View>
@@ -61,9 +63,9 @@ class HomeScreen extends Component {
     loader(true)
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
-    console.log("Loader",false)
+    console.log("Loader", false)
     this.props.loader(false)
-    console.log("getRecipeData",response)
+    console.log("getRecipeData", response)
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {
@@ -72,17 +74,17 @@ class HomeScreen extends Component {
       }, 500)
     }
   }
-  componentDidMount= async () => {
+  componentDidMount = async () => {
     const { loader } = this.props
     console.log("componentDidMount before loader ON")
     loader(true)
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
-    console.log("Loader",false)
+    console.log("Loader", false)
     setTimeout(() => {
       loader(false)
     }, 500)
-    //console.log("getRecipeData",response)
+    console.log("getRecipeData", response)
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {
@@ -91,7 +93,7 @@ class HomeScreen extends Component {
       }, 500)
     }
   }
-  
+
   render() {
     return this.renderMainView()
   }
@@ -108,7 +110,7 @@ class HomeScreen extends Component {
 
   renderFlatList = () => {
     const { data } = this.state
-    const width = (StyleConfig.convertWidthPer(100) - 8)/3 ;
+    const width = (StyleConfig.convertWidthPer(100) - 8) / 3;
     return (
       <FlatList
         data={data}
@@ -116,15 +118,20 @@ class HomeScreen extends Component {
         bounces={false}
         keyExtractor={(_, idx) => `foodGlr-${idx}`}
         ItemSeparatorComponent={
-          () => <View style={{ height: 3, }}/>
+          () => <View style={{ height: 3, }} />
         }
         renderItem={({ item, index }) => (
-            <TouchableOpacity style={{marginLeft: index %3 == 0 ? 0 : 3}} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
-              <Image
-                source={{ uri: item.image }}
-                style={{ height: width, width: width }}
-              /></TouchableOpacity>
-          )
+          <TouchableOpacity style={{ marginLeft: index % 3 == 0 ? 0 : 3 }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
+            <FastImage
+              style={{ height: width, width: width }}
+              source={{
+                uri: item.image,
+                priority: FastImage.priority.high,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
+          </TouchableOpacity>
+        )
         }
       />
     )

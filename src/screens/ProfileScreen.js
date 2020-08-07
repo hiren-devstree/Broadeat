@@ -58,7 +58,7 @@ class ProfileScreen extends Component {
     loader(true)
     let response = await getUserDetails(token)
     loader(false)
-
+    console.log("getUserDetails", response)
     if (response.code === 1) {
       this.setState({ userDetails: response.data })
     } else {
@@ -124,7 +124,7 @@ class ProfileScreen extends Component {
 
   renderUserDetailsView = () => {
     const { userDetails } = this.state
-    const {theme} = this.props
+    const { theme } = this.props
     return (
       <>
         <ViewX style={styles.userDetails}>
@@ -143,7 +143,7 @@ class ProfileScreen extends Component {
           </TouchableOpacity>
 
         </ViewX>
-        <View style={{ height: StyleConfig.convertHeightPerVal(6), width: '100%', backgroundColor: theme.profileDeviderColor,marginTop:8 }} />
+        <View style={{ height: StyleConfig.convertHeightPerVal(6), width: '100%', backgroundColor: theme.profileDeviderColor, marginTop: 8 }} />
       </>
     )
   }
@@ -173,9 +173,9 @@ class ProfileScreen extends Component {
             <TextX fontSize={BUTTON_TEXT}>Promote Content</TextX>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             disabled={true}
-          style={styles.optionbtnContainer}>
+            style={styles.optionbtnContainer}>
             <TextX fontSize={BUTTON_TEXT}>Switch Account</TextX>
           </TouchableOpacity>
 
@@ -188,7 +188,7 @@ class ProfileScreen extends Component {
       </>
     )
   }
-  _onLogout = async ()=>{
+  _onLogout = async () => {
     Alert.alert(
       "Do you want to Logout?",
       "",
@@ -198,15 +198,16 @@ class ProfileScreen extends Component {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
-        { text: "OK", onPress: async () => {
-          await AsyncStorage.setItem("is_remember","0");
-          this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login' }] })) 
+        {
+          text: "OK", onPress: async () => {
+            await AsyncStorage.setItem("is_remember", "0");
+            this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login' }] }))
           }
         }
       ],
       { cancelable: false }
     );
-    
+
   }
 
   themeChange = async () => {
@@ -218,14 +219,14 @@ class ProfileScreen extends Component {
 
   renderSettingsOptions = () => {
     const { isEnableNotifiation, isDarkTheme } = this.state
-    
+
     return (
       <ViewX style={styles.optionContainer}>
         <TouchableOpacity style={styles.optionbtnContainer} onPress={() => this.props.navigation.navigate('ChangePassword')}>
           <TextX fontSize={BUTTON_TEXT}>Settings</TextX>
         </TouchableOpacity>
 
-        { !StyleConfig.isIphone && <ViewX style={styles.hideProfileContainer}>
+        {!StyleConfig.isIphone && <ViewX style={styles.hideProfileContainer}>
           <TextX fontSize={BUTTON_TEXT}>Dark Theme</TextX>
           <Switch value={isDarkTheme} onValueChange={this.themeChange} />
         </ViewX>}

@@ -26,6 +26,7 @@
     "react-native-customized-image-picker": "^0.1.11",
     "react-native-dropdown-picker": "^3.1.6",
     "react-native-elements": "^2.0.1",
+    "react-native-fast-image": "^8.3.2",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^0.7.3",
