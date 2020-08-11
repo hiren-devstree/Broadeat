@@ -73,6 +73,7 @@ class ProfileScreen extends Component {
     ImagePicker.openPicker({
       multiple: true,
       isHidePreview: true,
+      isVideo: true
     }).then(images => {
       navigation.navigate('AddContent', { images: images });
     });

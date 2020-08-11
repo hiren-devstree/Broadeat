@@ -62,6 +62,7 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
           />
         </ViewX>
         <TextX style={{
+          width: "88%",
           fontSize: StyleConfig.fontSizeH3
         }} >{item.recipe_title}</TextX>
       </ViewX>
@@ -132,13 +133,6 @@ class UserAccount extends Component {
     } else {
       Alert.alert(response.message)
     }
-    // if (response.code === 1) {
-    //   this.setState({ data: response.data })
-    // } else {
-    //   setTimeout(() => {
-    //     Alert.alert(response.message)
-    //   }, 500)
-    // }
   }
 
 
@@ -190,11 +184,6 @@ class UserAccount extends Component {
     if (this.props.route.params.userId == undefined || this.props.route.params.userId == user_id) {
       showBookmark = false;
     }
-    // let data = []
-    // for (let ind = 0; ind < 20; ind++) {
-    //   let ii = ind % 13;
-    //   data.push(AppImages.homeItems[ii]);
-    // }
     return (
       <SafeAreaView {...this.props}>
         <ViewX style={{ marginVertical: 10, padding: 20 }} >
@@ -203,18 +192,16 @@ class UserAccount extends Component {
             flexDirection: "row",
             alignItems: "center",
           }} >
-            <TouchableOpacity style={{ flex: 1 }} onPress={() => { }}>
               <ViewX style={{ flex: 1, flexDirection: "row", justifyContent: "flex-start" }} >
                 <Image
                   style={{ width: StyleConfig.convertWidthPerVal(56), height: StyleConfig.convertWidthPerVal(56) }}
                   source={{ uri: userDetails.profilepic }}
                 />
                 <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20) }} >
-                  <TextX align={'left'} style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{userDetails.name}</TextX>
+                  <TextX style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{`${userDetails.name}`}</TextX>
                   <TextX style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4 }} >{userDetails.description}</TextX>
                 </ViewX>
               </ViewX>
-            </TouchableOpacity>
             {showBookmark && <TouchableOpacity onPress={this._onBookmarkUser}>
               <Image
                 resizeMode="contain"
@@ -246,7 +233,7 @@ class UserAccount extends Component {
           </ScrollView>
         </ViewX>
         <FlatList
-          contentContainerStyle={{ paddingVertical: 20, alignSelf: "center" }}
+          contentContainerStyle={{ paddingVertical: 20 }}
           numColumns={2}
           keyExtractor={(_, idx) => `foodGlr-${idx}`}
           data={filteredData}

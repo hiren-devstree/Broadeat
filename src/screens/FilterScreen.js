@@ -150,22 +150,23 @@ class FilterScreen extends Component {
     const { selectedTag } = this.state
     let token = await AsyncStorage.getItem('user_token')
     let data = selectedTag.toString()
-
-    let raw = {
-      tags: data
-    }
-
-    let response = await applyFilters(raw, token)
-    console.log(response)
-    if (response.code === 1) {
-      if (response.data.length > 0) {
-        this.props.navigation.navigate("SearchResult", { data: response.data })
+    if(data.length > 0){
+      let raw = {
+        tags: data
+      }
+      let response = await applyFilters(raw, token)
+      console.log(response)
+      if (response.code === 1) {
+        if (response.data.length > 0) {
+          this.props.navigation.navigate("SearchResult", { data: response.data })
+        } else {
+          Alert.alert(response.message)
+        }
       } else {
         Alert.alert(response.message)
       }
-    } else {
-      Alert.alert(response.message)
     }
+    
   }
 
   render() {

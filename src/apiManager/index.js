@@ -280,17 +280,16 @@ const ApiManager = {
     });
   },
   getRecentSearch: async (token) => {
-    console.log('GET RECENT SSEARCH CALLED!!!!')
     let myHeaders = new Headers()
     myHeaders.append('Authorization', `Bearer ${token}`)
 
     return fetch(GET_RECENT_SEARCH_URL, {
       method: 'GET',
       headers: myHeaders,
-    }).then((response) => {
-      return response.json()
-    }, function (error) {
-      console.log('error', error)
+    }).then((response) => response.json()
+    ).then((res)=>{
+      console.log(res);
+      return res;
     }).catch((error) => {
       console.log('error', error)
     });

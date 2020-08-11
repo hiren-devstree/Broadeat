@@ -12,7 +12,7 @@ import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { getRcipeDetails, postFavorite } from './../apiManager'
-
+import Video from 'react-native-video';
 // Component Imports
 import {
   SafeAreaView, ViewX, TextX
@@ -344,16 +344,46 @@ class PhotoRecipeDetails extends Component {
 
   renderItemMainImage = () => {
     const { data } = this.state
-    debugger
+    let listData = [];
+    if(data){
+      listData.push({
+         "id": 0, "media_type": "image", "media_name": data.Recipe.image
+      })
+    }
+    if(data && data.Media.length > 0){
+      listData = listData.concat(data.Media)
+    }
+
+    
     return (
-      <FastImage
-        style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }}
-        source={{
-          uri: data ? data.Recipe.image : undefined,
-          priority: FastImage.priority.high,
-        }}
-        resizeMode={FastImage.resizeMode.cover}
-      />
+      <FlatList
+        horizontal
+        data = {listData}
+        renderItem={({item})=> <View style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }} >
+            {item.media_type == "image" ? 
+              <FastImage
+              style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }}
+              source={{
+                uri: item.media_name,
+                priority: FastImage.priority.high,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+            />  :
+              <Video 
+                ref={(ref) => {
+                  this.player = ref
+                }}    
+                repeat={false}
+                controls={true} 
+                playInBackground={false}
+                paused={true}
+                style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }}
+                source={{uri: item.media_name}} 
+              />
+            }
+        </View>
+        }
+      /> 
     )
   }
 
