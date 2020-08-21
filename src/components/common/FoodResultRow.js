@@ -5,7 +5,7 @@ import {
 import StyleConfig from '../../assets/styles/StyleConfig';
 import { ViewX, TextX, CButtonColor } from '../../components/common';
 import { IMAGE_PATH } from '../../helper/Constants'
-
+import Video from 'react-native-video';
 class FoodResultRow extends PureComponent {
 
   render() {
@@ -16,11 +16,21 @@ class FoodResultRow extends PureComponent {
           onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: data.id })}
           style={{ width: StyleConfig.width * 0.94, paddingVertical: 10 }}
         >
-          <Image
+          {data.image_type == "image" ? <Image
             resizeMode="cover"
             style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(205) }}
             source={{ uri: data.image }}
-          />
+          /> :  <Video 
+                ref={(ref) => {
+                  this.player = ref
+                }}    
+                repeat={false}
+                playInBackground={false}
+                paused={true}
+                style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(205) }}
+                source={{ uri: data.image }}
+              />
+            }
         </TouchableOpacity>
         <ViewX style={{ flexDirection: "row", paddingVertical: StyleConfig.convertHeightPerVal(12) }} >
           <Image

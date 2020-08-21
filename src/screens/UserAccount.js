@@ -19,7 +19,7 @@ import { ViewX, TextX, SafeAreaView } from "../components/common";
 import StyleConfig from "../assets/styles/StyleConfig";
 import AppImages from '../assets/images';
 import { Account } from "./BookMarkTabs/AccountTab";
-
+import Video from 'react-native-video';
 const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
   return (
@@ -52,14 +52,29 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
             width: POST_SIZE,
             height: POST_SIZE
           }}>
-          <Image
+          {item.image_type == "image" ? <Image
             style={{
               borderRadius: StyleConfig.convertWidthPerVal(10),
               width: "90%",
               height: "90%"
             }}
             source={{ uri: item.image }}
-          />
+          /> :
+           <Video 
+                ref={(ref) => {
+                  this.player = ref
+                }}    
+                repeat={false}
+                playInBackground={false}
+                paused={true}
+                style={{
+                  borderRadius: StyleConfig.convertWidthPerVal(10),
+                  width: "90%",
+                  height: "90%"
+                }}
+                source={{ uri: item.image }}
+              />
+        }
         </ViewX>
         <TextX style={{
           width: "88%",

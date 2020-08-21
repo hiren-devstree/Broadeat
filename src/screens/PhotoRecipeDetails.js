@@ -346,9 +346,15 @@ class PhotoRecipeDetails extends Component {
     const { data } = this.state
     let listData = [];
     if(data){
-      listData.push({
-         "id": 0, "media_type": "image", "media_name": data.Recipe.image
-      })
+      if(data.Recipe.image.includes("png") || data.Recipe.image.includes("jpg") ||data.Recipe.image.includes("JPG") ||data.Recipe.image.includes("jpeg") ||data.Recipe.image.includes("JPEG") || data.Recipe.image.includes("PNG")){
+          listData.push({
+             "id": 0, "media_type": "image", "media_name": data.Recipe.image
+          })
+      } else{
+          listData.push({
+             "id": 0, "media_type": "video", "media_name": data.Recipe.image
+          })
+      }
     }
     if(data && data.Media.length > 0){
       listData = listData.concat(data.Media)

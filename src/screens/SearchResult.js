@@ -14,7 +14,7 @@ import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, View1CC, Devider, CText, CTextColor, TextX } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
-
+import Video from 'react-native-video';
 class SearchResult extends Component {
   constructor(props) {
     super(props)

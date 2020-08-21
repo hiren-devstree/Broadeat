@@ -16,6 +16,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import withUser from '../redux/actionCreator/withUser';
 import HeaderSearchBar from '../components/common/HeaderSearchBar';
 import AppImages from '../assets/images';
+import Video from 'react-native-video';
 class HomeScreen extends Component {
 
   constructor(props) {
@@ -122,14 +123,25 @@ class HomeScreen extends Component {
         }
         renderItem={({ item, index }) => (
           <TouchableOpacity style={{ marginLeft: index % 3 == 0 ? 0 : 3 }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
-            <FastImage
+            { item.thumbnail_image.length > 0 ? <FastImage
               style={{ height: width, width: width }}
               source={{
-                uri: item.image,
+                uri: item.thumbnail_image,
                 priority: FastImage.priority.high,
               }}
               resizeMode={FastImage.resizeMode.cover}
-            />
+            /> :
+            <Video 
+                ref={(ref) => {
+                  this.player = ref
+                }}    
+                repeat={false}
+                playInBackground={false}
+                paused={true}
+                style={{ height: width, width: width }}
+                source={{uri: item.image}} 
+              />
+            }
           </TouchableOpacity>
         )
         }

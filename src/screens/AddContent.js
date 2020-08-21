@@ -9,7 +9,7 @@ import withToast from '../redux/actionCreator/withToast';
 import AsyncStorage from '@react-native-community/async-storage'
 import DropDownPicker from 'react-native-dropdown-picker'
 import Icon from 'react-native-vector-icons/Feather'
-
+import Video from 'react-native-video';
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, TextX, ViewX } from '../components/common';
@@ -380,7 +380,7 @@ class AddContent extends Component {
       console.log({ response })
       loader(false)
       const json = await response.json();
-      //alert(JSON.stringify(json))
+      console.log(`Add Receipe: ${JSON.stringify(json)}`);
       if(json.code == 1 && json.code == '1'){
         setTimeout(()=>{
           Alert.alert(
@@ -476,7 +476,7 @@ class AddContent extends Component {
   render() {
     const { images, ingredients, methods } = this.state;
     const { theme } = this.props;
-
+    console.log({images})
     return (
       <SafeAreaView {...this.props}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -509,11 +509,23 @@ class AddContent extends Component {
                     width: StyleConfig.convertWidthPerVal(120),
                     height: StyleConfig.convertWidthPerVal(120)
                   }}>
-                  <Image
-                    key={`images-${idx}`}
-                    style={{ width: "95%", height: "95%" }}
-                    source={{ uri: itm.path }}
-                  />
+                    {itm.mime.includes("image") ?
+                      <Image
+                        key={`images-${idx}`}
+                        style={{ width: "95%", height: "95%" }}
+                        source={{ uri: itm.path }}
+                      /> :
+                      <Video 
+                        ref={(ref) => {
+                          this.player = ref
+                        }}    
+                        repeat={false}
+                        playInBackground={false}
+                        paused={true}
+                        style={{ width: "95%", height: "95%" }}
+                        source={{ uri: itm.path }}
+                    />
+                    }
                 </ViewX>)
               }
             </ViewX>
