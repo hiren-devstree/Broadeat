@@ -28,7 +28,7 @@ import imgView from '../assets/images/ic_view.png'
 import imgUser from '../assets/images/ic_user.png'
 import imgTimer from '../assets/images/ic_timer.png'
 import imgAddCircle from '../assets/images/ic_addCircle.png'
-import imgRemoveCircle from '../assets/images/ic_removeCircle.png'
+import { CommonActions } from '@react-navigation/native';
 
 class PhotoRecipeDetails extends Component {
   constructor(props) {
@@ -267,7 +267,8 @@ class PhotoRecipeDetails extends Component {
     if (this.state.data && this.state.data.Recipe.id == 0) {
       this.props.navigation.navigate('AddContent')
     } else if (this.props.route.params.backKey == "AddContent") {
-      this.props.navigation.navigate('Dashboard')
+      this.props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Dashboard' }] }))
+      //this.props.navigation.navigate('Dashboard')
     } else {
       this.props.navigation.goBack()
     }
