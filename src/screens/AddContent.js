@@ -354,11 +354,13 @@ class AddContent extends Component {
     let recipe_media = []
     let mainImage = null;
     for (let ind in images) {
-      if (images[ind].path != '') {
-        let IMAGE_CROP = images[ind].path.slice(images[ind].path.lastIndexOf("/"));
+      if (images[ind].uri != '') {
+        let IMAGE_CROP = images[ind].uri.slice(images[ind].uri.lastIndexOf("/"));
+        let videoMime = images[ind].uri.slice(images[ind].uri.lastIndexOf("."));
+        console.log({videoMime})
         let myImage = StyleConfig.isIphone ?
-          { "uri": images[ind].path, "filename": IMAGE_CROP, "name": IMAGE_CROP } :
-          { "uri": images[ind].path, "name": IMAGE_CROP, "type": images[ind].mime };
+          { "uri": images[ind].uri, "filename": IMAGE_CROP, "name": IMAGE_CROP } :
+          { "uri": images[ind].uri, "name": IMAGE_CROP, "type": images[ind].type ? images[ind].type : `video/${videoMime}` };
         if (mainImage == null) {
           mainImage = myImage;
           formdata.append("image", myImage)
@@ -509,22 +511,22 @@ class AddContent extends Component {
                     width: StyleConfig.convertWidthPerVal(120),
                     height: StyleConfig.convertWidthPerVal(120)
                   }}>
-                    {itm.mime.includes("image") ?
-                      <Image
-                        key={`images-${idx}`}
-                        style={{ width: "95%", height: "95%" }}
-                        source={{ uri: itm.path }}
-                      /> :
+                    { itm.uri.endsWith("MOV") || itm.uri.endsWith("MP4") ?
                       <Video 
                         ref={(ref) => {
                           this.player = ref
-                        }}    
+                        }}
                         repeat={false}
                         playInBackground={false}
                         paused={true}
                         style={{ width: "95%", height: "95%" }}
-                        source={{ uri: itm.path }}
-                    />
+                        source={{ uri: itm.uri }}
+                      /> :
+                      <Image
+                        key={`images-${idx}`}
+                        style={{ width: "95%", height: "95%" }}
+                        source={{ uri: itm.uri }}
+                      /> 
                     }
                 </ViewX>)
               }

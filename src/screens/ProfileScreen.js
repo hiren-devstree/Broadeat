@@ -5,7 +5,8 @@ import {
   Text, View, Switch, Alert
 } from 'react-native'
 //import ImagePicker from "react-native-customized-image-picker";
-import ImagePicker from 'react-native-image-crop-picker';
+// import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from 'react-native-image-picker';
 import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
 import AsyncStorage from '@react-native-community/async-storage'
@@ -70,13 +71,31 @@ class ProfileScreen extends Component {
 
   addContent = async  () => {
     const { navigation } = this.props;
-    await ImagePicker.clean();
-    ImagePicker.openPicker({
-      multiple: true,
-    }).then(images => {
+    // await ImagePicker.clean();
+
+    const options = {
+      // title: 'Select Avatar',
+      // storageOptions: {
+      //   skipBackup: true,
+      //   path: 'images',
+      // },
+      
+      mediaType: 'mixed'
+    };
+
+    ImagePicker.launchImageLibrary(options, (images) => {
       console.log({images})
-      navigation.navigate('AddContent', { images: images });
+      navigation.navigate('AddContent', { images: [images] });
     });
+
+    // ImagePicker.openPicker({
+    //   multiple: true,
+    // }).then(images => {
+    //   console.log({images})
+    //   navigation.navigate('AddContent', { images: images });
+    // });
+
+
     // ImagePicker.openPicker({
     //   multiple: true,
     //   isHidePreview: true,

@@ -8,8 +8,8 @@ import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
 import AsyncStorage from '@react-native-community/async-storage'
 // import ImagePicker from "react-native-customized-image-picker"
-import ImagePicker from 'react-native-image-crop-picker';
-
+// import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from 'react-native-image-picker';
 import { UPDATE_USER_DETAILS_URL } from './../helper/Constants'
 import ProfileScreen from './ProfileScreen'
 
@@ -83,7 +83,7 @@ class EditAccount extends Component {
     myHeaders.append('Authorization', `Bearer ${token}`)
 
     var photo = {
-      uri: proPic ? proPic.path : '',
+      uri: proPic ? proPic.uri : '',
       type: 'image/jpg',
       name: proPic ? proPic.filename ? proPic.filename : 'image' : 'image',
     }
@@ -186,21 +186,32 @@ class EditAccount extends Component {
       <>
         <ViewX style={styles.userDetails}>
           {proPic ?
-            <Image source={{ uri: proPic.path }} style={styles.imgProfile} />
+            <Image source={{ uri: proPic.uri }} style={styles.imgProfile} />
             : <Image source={imgDummy} style={styles.imgProfile} />}
 
           <TouchableOpacity style={{ marginTop: 15 }} onPress={() => {
+            const options = {
+              
+            };
+        
+            ImagePicker.launchImageLibrary(options, (images) => {
+              console.log({images})
+              this.setState({ proPic: images })
+            });
+
             // ImagePicker.openPicker({
             //   multiple: false
             // }).then(images => {
             //   navigation.navigate('AddContent', { images: images });
             // });
-            ImagePicker.openPicker({
-              multiple: false
-            }).then(images => {
-              console.log({images})
-              this.setState({ proPic: Platform.OS == 'ios' ? images : images[0] })
-            });
+
+            // react-native-image-crop-picker
+            // ImagePicker.openPicker({
+            //   multiple: false
+            // }).then(images => {
+            //   console.log({images})
+            //   this.setState({ proPic: Platform.OS == 'ios' ? images : images[0] })
+            // });
           }}>
             <Text style={{ color: StyleConfig.blue, fontSize: BUTTON_TEXT }}>{'Change Profile Image'}</Text>
           </TouchableOpacity>
