@@ -193,7 +193,7 @@ const ProfileStackNavigator = withTheme(({ theme, ...props }) => {
     }>
       <ProfileNavigator.Screen
         options={{ headerShown: false }}
-        name={'Profile'} component={ProfileScreen}
+        name={'Profile'} component={UserAccount}
       />
 
     </ProfileNavigator.Navigator >
@@ -301,12 +301,17 @@ const AppNavigator =  ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
+        
+        <ProfileNavigator.Screen
+        options={{ headerShown: false }}
+        name={'ProfileMenu'} component={ProfileScreen}
+      />
         <Stack.Screen 
         options={{ headerShown: false }} 
         name="AddContent" 
         component={AddContent} />
 
-      <ProfileNavigator.Screen
+      <Stack.Screen
         options={{ headerShown: false }}
         name={'PreviewReceipe'} component={PhotoRecipeDetails}
       />

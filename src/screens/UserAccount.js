@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native";
 import withLoader from '../redux/actionCreator/withLoader'
-import { getUserWiseRcipeDetails, getUserBookmarkList, postUserBookmark } from '../apiManager'
+import { getUserWiseRcipeDetails, getUserBookmarkList, postUserBookmark, getUserDetails } from '../apiManager'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import { withTheme } from "styled-components";
@@ -61,9 +61,9 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
             source={{ uri: item.image }}
           /> :
            <Video 
-                ref={(ref) => {
-                  this.player = ref
-                }}    
+                // ref={(ref) => {
+                //   this.player = ref
+                // }}    
                 repeat={false}
                 playInBackground={false}
                 paused={true}
@@ -102,18 +102,39 @@ class UserAccount extends Component {
       hashTagAvailable: [
         INIT_FILTER[0],
       ],
-      isAlreadyBookMarked: false
+      isAlreadyBookMarked: false,
+      userDetails:{
+        
+      }
     }
   }
 
-
+  _getProfileDetailsAPICalling = async () => {
+    const { loader } = this.props
+    let token = await AsyncStorage.getItem('user_token')
+    loader(true)
+    let response = await getUserDetails(token)
+    loader(false)
+    console.log("getUserDetails", response)
+    if (response.code === 1) {
+      await this.setState({ userDetails: response.data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
 
   async componentDidMount() {
     const { loader } = this.props
     loader(true);
+    console.log("PARAMS->",this.props.route.params)
+    if(this.props.route.params == undefined){
+      await this._getProfileDetailsAPICalling()
+    }
     let token = await AsyncStorage.getItem('user_token')
     let currentUserId = await AsyncStorage.getItem('user_id')
-    let userId = this.props.route.params.userId
+    let userId = this.props.route.params == undefined ? undefined : this.props.route.params.userId 
     let isAlreadyBookMarked = false;
     if (userId == undefined) {
       userId = currentUserId
@@ -193,10 +214,11 @@ class UserAccount extends Component {
   }
   render() {
     const { theme } = this.props
+    let userDetails = this.props.route.params && this.props.route.params.userDetails ? this.props.route.params.userDetails : this.state.userDetails
     const { hashTagAvailable, filteredData, user_id, isAlreadyBookMarked } = this.state;
-    let userDetails = this.props.route.params.userDetails
+    
     let showBookmark = true;
-    if (this.props.route.params.userId == undefined || this.props.route.params.userId == user_id) {
+    if (this.props.route.params == undefined || (this.props.route.params.userId == undefined || this.props.route.params.userId == user_id)) {
       showBookmark = false;
     }
     return (

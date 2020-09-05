@@ -4,7 +4,8 @@ import {
   Image, StyleSheet, TouchableOpacity, ScrollView,
   Text, View, Switch, Alert
 } from 'react-native'
-import ImagePicker from "react-native-customized-image-picker";
+//import ImagePicker from "react-native-customized-image-picker";
+import ImagePicker from 'react-native-image-crop-picker';
 import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
 import AsyncStorage from '@react-native-community/async-storage'
@@ -54,7 +55,6 @@ class ProfileScreen extends Component {
   _getProfileDetailsAPICalling = async () => {
     const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
-
     loader(true)
     let response = await getUserDetails(token)
     loader(false)
@@ -68,15 +68,22 @@ class ProfileScreen extends Component {
     }
   }
 
-  addContent = () => {
+  addContent = async  () => {
     const { navigation } = this.props;
+    await ImagePicker.clean();
     ImagePicker.openPicker({
       multiple: true,
-      isHidePreview: true,
-      isVideo: true
     }).then(images => {
+      console.log({images})
       navigation.navigate('AddContent', { images: images });
     });
+    // ImagePicker.openPicker({
+    //   multiple: true,
+    //   isHidePreview: true,
+    //   isVideo: true
+    // }).then(images => {
+    //   navigation.navigate('AddContent', { images: images });
+    // });
   }
 
   render() {

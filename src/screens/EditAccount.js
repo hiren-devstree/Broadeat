@@ -7,7 +7,8 @@ import {
 import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
 import AsyncStorage from '@react-native-community/async-storage'
-import ImagePicker from "react-native-customized-image-picker"
+// import ImagePicker from "react-native-customized-image-picker"
+import ImagePicker from 'react-native-image-crop-picker';
 
 import { UPDATE_USER_DETAILS_URL } from './../helper/Constants'
 import ProfileScreen from './ProfileScreen'
@@ -189,11 +190,15 @@ class EditAccount extends Component {
             : <Image source={imgDummy} style={styles.imgProfile} />}
 
           <TouchableOpacity style={{ marginTop: 15 }} onPress={() => {
+            // ImagePicker.openPicker({
+            //   multiple: false
+            // }).then(images => {
+            //   navigation.navigate('AddContent', { images: images });
+            // });
             ImagePicker.openPicker({
-              multiple: false,
-              isHidePreview: true,
+              multiple: false
             }).then(images => {
-              console.log(images)
+              console.log({images})
               this.setState({ proPic: Platform.OS == 'ios' ? images : images[0] })
             });
           }}>

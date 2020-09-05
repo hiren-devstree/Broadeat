@@ -3,7 +3,7 @@ import {
   View, Alert, TouchableWithoutFeedback,
   Image, StyleSheet, TouchableOpacity, Text
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather'
+import Feather from 'react-native-vector-icons/Feather'
 import FastImage from 'react-native-fast-image'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
@@ -25,6 +25,25 @@ class HomeScreen extends Component {
     this.state = {
       data: []
     }
+    
+    
+    _getProfileDetailsAPICalling = async () => {
+      const { loader } = this.props
+      let token = await AsyncStorage.getItem('user_token')
+      loader(true)
+      let response = await getUserDetails(token)
+      loader(false)
+      console.log("getUserDetails", response)
+      if (response.code === 1) {
+        this.setState({ userDetails: response.data })
+      } else {
+        setTimeout(() => {
+          Alert.alert(response.message)
+        }, 500)
+      }
+    }
+
+
 
     props.navigation.setOptions({
       headerTitle: ({ tintColor }) => (
@@ -55,7 +74,17 @@ class HomeScreen extends Component {
             <Text style={{}} > {"Search"} </Text>
           </View>
         </TouchableWithoutFeedback>
-      )
+      ),
+      headerRight: () => (
+        <TouchableOpacity onPress={() => props.navigation.navigate('ProfileMenu')}>
+          <Feather
+            style={{ paddingHorizontal: 20 }}
+            name={"menu"}
+            color={'#777'}
+            size={StyleConfig.iconSize}
+          />
+        </TouchableOpacity>
+      ),
     })
   }
   static reloadScreen = async () => {
@@ -93,6 +122,7 @@ class HomeScreen extends Component {
         Alert.alert(response.message)
       }, 500)
     }
+    
   }
 
   render() {
