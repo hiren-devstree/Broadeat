@@ -26,7 +26,7 @@ export const TextX = (props: TextProps) => <TEXTX {...props} >{props.children}</
 const TEXTX = styled.Text`
   text-align:${props => props.align ? props.align : 'center'};
   font-size:${props => props.fontSize ? props.fontSize : StyleConfig.countPixelRatio(12)}px ;
-  color: ${props => props.theme.text};
+  color: ${props => props.color ? props.color : props.theme.text};
   font-weight: ${props => props.fontWeight ? props.fontWeight : '500'};
 `
 

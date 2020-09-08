@@ -4,6 +4,7 @@ import {
   TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView,
   ScrollView, TextInput, TextInputProps, TouchableWithoutFeedback, Alert
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -17,6 +18,7 @@ import FoodResultRow from '../components/common/FoodResultRow';
 import styled, { withTheme, ThemeConsumer } from 'styled-components';
 import { CommonActions } from '@react-navigation/native';
 import { addContentApiCalling, getTagList } from './../apiManager'
+import Octicons from 'react-native-vector-icons/Octicons';
 
 import imgBack from '../assets/images/ic_back.png'
 const HASH_TAGS = [
@@ -25,6 +27,8 @@ const HASH_TAGS = [
   { _id:3, name:"Desserts", isSelected: false},
   { _id:4, name:"Vegetarian", isSelected: false}
 ]
+
+const AddX = withTheme(({ theme }) =><Octicons name={"plus"} size={StyleConfig.countPixelRatio(30)} color={theme.text} /> )
 
 const IngredientTextInput = (props: TextInputProps) => <InputTextX {...props} >{props.children}</InputTextX>
 
@@ -154,6 +158,18 @@ class AddContent extends Component {
     // this.setState({ data: tempArr })
 
     this.setState({ images: _.images, tagData:tempArr })
+  }
+
+  onAddPress=()=>{
+    let images = this.state.images ;
+    const options = {
+      mediaType: 'mixed'
+    };
+
+    ImagePicker.launchImageLibrary(options, (image) => {
+      images.push(image)
+      this.setState({images})
+    });
   }
 
   _onChangeIngredients = (index, type, text) => {
@@ -439,18 +455,12 @@ class AddContent extends Component {
           "measure": ingredients[ind].measuremnt
       })
     }
-
-    console.log({Rec_Ingredient, Method, images, title, description,
-      mealPreference, noOfPerson, nutritionCalories,
-      nutritionProtein, nutritionFat, nutritionCarbs, timeDuration,
-      Rac_Tag, hashTag})
-
     let data = {
       "Recipe": {
         "id": 0,
         "user_id": 0,
         "recipe_title": title,
-        "image": images[0].path,
+        "image": images[0].uri,
         "meal_preference": mealPreference,
         "description": description,
         "nutrition_calories": nutritionCalories.length > 0 ? nutritionCalories : null ,
@@ -460,7 +470,7 @@ class AddContent extends Component {
         "time_duration": timeDuration,
         "no_of_person": noOfPerson,
         "creator_name": "",
-        "creator_profilepic": images[0].path,
+        "creator_profilepic": images[0].uri,
         "like": false,
         "dislike": false,
         "bookmarked": true
@@ -476,9 +486,12 @@ class AddContent extends Component {
 
   }
   render() {
-    const { images, ingredients, methods } = this.state;
+    const { ingredients, methods } = this.state;
     const { theme } = this.props;
-    console.log({images})
+    let images = [ ...this.state.images ] ;
+    images.push({
+      uri: null
+    })
     return (
       <SafeAreaView {...this.props}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -511,7 +524,12 @@ class AddContent extends Component {
                     width: StyleConfig.convertWidthPerVal(120),
                     height: StyleConfig.convertWidthPerVal(120)
                   }}>
-                    { itm.uri.endsWith("MOV") || itm.uri.endsWith("MP4") ?
+                    { itm.uri == null ?
+                    <TouchableOpacity onPress={this.onAddPress}>
+                      <AddX />
+                    </TouchableOpacity>
+                    :
+                      itm.uri.endsWith("MOV") || itm.uri.endsWith("MP4") ?
                       <Video 
                         ref={(ref) => {
                           this.player = ref
@@ -530,6 +548,7 @@ class AddContent extends Component {
                     }
                 </ViewX>)
               }
+              
             </ViewX>
             <TextInput
               style={{

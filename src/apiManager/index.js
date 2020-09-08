@@ -15,6 +15,7 @@ import {
   GET_USER_WISE_RECIPE_DETAILS_URL, 
   GET_RECENT_SEARCH_URL,
   DELETE_SEARCH_RECORD_URL, 
+  DELETE_RECIPE,
   FILTER_URL,
   POST_ADD_UPDATE_ACTIVITY,
   POST_USER_BOOKMARK
@@ -303,6 +304,22 @@ const ApiManager = {
       method: 'POST',
       headers: myHeaders,
       body: data
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
+  deleteReceipe: async (recipeId, token) => {
+    console.log('DELETE Recipe ID: ', recipeId)
+    let myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${token}`)
+
+    return fetch(`${DELETE_RECIPE}${recipeId}`, {
+      method: 'GET',
+      headers: myHeaders
     }).then((response) => {
       return response.json()
     }, function (error) {

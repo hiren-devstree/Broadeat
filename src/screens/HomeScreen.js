@@ -88,7 +88,25 @@ class HomeScreen extends Component {
     })
   }
   static reloadScreen = async () => {
-    console.log("reload screen")
+    console.log("HOME reload screen")
+    const { loader } = this.props
+    loader(true)
+    let token = await AsyncStorage.getItem('user_token')
+    let response = await getRecipeData(token)
+    console.log("Loader", false)
+    this.props.loader(false)
+    console.log("getRecipeData", response)
+    if (response.code === 1) {
+      this.setState({ data: response.data })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
+
+  refreshScreen = async () =>{
+    console.log("HOME reload screen")
     const { loader } = this.props
     loader(true)
     let token = await AsyncStorage.getItem('user_token')
@@ -152,7 +170,7 @@ class HomeScreen extends Component {
           () => <View style={{ height: 3, }} />
         }
         renderItem={({ item, index }) => (
-          <TouchableOpacity style={{ marginLeft: index % 3 == 0 ? 0 : 3 }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })}>
+          <TouchableOpacity style={{ marginLeft: index % 3 == 0 ? 0 : 3 }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id, reloadScreen: this.refreshScreen})}>
             { item.thumbnail_image.length > 0 ? <FastImage
               style={{ height: width, width: width }}
               source={{

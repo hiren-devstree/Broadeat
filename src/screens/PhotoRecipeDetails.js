@@ -11,7 +11,8 @@ import FastImage from 'react-native-fast-image'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { getRcipeDetails, postFavorite } from './../apiManager'
+import { getRcipeDetails, postFavorite, deleteReceipe } from './../apiManager'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Video from 'react-native-video';
 // Component Imports
 import {
@@ -42,13 +43,14 @@ class PhotoRecipeDetails extends Component {
       selectedTab: 1,
       data: undefined,
       token: null,
-      user_id: ''
+      user_id: '',
+      receipeByMe: false
     }
   }
 
   componentDidMount() {
     let id = this.props.route.params.data
-    debugger
+    console.log(this.props.route.params)
     if (id == 0) {
       this.setState({
         data: this.props.route.params.ReceipeData
@@ -64,10 +66,12 @@ class PhotoRecipeDetails extends Component {
       timer: '',
       selectedTab: 1,
       data: undefined,
-      token: null
+      token: null,
+      receipeByMe: false
     }
   }
 
+  
   render() {
     return this.renderMainView()
   }
@@ -91,7 +95,6 @@ class PhotoRecipeDetails extends Component {
   _getRecipeDetailsAPICalling = async (id, showLoader = false) => {
     const { loader } = this.props;
     let token = await AsyncStorage.getItem('user_token');
-
     let data = {
       id: id
     }
@@ -101,7 +104,9 @@ class PhotoRecipeDetails extends Component {
 
     loader(false)
     if (response.code === 1) {
-      this.setState({ data: response.data, token }, () => {
+      let receipeByMe = response.data.Recipe.user_id == this.state.user_id
+      
+      this.setState({ data: response.data, token, receipeByMe }, () => {
         this.forceUpdate()
       })
     } else {
@@ -110,6 +115,39 @@ class PhotoRecipeDetails extends Component {
       }, 500)
     }
   }
+  deleteRecipe = async ()=>{
+    const { loader } = this.props;
+    let token = await AsyncStorage.getItem('user_token');
+    let reloadScreen = this.props.route.params.reloadScreen;
+    loader(true)
+    let response = await deleteReceipe(this.state.data.Recipe.id, token)
+    loader(false)
+    if (response.code == 1) {
+      if(reloadScreen){
+        reloadScreen();
+      }
+      this.props.navigation.goBack()
+    } else {
+    
+    }
+    
+  }
+  _onDelete= async ()=>{
+    Alert.alert(
+      "Do you want to delete recipe?",
+      "",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => this.deleteRecipe() }
+      ],
+      { cancelable: false }
+    );
+  }
+
   _postView = async () => {
     const { loader } = this.props
     let { data, token } = this.state;
@@ -125,6 +163,7 @@ class PhotoRecipeDetails extends Component {
     let response = await postFavorite(params, token)
     if (response.code === 1) {
       let id = this.props.route.params.data
+      
       this._getRecipeDetailsAPICalling(id)
     } else {
       loader(false)
@@ -278,7 +317,7 @@ class PhotoRecipeDetails extends Component {
     return (
       <>
         <ViewX style={styles.headerTopView}>
-          <TouchableOpacity onPress={this.onBack}>
+          <TouchableOpacity style={{ minWidth:60}} onPress={this.onBack}>
             <Image source={imgBack} style={styles.backBtn} />
           </TouchableOpacity>
           <TextX
@@ -286,11 +325,11 @@ class PhotoRecipeDetails extends Component {
           >
             {data ? data.Recipe.creator_name : ''}
           </TextX>
-          <ViewX>
-            <TouchableOpacity>
-              <Image source={imgMenu} style={styles.headerBtn} resizeMode='contain' />
+            <TouchableOpacity style={{ minWidth:60}} disabled={!this.state.receipeByMe} onPress={this._onDelete}>
+            {this.state.receipeByMe && <TextX color={'#de1738'} fontSize={StyleConfig.countPixelRatio(16)} >
+                {'Delete'}
+              </TextX>}
             </TouchableOpacity>
-          </ViewX>
         </ViewX>
       </>
     )
@@ -379,7 +418,8 @@ class PhotoRecipeDetails extends Component {
               <Video 
                 ref={(ref) => {
                   this.player = ref
-                }}    
+                }}
+                resizeMode={'contain'}
                 repeat={false}
                 controls={true} 
                 playInBackground={false}
