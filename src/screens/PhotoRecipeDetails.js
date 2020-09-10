@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import {
   View, StyleSheet, Image, TouchableOpacity,
-  ScrollView, FlatList, Text, Alert, Share
+  ScrollView, FlatList, Text, Alert, Share,StatusBar
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import FastImage from 'react-native-fast-image'
@@ -12,11 +12,11 @@ import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { getRcipeDetails, postFavorite, deleteReceipe } from './../apiManager'
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Video from 'react-native-video';
 // Component Imports
 import {
-  SafeAreaView, ViewX, TextX
+  SafeAreaView, ViewX, TextX, CText, CTextColor
 } from '../components/common'
 import imgFood from '../assets/images/ic_food.png'
 import imgBack from '../assets/images/ic_back.png'
@@ -67,7 +67,9 @@ class PhotoRecipeDetails extends Component {
       selectedTab: 1,
       data: undefined,
       token: null,
-      receipeByMe: false
+      receipeByMe: false,
+      showOptionMenu: false,
+      xPosition:0
     }
   }
 
@@ -133,6 +135,7 @@ class PhotoRecipeDetails extends Component {
     
   }
   _onDelete= async ()=>{
+    await this.setState({showOptionMenu:false})
     Alert.alert(
       "Do you want to delete recipe?",
       "",
@@ -287,7 +290,7 @@ class PhotoRecipeDetails extends Component {
   */
 
   renderMainView = () => {
-    const { selectedTab } = this.state
+    const { selectedTab, showOptionMenu } = this.state
     return (
       <SafeAreaView {...this.props} style={{ flex: 1, }}>
         {this.renderHeaderView()}
@@ -298,6 +301,32 @@ class PhotoRecipeDetails extends Component {
           {selectedTab == 1 ? this.renderIngredientsView() : this.renderMethodListView()}
           {/* {this.renderMethodListView()} */}
         </ScrollView>
+        {showOptionMenu && <View style={{ 
+            position:'absolute',
+            zIndex:999,
+            alignSelf:'flex-end',
+            right: StyleConfig.countPixelRatio(16),
+            marginTop:this.state.xPosition,
+            paddingVertical: StyleConfig.countPixelRatio(2),
+            backgroundColor:'#fff' }}
+            >
+              <TouchableOpacity style={{ 
+                  height: StyleConfig.countPixelRatio(26),
+                  alignItems:'center',
+                  paddingHorizontal:StyleConfig.countPixelRatio(12),
+                  paddingVertical: StyleConfig.countPixelRatio(4)}}>
+                <CTextColor color={'#333'} fontSize={StyleConfig.fontSizeH3}>Edit</CTextColor>
+              </TouchableOpacity>
+              <View style={{backgroundColor:'#666', marginVertical: StyleConfig.countPixelRatio(2), height:0.5}} />
+              <TouchableOpacity onPress={this._onDelete} style={{ 
+                  height: StyleConfig.countPixelRatio(26),
+                  alignItems:'center',
+                  paddingHorizontal:StyleConfig.countPixelRatio(12),
+                  paddingVertical: StyleConfig.countPixelRatio(4)}}>
+                <CTextColor color={'#333'} fontSize={StyleConfig.fontSizeH3}>Delete</CTextColor>
+              </TouchableOpacity>
+              
+              </View> }
       </SafeAreaView>
     )
   }
@@ -317,7 +346,7 @@ class PhotoRecipeDetails extends Component {
     return (
       <>
         <ViewX style={styles.headerTopView}>
-          <TouchableOpacity style={{ minWidth:60}} onPress={this.onBack}>
+          <TouchableOpacity style={{ minWidth:40}} onPress={this.onBack}>
             <Image source={imgBack} style={styles.backBtn} />
           </TouchableOpacity>
           <TextX
@@ -325,11 +354,21 @@ class PhotoRecipeDetails extends Component {
           >
             {data ? data.Recipe.creator_name : ''}
           </TextX>
-            <TouchableOpacity style={{ minWidth:60}} disabled={!this.state.receipeByMe} onPress={this._onDelete}>
-            {this.state.receipeByMe && <TextX color={'#de1738'} fontSize={StyleConfig.countPixelRatio(16)} >
-                {'Delete'}
-              </TextX>}
+          <View
+          onLayout={(event) => {
+            var {x, y, width, height} = event.nativeEvent.layout
+            console.log('statusBarHeight: ', StatusBar.currentHeight);
+
+            console.log({x, y, width, height})
+            let statusBarHeight = StyleConfig.iPhoneX ? 44 : 20
+            this.setState({xPosition: y+height+statusBarHeight})
+          }}>
+            <TouchableOpacity  style={{ minWidth:40, alignItems:'flex-end'}} disabled={!this.state.receipeByMe} onPress={()=> this.setState({showOptionMenu:true})}>
+            {this.state.receipeByMe && 
+              <Entypo name={'dots-three-vertical'} size={StyleConfig.countPixelRatio(20)} color='#999' />
+            }
             </TouchableOpacity>
+            </View>
         </ViewX>
       </>
     )
@@ -678,6 +717,7 @@ const styles = StyleSheet.create({
   headerTopView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems:'center',
     paddingHorizontal: StyleConfig.countPixelRatio(12),
     marginBottom: StyleConfig.countPixelRatio(12),
     height: StyleConfig.countPixelRatio(40),

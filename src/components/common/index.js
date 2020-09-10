@@ -73,6 +73,13 @@ const CTEXTCOLOR = styled.Text`
   color: ${props => props.color};
   font-weight: ${props => props.fontWeight ? props.fontWeight : '500'};
 `
+export const CTextColor2 = props => <CTEXTCOLOR2 {...props}>{props.children}</CTEXTCOLOR2>
+const CTEXTCOLOR2 = styled.Text`
+  text-align:${props => props.align ? props.align : 'center'};
+  font-size:${props => props.fontSize ? props.fontSize : StyleConfig.countPixelRatio(12)}px ;
+  color: ${props => props.color};
+  font-weight: ${props => props.fontWeight ? props.fontWeight : '500'};
+`
 
 export const CButtonColor = props => <TouchableOpacity style={props.containerStyle} onPress={props.onPress}>
   <CBUTTONCOLOR {...props}>{props.children}</CBUTTONCOLOR></TouchableOpacity>

@@ -20,6 +20,7 @@ import StyleConfig from "../assets/styles/StyleConfig";
 import AppImages from '../assets/images';
 import { Account } from "./BookMarkTabs/AccountTab";
 import Video from 'react-native-video';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
   return (
@@ -60,10 +61,8 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
             }}
             source={{ uri: item.image }}
           /> :
-           <Video 
-                // ref={(ref) => {
-                //   this.player = ref
-                // }}    
+          <View>
+              <Video 
                 repeat={false}
                 playInBackground={false}
                 paused={true}
@@ -74,6 +73,17 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
                 }}
                 source={{ uri: item.image }}
               />
+              <View style={{ height:"90%",position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
+                  <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
+                    alignItems:'center', 
+                    justifyContent:'center',
+                    paddingLeft:2,
+                    borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}>
+                    <FontAwesome5 name='play' color={'#fff'} size={StyleConfig.countPixelRatio(28)} />
+                  </View>
+                </View>
+              </View>
+            
         }
         </ViewX>
         <TextX style={{

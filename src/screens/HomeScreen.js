@@ -4,6 +4,8 @@ import {
   Image, StyleSheet, TouchableOpacity, Text
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+
 import FastImage from 'react-native-fast-image'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
@@ -167,7 +169,7 @@ class HomeScreen extends Component {
         bounces={false}
         keyExtractor={(_, idx) => `foodGlr-${idx}`}
         ItemSeparatorComponent={
-          () => <View style={{ height: 3, }} />
+          () => <View style={{ height: 3 }} />
         }
         renderItem={({ item, index }) => (
           <TouchableOpacity style={{ marginLeft: index % 3 == 0 ? 0 : 3 }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id, reloadScreen: this.refreshScreen})}>
@@ -179,16 +181,27 @@ class HomeScreen extends Component {
               }}
               resizeMode={FastImage.resizeMode.cover}
             /> :
-            <Video 
-                ref={(ref) => {
-                  this.player = ref
-                }}    
-                repeat={false}
-                playInBackground={false}
-                paused={true}
-                style={{ height: width, width: width }}
-                source={{uri: item.image}} 
-              />
+            <View>
+              <Video 
+                  ref={(ref) => {
+                    this.player = ref
+                  }}    
+                  repeat={false}
+                  playInBackground={false}
+                  paused={true}
+                  style={{ height: width, width: width }}
+                  source={{uri: item.image}} 
+                />
+              <View style={{ height:width,position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
+                  <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
+                    alignItems:'center', 
+                    justifyContent:'center',
+                    paddingLeft:2,
+                    borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}>
+                    <FontAwesome5 name='play' color={'#fff'} size={StyleConfig.countPixelRatio(28)} />
+                  </View>
+                </View>
+              </View>
             }
           </TouchableOpacity>
         )

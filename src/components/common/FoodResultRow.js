@@ -1,11 +1,12 @@
 import React, { PureComponent } from "react";
 import {
-  Image, TouchableOpacity
+  Image, TouchableOpacity, View
 } from "react-native";
 import StyleConfig from '../../assets/styles/StyleConfig';
 import { ViewX, TextX, CButtonColor } from '../../components/common';
 import { IMAGE_PATH } from '../../helper/Constants'
 import Video from 'react-native-video';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 class FoodResultRow extends PureComponent {
 
   render() {
@@ -20,7 +21,8 @@ class FoodResultRow extends PureComponent {
             resizeMode="cover"
             style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(205) }}
             source={{ uri: data.image }}
-          /> :  <Video 
+          /> : <View>
+           <Video 
                 ref={(ref) => {
                   this.player = ref
                 }}    
@@ -30,6 +32,16 @@ class FoodResultRow extends PureComponent {
                 style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(205) }}
                 source={{ uri: data.image }}
               />
+          <View style={{ height:StyleConfig.convertHeightPerVal(205),position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
+              <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
+                alignItems:'center', 
+                justifyContent:'center',
+                paddingLeft:2,
+                borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}>
+                <FontAwesome5 name='play' color={'#fff'} size={StyleConfig.countPixelRatio(28)} />
+              </View>
+            </View>
+          </View>
             }
         </TouchableOpacity>
         <ViewX style={{ flexDirection: "row", paddingVertical: StyleConfig.convertHeightPerVal(12) }} >

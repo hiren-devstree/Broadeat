@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import {
+import { View,
   TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView,
   ScrollView, TextInput, TextInputProps, TouchableWithoutFeedback, Alert
 } from 'react-native';
@@ -19,6 +19,7 @@ import styled, { withTheme, ThemeConsumer } from 'styled-components';
 import { CommonActions } from '@react-navigation/native';
 import { addContentApiCalling, getTagList } from './../apiManager'
 import Octicons from 'react-native-vector-icons/Octicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import imgBack from '../assets/images/ic_back.png'
 const HASH_TAGS = [
@@ -530,7 +531,8 @@ class AddContent extends Component {
                     </TouchableOpacity>
                     :
                       itm.uri.endsWith("MOV") || itm.uri.endsWith("MP4") ?
-                      <Video 
+                    <View>
+                       <Video 
                         ref={(ref) => {
                           this.player = ref
                         }}
@@ -539,7 +541,19 @@ class AddContent extends Component {
                         paused={true}
                         style={{ width: "95%", height: "95%" }}
                         source={{ uri: itm.uri }}
-                      /> :
+                      />
+                      <View style={{ height:"95%",position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
+                          <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
+                            alignItems:'center', 
+                            justifyContent:'center',
+                            paddingLeft:2,
+                            borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}>
+                            <FontAwesome5 name='play' color={'#fff'} size={StyleConfig.countPixelRatio(28)} />
+                          </View>
+                        </View>
+                      </View>
+
+                      :
                       <Image
                         key={`images-${idx}`}
                         style={{ width: "95%", height: "95%" }}

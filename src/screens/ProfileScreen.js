@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     paddingVertical: StyleConfig.countPixelRatio(16),
   },
   hideProfileContainer: {
-    paddingVertical: StyleConfig.countPixelRatio(5),
+    paddingVertical: StyleConfig.countPixelRatio(16),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

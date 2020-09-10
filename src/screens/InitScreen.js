@@ -12,7 +12,7 @@ import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
-import { SafeAreaViewC, CButtonColor, CTextColor } from '../components/common';
+import { SafeAreaViewC, CButtonColor, CTextColor, CTextColor2 } from '../components/common';
 import BaseComponent from '../containers/BaseComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { CommonActions } from '@react-navigation/native';
@@ -21,7 +21,6 @@ class InitScreen extends BaseComponent {
 
     componentDidMount= () =>{
         AsyncStorage.getItem('is_remember').then((response)=>{
-            console.log({response});
             if(response != null && response != undefined && response != '0'){
                 this.props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Dashboard' }] }))
             }
@@ -39,7 +38,29 @@ class InitScreen extends BaseComponent {
                     />
                     <View style={{ flex: 1 }} />
                     <View style={{ marginHorizontal: StyleConfig.convertWidthPerVal(46) }} >
-                        <Image
+                        <View style={{flexDirection:'row'}}>
+                            <View style={{flex:1}}>
+                            </View>
+                            <View style={{ height: StyleConfig.convertHeightPerVal(95),
+                                    //backgroundColor:'#ffffff99', 
+                                    alignItems:'flex-start',
+                                    justifyContent:'space-around',
+                                    minWidth:StyleConfig.countPixelRatio(200),
+                                     }} >
+                                         <View style={{height:StyleConfig.convertHeightPerVal(35), }}>    
+                                        <CTextColor2 color={"#8A8A8F"} fontSize={StyleConfig.countPixelRatio(32)}>{'Welcome'}</CTextColor2>
+                                        </View>
+                                        <View style={{height:StyleConfig.convertHeightPerVal(35), position:'absolute', marginTop:StyleConfig.convertHeightPerVal(20)}}>    
+                                <CTextColor2 color={"#8A8A8F"} align={'left'} fontSize={StyleConfig.countPixelRatio(30)}>{'to'}<CTextColor2 color={"#fa9000"} fontSize={StyleConfig.countPixelRatio(30)}>{" BROAD"}<CTextColor2 color={"#80d155"} fontSize={StyleConfig.countPixelRatio(39)}>{'eat'}</CTextColor2></CTextColor2></CTextColor2>
+                                </View>
+                                <View style={{height:StyleConfig.convertHeightPerVal(20), position:'absolute', marginTop:StyleConfig.convertHeightPerVal(56) }}>
+                                <CTextColor2 color={"#8A8A8F"} fontSize={StyleConfig.countPixelRatio(18)}>{'Broadcast your recipes!'}</CTextColor2>
+                                </View>
+                                
+                        </View>
+                        </View>
+                        
+                        {/* <Image
                             source={AppImages.welcome_broadeat}
                             resizeMode={'contain'}
                             style={{
@@ -47,7 +68,7 @@ class InitScreen extends BaseComponent {
                                 width: StyleConfig.convertWidthPerVal(202),
                                 alignSelf: 'flex-end'
                             }}
-                        />
+                        /> */}
                         <CButtonColor
                             color={"#83D557"}
                             borderColor={"#fff"}
