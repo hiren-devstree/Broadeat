@@ -29,17 +29,12 @@ class FoodResultRow extends PureComponent {
                 repeat={false}
                 playInBackground={false}
                 paused={true}
+                resizeMode={'cover'}
                 style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(205) }}
                 source={{ uri: data.image }}
               />
           <View style={{ height:StyleConfig.convertHeightPerVal(205),position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
-              <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
-                alignItems:'center', 
-                justifyContent:'center',
-                paddingLeft:2,
-                borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}>
-                <FontAwesome5 name='play' color={'#fff'} size={StyleConfig.countPixelRatio(28)} />
-              </View>
+              <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
             </View>
           </View>
             }

@@ -8,6 +8,7 @@ const light = {
     devider: "#a2a2a2",
     backgroundAlt: '#eaeaeb',
     borderAlt: '#bdbdbd',
+    borderAlt2: "#707070",
     text: '#171717',
     textHint: '#272727',
     backgroundAlt2: "#575ccd",
@@ -16,7 +17,8 @@ const light = {
     cLightCyan: "#CCF7F5",
     cGrey: "#8A8A8F",
     textInputBac: "#000",
-    textInputBac2: "#e5e5e6",
+    text2: "#eee",
+    textInputBac2: "#333",
     headerBack: "#eee",
     profileDeviderColor: "#00000055"
   }

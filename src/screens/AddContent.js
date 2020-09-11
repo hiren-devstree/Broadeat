@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/Feather'
 import Video from 'react-native-video';
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { SafeAreaView, TextX, ViewX } from '../components/common';
+import { SafeAreaView, TextX, ViewX, CTextColor } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
 import styled, { withTheme, ThemeConsumer } from 'styled-components';
 import { CommonActions } from '@react-navigation/native';
@@ -34,14 +34,13 @@ const AddX = withTheme(({ theme }) =><Octicons name={"plus"} size={StyleConfig.c
 const IngredientTextInput = (props: TextInputProps) => <InputTextX {...props} >{props.children}</InputTextX>
 
 const InputTextX = styled.TextInput`
-    paddingVertical: ${StyleConfig.convertHeightPerVal(10)}px;
-    font-size: ${StyleConfig.fontSizeH3}px;
+    paddingVertical: ${StyleConfig.convertHeightPerVal(4)}px;
+    font-size: ${StyleConfig.fontSizeH2_3}px;
     background: ${props => props.theme.textInputBac2};
-    color:${props => props.theme.text};
+    color:${props => props.theme.text2};
     text-align: center;
     border-width: 0.5px;
-    border-radius: 5px;
-    border-color: ${props => props.theme.borderAlt};
+    border-color: ${props => props.theme.borderAlt2};
 
 `
 const MultiTextInputX = (props: TextInputProps) => <MultiTextInput multiline {...props}>{props.children}</MultiTextInput>
@@ -54,24 +53,27 @@ const MultiTextInput = styled.TextInput`
     padding: 10px;
 `
 
-const IngredientsWrapper = withTheme(({ theme, idx, _onChangeIngredients, ...props }) => {
+const IngredientsWrapper = withTheme(({ theme, idx, showBackground, _onChangeIngredients, ...props }) => {
   return (<ViewX style={{
     flex: 1,
-    marginVertical: StyleConfig.convertHeightPerVal(5),
+    marginVertical: StyleConfig.convertHeightPerVal(2),
+    paddingVertical: StyleConfig.convertHeightPerVal(4),
+    paddingHorizontal: StyleConfig.convertHeightPerVal(12),
     justifyContent: "space-around",
     alignItems: "center",
-    flexDirection: "row"
+    flexDirection: "row",
+    backgroundColor: showBackground ? "#ffffff2f" : "#00000000"
   }} >
     <IngredientTextInput
       style={{
-        width: StyleConfig.convertWidthPerVal(80)
+        width: StyleConfig.convertWidthPerVal(40)
       }}
       placeholder={"Qty"}
       onChangeText={(text) => _onChangeIngredients(idx, 'q', text)}
     />
     <IngredientTextInput
       style={{
-        width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
+        width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.9),
         textAlign: "center"
       }}
       placeholder={"Measure"}
@@ -92,7 +94,7 @@ const MethodWrapper = withTheme(({ theme, idx, _onChangeMethods, ...props }) => 
   return (
     <ViewX style={{
       flex: 1,
-      marginVertical: StyleConfig.convertHeightPerVal(5),
+      marginVertical: StyleConfig.convertHeightPerVal(2),
       alignItems: "flex-start",
     }} >
 
@@ -102,15 +104,15 @@ const MethodWrapper = withTheme(({ theme, idx, _onChangeMethods, ...props }) => 
           color: theme.text,
           fontSize: StyleConfig.fontSizeH3_4,
           padding: StyleConfig.convertWidthPerVal(10),
-          paddingVertical: StyleConfig.convertHeightPerVal(10),
+          //paddingVertical: StyleConfig.convertHeightPerVal(10),
         }}
       >Step {idx + 1}</TextX>
       <MultiTextInputX
         style={{
           minHeight: StyleConfig.convertHeightPerVal(50),
-          marginHorizontal:12,
-          marginVertical:4,
-          width: StyleConfig.width-24
+          marginHorizontal:StyleConfig.convertWidthPerVal(12),
+          marginBottom:StyleConfig.convertWidthPerVal(10),
+          width: StyleConfig.width-StyleConfig.convertWidthPerVal(24)
         }}
         onChangeText={(text) => _onChangeMethods(idx, text)}
       />
@@ -487,35 +489,38 @@ class AddContent extends Component {
 
   }
   render() {
-    const { ingredients, methods } = this.state;
+    const { ingredients, methods, images } = this.state;
     const { theme } = this.props;
-    let images = [ ...this.state.images ] ;
-    images.push({
-      uri: null
-    })
+    console.log({images})
     return (
       <SafeAreaView {...this.props}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}
           style={{ flex: 1 }}>
-          <ScrollView style={{ paddingBottom: 20 }}>
 
             <ViewX style={styles.headerTopView}>
               <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image source={imgBack} style={styles.backBtn} />
-              </TouchableOpacity>
-              <TextX
+              <CTextColor
+                align={'left'}
+                color={theme.text}
                 fontSize={StyleConfig.countPixelRatio(16)}
                 style={{ marginLeft: 15 }}
               >
-                {'Add Content'}
-              </TextX>
+                {'Cancel'}
+              </CTextColor>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.onAddPress}>
+                <Image source={AppImages.ic_add} style={styles.backBtn} />
+                </TouchableOpacity>
+              
             </ViewX>
+          <ScrollView style={{flex:1, paddingBottom: 20 }}>
+
 
             <ViewX style={{
               paddingVertical: 5,
               width: StyleConfig.width,
               flexWrap: "wrap",
-              // justifyContent: "flex-start",
+              justifyContent: "flex-start",
               flexDirection: "row"
             }} >
               {
@@ -525,17 +530,14 @@ class AddContent extends Component {
                     width: StyleConfig.convertWidthPerVal(120),
                     height: StyleConfig.convertWidthPerVal(120)
                   }}>
-                    { itm.uri == null ?
-                    <TouchableOpacity onPress={this.onAddPress}>
-                      <AddX />
-                    </TouchableOpacity>
-                    :
+                    { 
                       itm.uri.endsWith("MOV") || itm.uri.endsWith("MP4") ?
                     <View>
                        <Video 
                         ref={(ref) => {
                           this.player = ref
                         }}
+                        resizeMode={'cover'}
                         repeat={false}
                         playInBackground={false}
                         paused={true}
@@ -543,13 +545,7 @@ class AddContent extends Component {
                         source={{ uri: itm.uri }}
                       />
                       <View style={{ height:"95%",position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
-                          <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
-                            alignItems:'center', 
-                            justifyContent:'center',
-                            paddingLeft:2,
-                            borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}>
-                            <FontAwesome5 name='play' color={'#fff'} size={StyleConfig.countPixelRatio(28)} />
-                          </View>
+                          <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
                         </View>
                       </View>
 
@@ -567,7 +563,7 @@ class AddContent extends Component {
             <TextInput
               style={{
                 color: theme.text,
-                fontSize: StyleConfig.fontSizeH3,
+                fontSize: StyleConfig.fontSizeH2_3,
                 padding: StyleConfig.convertWidthPerVal(10)
               }}
               placeholderTextColor={theme.textHint}
@@ -579,7 +575,7 @@ class AddContent extends Component {
               multiline
               style={{
                 color: theme.text,
-                fontSize: StyleConfig.fontSizeH3,
+                fontSize: StyleConfig.fontSizeH2_3,
                 padding: StyleConfig.convertWidthPerVal(10)
               }}
               placeholderTextColor={theme.textHint}
@@ -591,31 +587,35 @@ class AddContent extends Component {
               style={{
                 textAlign: "left",
                 color: theme.text,
-                fontSize: StyleConfig.fontSizeH3,
-                padding: StyleConfig.convertWidthPerVal(10)
+                fontSize: StyleConfig.fontSizeH2_3,
+                paddingHorizontal: StyleConfig.convertWidthPerVal(12),
+                paddingTop: StyleConfig.convertWidthPerVal(12)
               }}
             >Add Ingredients</TextX>
             <ViewX style={{
               flex: 1,
-              paddingVertical: 20,
+              paddingHorizontal: StyleConfig.convertWidthPerVal(12),
+              paddingVertical: StyleConfig.convertWidthPerVal(8),
               justifyContent: "space-around",
               alignItems: "center",
               flexDirection: "row"
             }} >
-              <TextX style={{ width: StyleConfig.convertWidthPerVal(80), fontSize: StyleConfig.fontSizeH3 }}>Qty</TextX>
+              <TextX style={{ width: StyleConfig.convertWidthPerVal(40), textAlign:'left', fontSize: StyleConfig.fontSizeH2_3 }}>Qty</TextX>
               <TextX style={{
                 // flex: 1,
-                width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
-                fontSize: StyleConfig.fontSizeH3
+                textAlign:'left',
+                width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.9),
+                fontSize: StyleConfig.fontSizeH2_3
               }} >Measure</TextX>
               <TextX style={{
                 // flex: 1,
+                textAlign:'left',
                 width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
-                fontSize: StyleConfig.fontSizeH3
+                fontSize: StyleConfig.fontSizeH2_3
               }} >Ingredient</TextX>
             </ViewX>
             {
-              ingredients.map((item, idx) => <IngredientsWrapper {...{ idx }} _onChangeIngredients={this._onChangeIngredients} />)
+              ingredients.map((item, idx) => <IngredientsWrapper showBackground={idx % 2 == 0} {...{ idx }} _onChangeIngredients={this._onChangeIngredients} />)
             }
             <TouchableWithoutFeedback onPress={() => {
               this.setState((prevState, props) => {
@@ -638,9 +638,9 @@ class AddContent extends Component {
               style={{
                 textAlign: "left",
                 color: theme.text,
-                fontSize: StyleConfig.fontSizeH3,
-                padding: StyleConfig.convertWidthPerVal(10),
-                paddingVertical: StyleConfig.convertHeightPerVal(10),
+                fontSize: StyleConfig.fontSizeH2_3,
+                paddingHorizontal: StyleConfig.convertWidthPerVal(10),
+                paddingVertical: StyleConfig.convertHeightPerVal(4),
               }}
             >Cooking Method</TextX>
             {/* STEPS START */}
@@ -672,7 +672,7 @@ class AddContent extends Component {
               style={{
                 textAlign: "left",
                 color: theme.text,
-                fontSize: StyleConfig.fontSizeH3,
+                fontSize: StyleConfig.fontSizeH2_3,
                 padding: StyleConfig.convertWidthPerVal(10),
                 paddingVertical: StyleConfig.convertHeightPerVal(10),
               }}
@@ -707,7 +707,7 @@ class AddContent extends Component {
                 style={{
                   textAlign: "left",
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   paddingTop: StyleConfig.convertHeightPerVal(10),
                   flex: 0.5
@@ -717,7 +717,7 @@ class AddContent extends Component {
               <TextInput
                 style={{
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
                   backgroundColor: theme.textInputBac2,
@@ -744,7 +744,7 @@ class AddContent extends Component {
                 style={{
                   textAlign: "left",
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   paddingTop: StyleConfig.convertHeightPerVal(10),
                   flex: 0.5
@@ -754,7 +754,7 @@ class AddContent extends Component {
               <TextInput
                 style={{
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
                   backgroundColor: theme.textInputBac2,
@@ -778,7 +778,7 @@ class AddContent extends Component {
                 style={{
                   textAlign: "left",
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   paddingTop: StyleConfig.convertHeightPerVal(10),
                   flex: 0.5
@@ -788,7 +788,7 @@ class AddContent extends Component {
               <TextInput
                 style={{
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
                   backgroundColor: theme.textInputBac2,
@@ -814,7 +814,7 @@ class AddContent extends Component {
                 style={{
                   textAlign: "left",
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   paddingTop: StyleConfig.convertHeightPerVal(10),
                   flex: 0.5
@@ -824,7 +824,7 @@ class AddContent extends Component {
               <TextInput
                 style={{
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
                   backgroundColor: theme.textInputBac2,
@@ -850,7 +850,7 @@ class AddContent extends Component {
                 style={{
                   textAlign: "left",
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   paddingTop: StyleConfig.convertHeightPerVal(10),
                   flex: 0.5
@@ -860,7 +860,7 @@ class AddContent extends Component {
               <TextInput
                 style={{
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
                   backgroundColor: theme.textInputBac2,
@@ -886,7 +886,7 @@ class AddContent extends Component {
                 style={{
                   textAlign: "left",
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   paddingTop: StyleConfig.convertHeightPerVal(10),
                   flex: 0.5
@@ -896,7 +896,7 @@ class AddContent extends Component {
               <TextInput
                 style={{
                   color: theme.text,
-                  fontSize: StyleConfig.fontSizeH3,
+                  fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
                   backgroundColor: theme.textInputBac2,
@@ -925,11 +925,11 @@ class AddContent extends Component {
 
         <ViewX style={styles.bottomView}>
           <TouchableOpacity onPress={this._onPreview} style={styles.bottomBtn}>
-            <TextX fontSize={16}>Preview</TextX>
+            <TextX fontSize={StyleConfig.fontSizeH2_3}>Preview</TextX>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.bottomBtn} onPress={() => this._doneButtonPressed()}>
-            <TextX fontSize={16}>Done</TextX>
+            <TextX fontSize={StyleConfig.fontSizeH2_3}>Done</TextX>
           </TouchableOpacity>
 
         </ViewX>
@@ -949,7 +949,7 @@ class AddContent extends Component {
               textAlign: "left",
               color: theme.text,
               backgroundColor: theme.headerBack,
-              fontSize: StyleConfig.fontSizeH3,
+              fontSize: StyleConfig.fontSizeH2_3,
               padding: StyleConfig.convertWidthPerVal(10),
               paddingVertical: StyleConfig.convertHeightPerVal(10),
             }}>{groupItem.title}</TextX>
@@ -969,7 +969,7 @@ class AddContent extends Component {
                     <TextX style={{
                       textAlign: "left",
                       color: theme.text,
-                      fontSize: StyleConfig.fontSizeH3,
+                      fontSize: StyleConfig.fontSizeH2_3,
                       padding: StyleConfig.convertWidthPerVal(10),
                       paddingVertical: StyleConfig.convertHeightPerVal(10),
                     }}>{item.tag_name}</TextX>
@@ -986,7 +986,7 @@ class AddContent extends Component {
               textAlign: "left",
               color: theme.text,
               backgroundColor: theme.headerBack,
-              fontSize: StyleConfig.fontSizeH3,
+              fontSize: StyleConfig.fontSizeH2_3,
               padding: StyleConfig.convertWidthPerVal(10),
               paddingVertical: StyleConfig.convertHeightPerVal(10),
             }}>Select Tag</TextX>
@@ -1006,7 +1006,7 @@ class AddContent extends Component {
                     <TextX style={{
                       textAlign: "left",
                       color: theme.text,
-                      fontSize: StyleConfig.fontSizeH3,
+                      fontSize: StyleConfig.fontSizeH2_3,
                       padding: StyleConfig.convertWidthPerVal(10),
                       paddingVertical: StyleConfig.convertHeightPerVal(10),
                     }}>{item.name}</TextX>
@@ -1026,7 +1026,8 @@ export default withTheme(withLoader(withToast(AddContent)));
 const styles = StyleSheet.create({
   headerTopView: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    alignItems:'center',
+    justifyContent: 'space-between',
     paddingHorizontal: StyleConfig.countPixelRatio(12),
     marginBottom: StyleConfig.countPixelRatio(12),
     height: StyleConfig.countPixelRatio(44)
@@ -1042,7 +1043,7 @@ const styles = StyleSheet.create({
    
   },
   bottomBtn: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingHorizontal: StyleConfig.countPixelRatio(16),
+    paddingVertical: StyleConfig.countPixelRatio(6),
   }
 });

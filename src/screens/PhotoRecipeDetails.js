@@ -356,16 +356,13 @@ class PhotoRecipeDetails extends Component {
           </TextX>
           <View
           onLayout={(event) => {
-            var {x, y, width, height} = event.nativeEvent.layout
-            console.log('statusBarHeight: ', StatusBar.currentHeight);
-
-            console.log({x, y, width, height})
+            var { y, height} = event.nativeEvent.layout
             let statusBarHeight = StyleConfig.iPhoneX ? 44 : 20
             this.setState({xPosition: y+height+statusBarHeight})
           }}>
             <TouchableOpacity  style={{ minWidth:40, alignItems:'flex-end'}} disabled={!this.state.receipeByMe} onPress={()=> this.setState({showOptionMenu:true})}>
             {this.state.receipeByMe && 
-              <Entypo name={'dots-three-vertical'} size={StyleConfig.countPixelRatio(20)} color='#999' />
+              <Entypo name={'dots-three-horizontal'} size={StyleConfig.countPixelRatio(20)} color='#999' />
             }
             </TouchableOpacity>
             </View>

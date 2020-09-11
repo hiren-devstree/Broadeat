@@ -185,7 +185,8 @@ class HomeScreen extends Component {
               <Video 
                   ref={(ref) => {
                     this.player = ref
-                  }}    
+                  }}
+                  resizeMode={'cover'}
                   repeat={false}
                   playInBackground={false}
                   paused={true}
@@ -193,13 +194,13 @@ class HomeScreen extends Component {
                   source={{uri: item.image}} 
                 />
               <View style={{ height:width,position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
-                  <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
+                  {/* <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
                     alignItems:'center', 
                     justifyContent:'center',
                     paddingLeft:2,
-                    borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}>
-                    <FontAwesome5 name='play' color={'#fff'} size={StyleConfig.countPixelRatio(28)} />
-                  </View>
+                    borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}> */}
+                    <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
+                  {/* </View> */}
                 </View>
               </View>
             }

@@ -17,6 +17,7 @@ const AppImages = {
     ic_eye_show: require('./ic_eye_show.png'),
     ic_eye_hide: require('./ic_eye_hide.png'),
 
+    ic_add: require('./add_image.png'),
     homeItems: [
         require('./home/item1.png'),
         require('./home/item2.png'),
