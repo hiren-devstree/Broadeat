@@ -66,6 +66,7 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
                 repeat={false}
                 playInBackground={false}
                 paused={true}
+                resizeMode={'cover'}
                 style={{
                   borderRadius: StyleConfig.convertWidthPerVal(10),
                   width: "90%",
@@ -74,13 +75,7 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
                 source={{ uri: item.image }}
               />
               <View style={{ height:"90%",position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
-                  <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
-                    alignItems:'center', 
-                    justifyContent:'center',
-                    paddingLeft:2,
-                    borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}>
-                    <FontAwesome5 name='play' color={'#fff'} size={StyleConfig.countPixelRatio(28)} />
-                  </View>
+                    <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
                 </View>
               </View>
             
