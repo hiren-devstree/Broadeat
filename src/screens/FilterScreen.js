@@ -28,7 +28,7 @@ const FilterBubble = withTheme(({ theme, ...props }) => {
         margin: StyleConfig.convertWidthPerVal(5),
         backgroundColor: isSelected ? theme.filterOn : theme.filterOff
       }} >
-        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.fontSizeH2 }} > {name} </TextX>
+        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.fontSizeH2_3 }} >{name}</TextX>
       </ViewX>
     </TouchableWithoutFeedback>
   )
@@ -222,14 +222,13 @@ class FilterScreen extends Component {
                     style={{
                       padding: 10,
                       borderColor: "pink",
-                    }}
-                  >
+                    }} >
                     <TextX style={{
                       color: theme.text,
                       alignSelf: "flex-start",
                       fontWeight: "bold",
                       fontSize: StyleConfig.fontSizeH3
-                    }} > {_.title.toUpperCase()} </TextX>
+                    }} >{_.title.toUpperCase()}</TextX>
 
                     <ViewX style={{
                       paddingVertical: 5,

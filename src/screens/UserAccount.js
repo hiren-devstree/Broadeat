@@ -38,6 +38,7 @@ const FilterBubble = withTheme(({ theme, item, onPress }) => {
 })
 
 
+
 // const POST_SIZE = StyleConfig.width / 2;
 const POST_SIZE = (StyleConfig.width - 15) / 2;
 
@@ -235,13 +236,10 @@ class UserAccount extends Component {
             alignItems: "center",
           }} >
               <ViewX style={{ flex: 1, flexDirection: "row", justifyContent: "flex-start" }} >
-                <Image
-                  style={{ width: StyleConfig.convertWidthPerVal(56), height: StyleConfig.convertWidthPerVal(56) }}
-                  source={{ uri: userDetails.profilepic }}
-                />
-                <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20) }} >
-                  <TextX style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{`${userDetails.name}`}</TextX>
-                  <TextX style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4 }} >{userDetails.description}</TextX>
+                <Image source={{ uri: userDetails.profilepic }} style={styles.imgProfile} /> 
+                <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20), alignItems:'flex-start' }} >
+                  <TextX align={'left'} style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{`${userDetails.name}`}</TextX>
+                  <TextX align={'left'} style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4 }} >{userDetails.description}</TextX>
                 </ViewX>
               </ViewX>
             {showBookmark && <TouchableOpacity onPress={this._onBookmarkUser}>
@@ -292,5 +290,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
-  }
+  },
+  imgProfile: {
+    height: StyleConfig.countPixelRatio(60),
+    width: StyleConfig.countPixelRatio(60),
+    borderRadius: StyleConfig.countPixelRatio(30)
+  },
+  
 });

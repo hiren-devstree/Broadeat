@@ -53,7 +53,7 @@ const MultiTextInput = styled.TextInput`
     padding: 10px;
 `
 
-const IngredientsWrapper = withTheme(({ theme, idx, showBackground, _onChangeIngredients, ...props }) => {
+const IngredientsWrapper = withTheme(({item, theme, idx, showBackground, _onChangeIngredients, ...props }) => {
   return (<ViewX style={{
     flex: 1,
     marginVertical: StyleConfig.convertHeightPerVal(2),
@@ -69,6 +69,7 @@ const IngredientsWrapper = withTheme(({ theme, idx, showBackground, _onChangeIng
         width: StyleConfig.convertWidthPerVal(40)
       }}
       placeholder={"Qty"}
+      value={item.qty}
       onChangeText={(text) => _onChangeIngredients(idx, 'q', text)}
     />
     <IngredientTextInput
@@ -77,6 +78,7 @@ const IngredientsWrapper = withTheme(({ theme, idx, showBackground, _onChangeIng
         textAlign: "center"
       }}
       placeholder={"Measure"}
+      value={item.measure}
       onChangeText={(text) => _onChangeIngredients(idx, 'm', text)}
     />
     <IngredientTextInput
@@ -85,12 +87,13 @@ const IngredientsWrapper = withTheme(({ theme, idx, showBackground, _onChangeIng
         textAlign: "center"
       }}
       placeholder={"Ingredient"}
+      value={item.ingredient}
       onChangeText={(text) => _onChangeIngredients(idx, 'i', text)}
     />
   </ViewX>)
 })
 
-const MethodWrapper = withTheme(({ theme, idx, _onChangeMethods, ...props }) => {
+const MethodWrapper = withTheme(({desc, theme, idx, _onChangeMethods, ...props }) => {
   return (
     <ViewX style={{
       flex: 1,
@@ -114,6 +117,7 @@ const MethodWrapper = withTheme(({ theme, idx, _onChangeMethods, ...props }) => 
           marginBottom:StyleConfig.convertWidthPerVal(10),
           width: StyleConfig.width-StyleConfig.convertWidthPerVal(24)
         }}
+        value={desc}
         onChangeText={(text) => _onChangeMethods(idx, text)}
       />
     </ViewX>
@@ -145,22 +149,49 @@ class AddContent extends Component {
   componentDidMount= async () => {
     const _ = this.props.route.params;
     const {loader} = this.props ;
+    console.log({params:this.props.route.params})
     let token = await AsyncStorage.getItem('user_token')
 
     let response = await getTagList(token)
-
     let tempArr = []
-    response.data.category_list.forEach(item => {
-      let temp = []
-      response.data.tag_list[`${item.category_type}`].forEach((ele) => {
-        temp.push({ ...ele, isSelected: false })
-      })
-      tempArr.push({ title: item.category_type, data: temp })
-    })
-    console.log(JSON.stringify(tempArr))
-    // this.setState({ data: tempArr })
+    let images = [] ;
+    if(_.hasOwnProperty('mode') && _.mode == "edit"){
+      images.push({ uri : _.data.Recipe.image})
+      for(let ind in _.data.Media){
+        images.push({ uri :_.data.Media[ind].media_name})
+      }
 
-    this.setState({ images: _.images, tagData:tempArr })
+      response.data.category_list.forEach(item => {
+        let temp = []
+        response.data.tag_list[`${item.category_type}`].forEach((ele) => {
+          temp.push({ ...ele, isSelected: false })
+        })
+        tempArr.push({ title: item.category_type, data: temp })
+      })
+      let ingredients= _.data.Rec_Ingredient.map((item,ind)=>({ qty: item.quantity, measuremnt: item.measure, ingredient: item.ingredient }))
+      let methods = _.data.Method.map((item,ind)=>({ text: item.method_description }))
+
+      
+
+      this.setState({ 
+        title: _.data.Recipe.recipe_title,
+        description: _.data.Recipe.description,
+        ingredients,
+        methods,
+        images: images,
+        tagData:tempArr })
+    } else {
+      images = _.images
+      response.data.category_list.forEach(item => {
+        let temp = []
+        response.data.tag_list[`${item.category_type}`].forEach((ele) => {
+          temp.push({ ...ele, isSelected: false })
+        })
+        tempArr.push({ title: item.category_type, data: temp })
+      })
+      this.setState({ images: images, tagData:tempArr })
+    }
+    
   }
 
   onAddPress=()=>{
@@ -170,6 +201,7 @@ class AddContent extends Component {
     };
 
     ImagePicker.launchImageLibrary(options, (image) => {
+      console.log({image})
       images.push(image)
       this.setState({images})
     });
@@ -531,7 +563,7 @@ class AddContent extends Component {
                     height: StyleConfig.convertWidthPerVal(120)
                   }}>
                     { 
-                      itm.uri.endsWith("MOV") || itm.uri.endsWith("MP4") ?
+                      itm && itm.type == undefined  ?
                     <View>
                        <Video 
                         ref={(ref) => {
@@ -567,7 +599,8 @@ class AddContent extends Component {
                 padding: StyleConfig.convertWidthPerVal(10)
               }}
               placeholderTextColor={theme.textHint}
-              onChangeText={(text) => this.setState({ title: text })}
+              value={this.state.title}
+              onChangeText={(title) => this.setState({title})}
               placeholder={"Write a title..."}
 
             />
@@ -578,8 +611,9 @@ class AddContent extends Component {
                 fontSize: StyleConfig.fontSizeH2_3,
                 padding: StyleConfig.convertWidthPerVal(10)
               }}
+              value={this.state.description}
               placeholderTextColor={theme.textHint}
-              onChangeText={(text) => this.setState({ description: text })}
+              onChangeText={(description) => this.setState({ description })}
               placeholder={"Description"}
             />
 
@@ -615,7 +649,7 @@ class AddContent extends Component {
               }} >Ingredient</TextX>
             </ViewX>
             {
-              ingredients.map((item, idx) => <IngredientsWrapper showBackground={idx % 2 == 0} {...{ idx }} _onChangeIngredients={this._onChangeIngredients} />)
+              ingredients.map((item, idx) => <IngredientsWrapper item={item} showBackground={idx % 2 == 0} {...{ idx }} _onChangeIngredients={this._onChangeIngredients} />)
             }
             <TouchableWithoutFeedback onPress={() => {
               this.setState((prevState, props) => {
@@ -645,7 +679,7 @@ class AddContent extends Component {
             >Cooking Method</TextX>
             {/* STEPS START */}
             {
-              methods.map((item, idx) => <MethodWrapper {...{ idx }} _onChangeMethods={this._onChangeMethods} />)
+              methods.map((item, idx) => <MethodWrapper desc={item.text} {...{ idx }} _onChangeMethods={this._onChangeMethods} />)
             }
             <TouchableWithoutFeedback onPress={() => {
               this.setState((prevState, props) => {

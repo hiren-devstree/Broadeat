@@ -13,6 +13,7 @@ import withToast from '../redux/actionCreator/withToast';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { getRcipeDetails, postFavorite, deleteReceipe } from './../apiManager'
 import Entypo from 'react-native-vector-icons/Entypo';
+import Feather from 'react-native-vector-icons/Feather';
 import Video from 'react-native-video';
 // Component Imports
 import {
@@ -150,7 +151,9 @@ class PhotoRecipeDetails extends Component {
       { cancelable: false }
     );
   }
-
+  _onEdit= ()=>{
+    this.props.navigation.navigate('AddContent', {mode:'edit', data: this.state.data })
+  }
   _postView = async () => {
     const { loader } = this.props
     let { data, token } = this.state;
@@ -238,7 +241,7 @@ class PhotoRecipeDetails extends Component {
     }
     //loader(true)
     let response = await postFavorite(params, token)
-
+    console.log({response})
     if (response.code === 1) {
       // data.Activity.favorite = data.Activity.favorite == 0 ? 1 : 0 
       // Alert.alert(
@@ -310,7 +313,7 @@ class PhotoRecipeDetails extends Component {
             paddingVertical: StyleConfig.countPixelRatio(2),
             backgroundColor:'#fff' }}
             >
-              <TouchableOpacity style={{ 
+              <TouchableOpacity onPress={this._onEdit} style={{ 
                   height: StyleConfig.countPixelRatio(26),
                   alignItems:'center',
                   paddingHorizontal:StyleConfig.countPixelRatio(12),
@@ -435,8 +438,6 @@ class PhotoRecipeDetails extends Component {
     if(data && data.Media.length > 0){
       listData = listData.concat(data.Media)
     }
-
-    
     return (
       <FlatList
         horizontal
@@ -481,35 +482,36 @@ class PhotoRecipeDetails extends Component {
       isDisLike = data.Recipe.dislike;
       isBookmark = data.Recipe.bookmarked;
     }
+    let resizeMode = "contain"
+    let iconSize = StyleConfig.countPixelRatio(28);
     return (
       <ViewX style={{ flex: 1, alignItems: 'flex-start' }}>
         {this.renderHeaderBottomView()}
         {data && data.Recipe.id != 0 && <ViewX style={styles.operationView}>
           <ViewX style={{ flexDirection: 'row' }}>
-            <Image source={imgView} style={{ width: 25, height: 25, marginRight: 3 }} resizeMode='contain' />
-            <TextX fontSize={StyleConfig.countPixelRatio(12)}>{view ? view : "0"}</TextX>
+            <Feather name={"eye"} size={iconSize} color={"#8a8a8f"} />
+            <TextX style={{marginLeft: StyleConfig.countPixelRatio(4)}} fontSize={StyleConfig.fontSizeH2_3}>{view ? view : "0"}</TextX>
           </ViewX>
           <TouchableOpacity disabled={isLike} onPress={this._postLike}>
             <ViewX style={{ flexDirection: 'row' }}>
-              <Image source={imgLike} style={{ width: 25, height: 25, marginRight: 3, tintColor: isLike ? 'blue' : '#555' }} resizeMode='contain' />
-              <TextX fontSize={StyleConfig.countPixelRatio(12)}>{likes ? likes : '0'}</TextX>
+              <Feather name={"thumbs-up"} size={iconSize} color={isLike ? 'blue' : '#8a8a8f'} />
+              <TextX style={{marginLeft: StyleConfig.countPixelRatio(4)}} fontSize={StyleConfig.fontSizeH2_3}>{likes ? likes : '0'}</TextX>
             </ViewX>
           </TouchableOpacity>
           <TouchableOpacity disabled={isDisLike} onPress={this._postDisLike}>
             <ViewX style={{ flexDirection: 'row' }}>
-              <Image source={imgDisLike} style={{ width: 25, height: 25, marginRight: 3, marginTop: 4, tintColor: isDisLike ? 'blue' : '#555' }} resizeMode='contain' />
-              <TextX fontSize={StyleConfig.countPixelRatio(12)}>{dislike ? dislike : "0"}</TextX>
+              <Feather name={"thumbs-down"} size={iconSize} color={isDisLike ? 'blue' : '#8a8a8f'} />
+              <TextX style={{marginLeft: StyleConfig.countPixelRatio(4)}} fontSize={StyleConfig.fontSizeH2_3}>{dislike ? dislike : "0"}</TextX>
             </ViewX>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._onShare}>
             <ViewX style={{ flexDirection: 'row' }}>
-              <Image source={imgShare} style={{ width: 25, height: 25, marginRight: 3, }} resizeMode='contain' />
+              <Feather name={"upload"} size={iconSize} color={'#8a8a8f'} />
             </ViewX>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._postFavorite}>
             <ViewX style={{ flexDirection: 'row' }}>
-              <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3, tintColor: isBookmark ? 'blue' : '#555' }} resizeMode='contain' />
-              {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}
+              <Feather name={"bookmark"} size={iconSize} color={isBookmark ? 'blue' : '#8a8a8f'} />
             </ViewX>
           </TouchableOpacity>
 
@@ -793,7 +795,70 @@ const styles = StyleSheet.create({
     marginBottom: StyleConfig.countPixelRatio(10),
     alignItems: 'flex-end',
     height: 30
+  },
+  iconStyle:{
+    width: StyleConfig.countPixelRatio(21), 
+    height: StyleConfig.countPixelRatio(24)
   }
 })
 
 export default withLoader(withToast(PhotoRecipeDetails))
+
+
+  // renderDescriptionView = () => {
+  //   const { noOfUser, timer, foodType, data } = this.state
+  //   let view = 0, likes = 0, dislike = 0, isLike = false, isDisLike = false, isBookmark = false;
+  //   if (data && data.Activity.length > 0) {
+  //     view = data.Activity[0].view;
+  //     likes = data.Activity[0].likes;
+  //     dislike = data.Activity[0].dislike;
+  //     isLike = data.Recipe.like;
+  //     isDisLike = data.Recipe.dislike;
+  //     isBookmark = data.Recipe.bookmarked;
+  //   }
+  //   let resizeMode = "contain"
+  //   return (
+  //     <ViewX style={{ flex: 1, alignItems: 'flex-start' }}>
+  //       {this.renderHeaderBottomView()}
+  //       {data && data.Recipe.id != 0 && <ViewX style={styles.operationView}>
+  //         <ViewX style={{ flexDirection: 'row' }}>
+  //           <Image source={imgView} style={[ styles.iconStyle, {tintColor:'#8a8a8f' }]} resizeMode={resizeMode} />
+  //           <TextX style={{marginLeft: StyleConfig.countPixelRatio(4)}} fontSize={StyleConfig.fontSizeH3}>{view ? view : "0"}</TextX>
+  //         </ViewX>
+  //         <TouchableOpacity disabled={isLike} onPress={this._postLike}>
+  //           <ViewX style={{ flexDirection: 'row' }}>
+  //             <Image source={imgLike} style={[ styles.iconStyle, { tintColor: isLike ? 'blue' : '#8a8a8f' }]} resizeMode={resizeMode} />
+  //             <TextX style={{marginLeft: StyleConfig.countPixelRatio(4)}} fontSize={StyleConfig.fontSizeH3}>{likes ? likes : '0'}</TextX>
+  //           </ViewX>
+  //         </TouchableOpacity>
+  //         <TouchableOpacity disabled={isDisLike} onPress={this._postDisLike}>
+  //           <ViewX style={{ flexDirection: 'row' }}>
+  //             <Image source={imgDisLike} style={[ styles.iconStyle, {  tintColor: isDisLike ? 'blue' : '#8a8a8f' }]} resizeMode={resizeMode} />
+  //             <TextX style={{marginLeft: StyleConfig.countPixelRatio(4)}} fontSize={StyleConfig.fontSizeH3}>{dislike ? dislike : "0"}</TextX>
+  //           </ViewX>
+  //         </TouchableOpacity>
+  //         <TouchableOpacity onPress={this._onShare}>
+  //           <ViewX style={{ flexDirection: 'row' }}>
+  //             <Image source={imgShare} style={ { 
+  //               height: StyleConfig.countPixelRatio(23) ,
+  //               width: StyleConfig.countPixelRatio(15), tintColor:'#8a8a8f' }} resizeMode={resizeMode} />
+  //           </ViewX>
+  //         </TouchableOpacity>
+  //         <TouchableOpacity onPress={this._postFavorite}>
+  //           <ViewX style={{ flexDirection: 'row' }}>
+  //             <Image source={imgFav} style={{ width: 25, height: 25, marginRight: 3, tintColor: isBookmark ? 'blue' : '#8a8a8f' }} resizeMode={resizeMode} />
+  //             {/* <TextX fontSize={StyleConfig.countPixelRatio(12)}>960</TextX> */}
+  //           </ViewX>
+  //         </TouchableOpacity>
+
+  //       </ViewX>
+  //       }
+  //       <TextX
+  //         fontSize={StyleConfig.countPixelRatio(14)}
+  //         style={{ marginLeft: 15 }}
+  //         align={'left'}
+  //       >{data ? data.Recipe.description : ''}
+  //       </TextX>
+  //     </ViewX>
+  //   )
+  // }
