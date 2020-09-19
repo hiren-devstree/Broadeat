@@ -78,7 +78,7 @@ const IngredientsWrapper = withTheme(({item, theme, idx, showBackground, _onChan
         textAlign: "center"
       }}
       placeholder={"Measure"}
-      value={item.measure}
+      value={item.measuremnt}
       onChangeText={(text) => _onChangeIngredients(idx, 'm', text)}
     />
     <IngredientTextInput
@@ -141,7 +141,8 @@ class AddContent extends Component {
       nutritionCarbs: '',
       timeDuration: '',
       tagData:[],
-      hashTag: HASH_TAGS
+      hashTag: HASH_TAGS,
+      id:null
     }
   }
   
@@ -155,29 +156,68 @@ class AddContent extends Component {
     let response = await getTagList(token)
     let tempArr = []
     let images = [] ;
+    
     if(_.hasOwnProperty('mode') && _.mode == "edit"){
       images.push({ uri : _.data.Recipe.image})
       for(let ind in _.data.Media){
-        images.push({ uri :_.data.Media[ind].media_name})
+        images.push({ uri : _.data.Media[ind].media_name, 
+          id: _.data.Media[ind].id , type: _.data.Media[ind].media_type })
       }
 
       response.data.category_list.forEach(item => {
         let temp = []
+        let tags = _.data.Rac_Tag ;
         response.data.tag_list[`${item.category_type}`].forEach((ele) => {
-          temp.push({ ...ele, isSelected: false })
+          let isSelected = false ;
+          for( let ind in tags){
+            if(tags[ind].category_type == item.category_type && tags[ind].tag_name == ele.tag_name ){
+              isSelected= true;
+            }
+          }
+          temp.push({ ...ele, isSelected })
         })
         tempArr.push({ title: item.category_type, data: temp })
       })
       let ingredients= _.data.Rec_Ingredient.map((item,ind)=>({ qty: item.quantity, measuremnt: item.measure, ingredient: item.ingredient }))
-      let methods = _.data.Method.map((item,ind)=>({ text: item.method_description }))
-
+      let methods = _.data.Method.map((item,ind)=>({ text: item.method_description }));
+      let hashTags = _.data.recipe_hashtags;
+      let hashTag = [];
+      for(let ind in HASH_TAGS){
+        let isSelected = false
+        for(let ind2 in hashTags){
+          if(HASH_TAGS[ind].name == hashTags[ind2].hashtag_name){
+            isSelected=true;
+          }
+        }
+        hashTag.push({
+          ...HASH_TAGS[ind],
+          isSelected
+        })
+      }
+      const { meal_preference: mealPreference,
+        no_of_person: noOfPerson,
+        nutrition_calories: nutritionCalories,
+        nutrition_carbs: nutritionCarbs,
+        nutrition_fat: nutritionFat,
+        nutrition_protein: nutritionProtein,
+        time_duration :timeDuration,
+        id
+      } = _.data.Recipe
       
-
       this.setState({ 
+        id,
         title: _.data.Recipe.recipe_title,
         description: _.data.Recipe.description,
         ingredients,
         methods,
+        mealPreference,
+        noOfPerson: noOfPerson.toString(),
+        nutritionCalories,
+        nutritionCarbs,
+        nutritionFat,
+        nutritionProtein,
+        timeDuration,
+        hashTag,
         images: images,
         tagData:tempArr })
     } else {
@@ -401,18 +441,16 @@ class AddContent extends Component {
         formdata.append("recipe_hashtags[]", String(selectedHashTag[ind].name));  
       }
     }
-    
     let recipe_media = []
     let mainImage = null;
     for (let ind in images) {
-      if (images[ind].uri != '') {
+      if (images[ind].uri != '' && !images[ind].uri.startsWith("http://") ) {
         let IMAGE_CROP = images[ind].uri.slice(images[ind].uri.lastIndexOf("/"));
         let videoMime = images[ind].uri.slice(images[ind].uri.lastIndexOf("."));
-        console.log({videoMime})
         let myImage = StyleConfig.isIphone ?
           { "uri": images[ind].uri, "filename": IMAGE_CROP, "name": IMAGE_CROP } :
           { "uri": images[ind].uri, "name": IMAGE_CROP, "type": images[ind].type ? images[ind].type : `video/${videoMime}` };
-        if (mainImage == null) {
+        if (mainImage == null && this.state.id == null) {
           mainImage = myImage;
           formdata.append("image", myImage)
         } else {
@@ -422,7 +460,14 @@ class AddContent extends Component {
     }
     if(!hasError){
       loader(true)
-      const response = await fetch("http://3.20.100.25/broadeat/api/recipe/add", {
+      let url ;
+      if(this.state.id == null){
+        url = "http://3.20.100.25/broadeat/api/recipe/add" ;
+      } else {
+        formdata.append("id", this.state.id)
+        url = "http://3.20.100.25/broadeat/api/recipe/update" ;
+      }
+      const response = await fetch( url, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -563,19 +608,21 @@ class AddContent extends Component {
                     height: StyleConfig.convertWidthPerVal(120)
                   }}>
                     { 
-                      itm && itm.type == undefined  ?
+                      itm &&( itm.type == undefined || itm.type == "video")  ?
                     <View>
-                       <Video 
+                      <Video 
                         ref={(ref) => {
                           this.player = ref
                         }}
-                        resizeMode={'cover'}
+                        resizeMode={'contain'}
                         repeat={false}
+                        controls={true} 
                         playInBackground={false}
                         paused={true}
                         style={{ width: "95%", height: "95%" }}
-                        source={{ uri: itm.uri }}
+                        source={{uri:"http://3.20.100.25/broadeat/public/upload/recipe-media/1600415027526597751.MOV"}}
                       />
+                       
                       <View style={{ height:"95%",position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
                           <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
                         </View>
@@ -750,7 +797,7 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.text,
+                  color: theme.text2,
                   fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
@@ -787,7 +834,7 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.text,
+                  color: theme.text2,
                   fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
@@ -821,7 +868,7 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.text,
+                  color: theme.text2,
                   fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
@@ -857,7 +904,7 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.text,
+                  color: theme.text2,
                   fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
@@ -893,7 +940,7 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.text,
+                  color: theme.text2,
                   fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
@@ -929,7 +976,7 @@ class AddContent extends Component {
 
               <TextInput
                 style={{
-                  color: theme.text,
+                  color: theme.text2,
                   fontSize: StyleConfig.fontSizeH2_3,
                   padding: StyleConfig.convertWidthPerVal(10),
                   flex: 0.5,
