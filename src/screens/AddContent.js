@@ -158,7 +158,7 @@ class AddContent extends Component {
     let images = [] ;
     
     if(_.hasOwnProperty('mode') && _.mode == "edit"){
-      images.push({ uri : _.data.Recipe.image})
+      images.push({ uri : _.data.Recipe.image, type: _.data.Recipe.image_type })
       for(let ind in _.data.Media){
         images.push({ uri : _.data.Media[ind].media_name, 
           id: _.data.Media[ind].id , type: _.data.Media[ind].media_type })
@@ -608,7 +608,7 @@ class AddContent extends Component {
                     height: StyleConfig.convertWidthPerVal(120)
                   }}>
                     { 
-                      itm &&( itm.type == undefined || itm.type == "video")  ?
+                      itm && itm.type == "video" ?
                     <View>
                       <Video 
                         ref={(ref) => {
@@ -620,9 +620,8 @@ class AddContent extends Component {
                         playInBackground={false}
                         paused={true}
                         style={{ width: "95%", height: "95%" }}
-                        source={{uri:"http://3.20.100.25/broadeat/public/upload/recipe-media/1600415027526597751.MOV"}}
+                        source={{uri:itm.uri}}
                       />
-                       
                       <View style={{ height:"95%",position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
                           <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
                         </View>
