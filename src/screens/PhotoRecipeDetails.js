@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import {
   View, StyleSheet, Image, TouchableOpacity,
-  ScrollView, FlatList, Text, Alert, Share,StatusBar
+  ScrollView, FlatList, Text, Alert, Share, StatusBar
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import FastImage from 'react-native-fast-image'
@@ -70,11 +70,11 @@ class PhotoRecipeDetails extends Component {
       token: null,
       receipeByMe: false,
       showOptionMenu: false,
-      xPosition:0
+      xPosition: 0
     }
   }
 
-  
+
   render() {
     return this.renderMainView()
   }
@@ -108,7 +108,7 @@ class PhotoRecipeDetails extends Component {
     loader(false)
     if (response.code === 1) {
       let receipeByMe = response.data.Recipe.user_id == this.state.user_id
-      
+
       this.setState({ data: response.data, token, receipeByMe }, () => {
         this.forceUpdate()
       })
@@ -118,7 +118,7 @@ class PhotoRecipeDetails extends Component {
       }, 500)
     }
   }
-  deleteRecipe = async ()=>{
+  deleteRecipe = async () => {
     const { loader } = this.props;
     let token = await AsyncStorage.getItem('user_token');
     let reloadScreen = this.props.route.params.reloadScreen;
@@ -126,17 +126,17 @@ class PhotoRecipeDetails extends Component {
     let response = await deleteReceipe(this.state.data.Recipe.id, token)
     loader(false)
     if (response.code == 1) {
-      if(reloadScreen){
+      if (reloadScreen) {
         reloadScreen();
       }
       this.props.navigation.goBack()
     } else {
-    
+
     }
-    
+
   }
-  _onDelete= async ()=>{
-    await this.setState({showOptionMenu:false})
+  _onDelete = async () => {
+    await this.setState({ showOptionMenu: false })
     Alert.alert(
       "Do you want to delete recipe?",
       "",
@@ -151,8 +151,8 @@ class PhotoRecipeDetails extends Component {
       { cancelable: false }
     );
   }
-  _onEdit= ()=>{
-    this.props.navigation.navigate('AddContent', {mode:'edit', data: this.state.data })
+  _onEdit = () => {
+    this.props.navigation.navigate('AddContent', { mode: 'edit', data: this.state.data })
   }
   _postView = async () => {
     const { loader } = this.props
@@ -169,7 +169,7 @@ class PhotoRecipeDetails extends Component {
     let response = await postFavorite(params, token)
     if (response.code === 1) {
       let id = this.props.route.params.data
-      
+
       this._getRecipeDetailsAPICalling(id)
     } else {
       loader(false)
@@ -241,7 +241,7 @@ class PhotoRecipeDetails extends Component {
     }
     //loader(true)
     let response = await postFavorite(params, token)
-    console.log({response})
+    console.log({ response })
     if (response.code === 1) {
       // data.Activity.favorite = data.Activity.favorite == 0 ? 1 : 0 
       // Alert.alert(
@@ -304,32 +304,35 @@ class PhotoRecipeDetails extends Component {
           {selectedTab == 1 ? this.renderIngredientsView() : this.renderMethodListView()}
           {/* {this.renderMethodListView()} */}
         </ScrollView>
-        {showOptionMenu && <View style={{ 
-            position:'absolute',
-            zIndex:999,
-            alignSelf:'flex-end',
-            right: StyleConfig.countPixelRatio(16),
-            marginTop:this.state.xPosition,
-            paddingVertical: StyleConfig.countPixelRatio(2),
-            backgroundColor:'#fff' }}
-            >
-              <TouchableOpacity onPress={this._onEdit} style={{ 
-                  height: StyleConfig.countPixelRatio(26),
-                  alignItems:'center',
-                  paddingHorizontal:StyleConfig.countPixelRatio(12),
-                  paddingVertical: StyleConfig.countPixelRatio(4)}}>
-                <CTextColor color={'#333'} fontSize={StyleConfig.fontSizeH3}>Edit</CTextColor>
-              </TouchableOpacity>
-              <View style={{backgroundColor:'#666', marginVertical: StyleConfig.countPixelRatio(2), height:0.5}} />
-              <TouchableOpacity onPress={this._onDelete} style={{ 
-                  height: StyleConfig.countPixelRatio(26),
-                  alignItems:'center',
-                  paddingHorizontal:StyleConfig.countPixelRatio(12),
-                  paddingVertical: StyleConfig.countPixelRatio(4)}}>
-                <CTextColor color={'#333'} fontSize={StyleConfig.fontSizeH3}>Delete</CTextColor>
-              </TouchableOpacity>
-              
-              </View> }
+        {showOptionMenu && <View style={{
+          position: 'absolute',
+          zIndex: 999,
+          alignSelf: 'flex-end',
+          right: StyleConfig.countPixelRatio(16),
+          marginTop: this.state.xPosition,
+          paddingVertical: StyleConfig.countPixelRatio(2),
+          backgroundColor: '#fff'
+        }}
+        >
+          <TouchableOpacity onPress={this._onEdit} style={{
+            height: StyleConfig.countPixelRatio(26),
+            alignItems: 'center',
+            paddingHorizontal: StyleConfig.countPixelRatio(12),
+            paddingVertical: StyleConfig.countPixelRatio(4)
+          }}>
+            <CTextColor color={'#333'} fontSize={StyleConfig.fontSizeH3}>Edit</CTextColor>
+          </TouchableOpacity>
+          <View style={{ backgroundColor: '#666', marginVertical: StyleConfig.countPixelRatio(2), height: 0.5 }} />
+          <TouchableOpacity onPress={this._onDelete} style={{
+            height: StyleConfig.countPixelRatio(26),
+            alignItems: 'center',
+            paddingHorizontal: StyleConfig.countPixelRatio(12),
+            paddingVertical: StyleConfig.countPixelRatio(4)
+          }}>
+            <CTextColor color={'#333'} fontSize={StyleConfig.fontSizeH3}>Delete</CTextColor>
+          </TouchableOpacity>
+
+        </View>}
       </SafeAreaView>
     )
   }
@@ -349,7 +352,7 @@ class PhotoRecipeDetails extends Component {
     return (
       <>
         <ViewX style={styles.headerTopView}>
-          <TouchableOpacity style={{ minWidth:40}} onPress={this.onBack}>
+          <TouchableOpacity style={{ minWidth: 40 }} onPress={this.onBack}>
             <Image source={imgBack} style={styles.backBtn} />
           </TouchableOpacity>
           <TextX
@@ -358,17 +361,17 @@ class PhotoRecipeDetails extends Component {
             {data ? data.Recipe.creator_name : ''}
           </TextX>
           <View
-          onLayout={(event) => {
-            var { y, height} = event.nativeEvent.layout
-            let statusBarHeight = StyleConfig.iPhoneX ? 44 : 20
-            this.setState({xPosition: y+height+statusBarHeight})
-          }}>
-            <TouchableOpacity  style={{ minWidth:40, alignItems:'flex-end'}} disabled={!this.state.receipeByMe} onPress={()=> this.setState({showOptionMenu:true})}>
-            {this.state.receipeByMe && 
-              <Entypo name={'dots-three-horizontal'} size={StyleConfig.countPixelRatio(20)} color='#999' />
-            }
+            onLayout={(event) => {
+              var { y, height } = event.nativeEvent.layout
+              let statusBarHeight = StyleConfig.iPhoneX ? 44 : 20
+              this.setState({ xPosition: y + height + statusBarHeight })
+            }}>
+            <TouchableOpacity style={{ minWidth: 40, alignItems: 'flex-end' }} disabled={!this.state.receipeByMe} onPress={() => this.setState({ showOptionMenu: true })}>
+              {this.state.receipeByMe &&
+                <Entypo name={'dots-three-horizontal'} size={StyleConfig.countPixelRatio(20)} color='#999' />
+              }
             </TouchableOpacity>
-            </View>
+          </View>
         </ViewX>
       </>
     )
@@ -424,50 +427,50 @@ class PhotoRecipeDetails extends Component {
   renderItemMainImage = () => {
     const { data } = this.state
     let listData = [];
-    if(data){
-      if(data.Recipe.image.includes("png") || data.Recipe.image.includes("jpg") ||data.Recipe.image.includes("JPG") ||data.Recipe.image.includes("jpeg") ||data.Recipe.image.includes("JPEG") || data.Recipe.image.includes("PNG")){
-          listData.push({
-             "id": 0, "media_type": "image", "media_name": data.Recipe.image
-          })
-      } else{
-          listData.push({
-             "id": 0, "media_type": "video", "media_name": data.Recipe.image
-          })
+    if (data) {
+      if (data.Recipe.image.includes("png") || data.Recipe.image.includes("jpg") || data.Recipe.image.includes("JPG") || data.Recipe.image.includes("jpeg") || data.Recipe.image.includes("JPEG") || data.Recipe.image.includes("PNG")) {
+        listData.push({
+          "id": 0, "media_type": "image", "media_name": data.Recipe.image
+        })
+      } else {
+        listData.push({
+          "id": 0, "media_type": "video", "media_name": data.Recipe.image
+        })
       }
     }
-    if(data && data.Media.length > 0){
+    if (data && data.Media.length > 0) {
       listData = listData.concat(data.Media)
     }
     return (
       <FlatList
         horizontal
-        data = {listData}
-        renderItem={({item})=> <View style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }} >
-            {item.media_type == "image" ? 
-              <FastImage
+        data={listData}
+        renderItem={({ item }) => <View style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }} >
+          {item.media_type == "image" ?
+            <FastImage
               style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }}
               source={{
                 uri: item.media_name,
                 priority: FastImage.priority.high,
               }}
               resizeMode={FastImage.resizeMode.cover}
-            />  :
-              <Video 
-                ref={(ref) => {
-                  this.player = ref
-                }}
-                resizeMode={'contain'}
-                repeat={false}
-                controls={true} 
-                playInBackground={false}
-                paused={true}
-                style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }}
-                source={{uri: item.media_name}} 
-              />
-            }
+            /> :
+            <Video
+              ref={(ref) => {
+                this.player = ref
+              }}
+              resizeMode={'contain'}
+              repeat={false}
+              controls={true}
+              playInBackground={false}
+              paused={true}
+              style={{ width: StyleConfig.width * 1, height: StyleConfig.convertHeightPerVal(300) }}
+              source={{ uri: item.media_name }}
+            />
+          }
         </View>
         }
-      /> 
+      />
     )
   }
 
@@ -490,18 +493,18 @@ class PhotoRecipeDetails extends Component {
         {data && data.Recipe.id != 0 && <ViewX style={styles.operationView}>
           <ViewX style={{ flexDirection: 'row' }}>
             <Feather name={"eye"} size={iconSize} color={"#8a8a8f"} />
-            <TextX style={{marginLeft: StyleConfig.countPixelRatio(4)}} fontSize={StyleConfig.fontSizeH2_3}>{view ? view : "0"}</TextX>
+            <TextX style={{ marginLeft: StyleConfig.countPixelRatio(4) }} fontSize={StyleConfig.fontSizeH2_3}>{view ? view : "0"}</TextX>
           </ViewX>
           <TouchableOpacity disabled={isLike} onPress={this._postLike}>
             <ViewX style={{ flexDirection: 'row' }}>
               <Feather name={"thumbs-up"} size={iconSize} color={isLike ? 'blue' : '#8a8a8f'} />
-              <TextX style={{marginLeft: StyleConfig.countPixelRatio(4)}} fontSize={StyleConfig.fontSizeH2_3}>{likes ? likes : '0'}</TextX>
+              <TextX style={{ marginLeft: StyleConfig.countPixelRatio(4) }} fontSize={StyleConfig.fontSizeH2_3}>{likes ? likes : '0'}</TextX>
             </ViewX>
           </TouchableOpacity>
           <TouchableOpacity disabled={isDisLike} onPress={this._postDisLike}>
             <ViewX style={{ flexDirection: 'row' }}>
               <Feather name={"thumbs-down"} size={iconSize} color={isDisLike ? 'blue' : '#8a8a8f'} />
-              <TextX style={{marginLeft: StyleConfig.countPixelRatio(4)}} fontSize={StyleConfig.fontSizeH2_3}>{dislike ? dislike : "0"}</TextX>
+              <TextX style={{ marginLeft: StyleConfig.countPixelRatio(4) }} fontSize={StyleConfig.fontSizeH2_3}>{dislike ? dislike : "0"}</TextX>
             </ViewX>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._onShare}>
@@ -618,6 +621,17 @@ class PhotoRecipeDetails extends Component {
         keyExtractor={this._keyExtractor}
         data={data ? data.Method : []}
         renderItem={this.renderMethodListCellContainer}
+        ListFooterComponent={() => {
+          return (
+            <TouchableOpacity style={{ marginTop: 10 }}
+              onPress={() => { this.props.navigation.navigate('CommentList') }}>
+              <TextX
+                align='left'
+                fontSize={StyleConfig.countPixelRatio(16)}
+              >{`View all ${0} comments`}</TextX>
+            </TouchableOpacity>
+          )
+        }}
       />
     )
   }
@@ -716,7 +730,7 @@ const styles = StyleSheet.create({
   headerTopView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems:'center',
+    alignItems: 'center',
     paddingHorizontal: StyleConfig.countPixelRatio(12),
     marginBottom: StyleConfig.countPixelRatio(12),
     height: StyleConfig.countPixelRatio(40),
@@ -796,8 +810,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     height: 30
   },
-  iconStyle:{
-    width: StyleConfig.countPixelRatio(21), 
+  iconStyle: {
+    width: StyleConfig.countPixelRatio(21),
     height: StyleConfig.countPixelRatio(24)
   }
 })

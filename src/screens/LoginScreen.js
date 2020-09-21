@@ -29,11 +29,11 @@ class LoginScreen extends BaseComponent {
     super(props);
     this.state = {
       showForgotPasswordModal: false,
-      email: '',
-      password: '',
+      email: 'bhavesh.iblazing@gmail.com',
+      password: 'asdasdasd',
       isOpenVeggieModal: false,
-      isRemember:false,
-      showPassText:false
+      isRemember: false,
+      showPassText: false
     }
   }
 
@@ -52,41 +52,41 @@ class LoginScreen extends BaseComponent {
       website,
       mobile_number,
       description,
-      location ,email} = this.state.responseData.data;
+      location, email } = this.state.responseData.data;
 
-      let myHeaders = new Headers()
-      myHeaders.append('Authorization', `Bearer ${this.state.responseData.token}`)
+    let myHeaders = new Headers()
+    myHeaders.append('Authorization', `Bearer ${this.state.responseData.token}`)
 
-      var formdata = new FormData();
-      formdata.append("email", email);
-      formdata.append("name", name);
-      formdata.append("location", location);
-      formdata.append("website", website);
-      formdata.append("description", description);
-      formdata.append("mobile_number", mobile_number);
-      formdata.append("meal_preference", meal);
-  
-      console.log(formdata)
-  
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: formdata,
-        redirect: 'follow'
-      };
-      fetch(UPDATE_USER_DETAILS_URL, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-          let response = JSON.parse(result)
-          if (response.code === 1) {
-            this.setState({ isOpenVeggieModal: false }, () =>
-              navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Dashboard' }] }))
-            )
-          } else {
-            Alert.alert("update Meal Preferance failed..");
-          }
-        }); 
-  
+    var formdata = new FormData();
+    formdata.append("email", email);
+    formdata.append("name", name);
+    formdata.append("location", location);
+    formdata.append("website", website);
+    formdata.append("description", description);
+    formdata.append("mobile_number", mobile_number);
+    formdata.append("meal_preference", meal);
+
+    console.log(formdata)
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: formdata,
+      redirect: 'follow'
+    };
+    fetch(UPDATE_USER_DETAILS_URL, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        let response = JSON.parse(result)
+        if (response.code === 1) {
+          this.setState({ isOpenVeggieModal: false }, () =>
+            navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Dashboard' }] }))
+          )
+        } else {
+          Alert.alert("update Meal Preferance failed..");
+        }
+      });
+
 
 
 
@@ -115,7 +115,7 @@ class LoginScreen extends BaseComponent {
       AsyncStorage.setItem('user_id', `${response.data.id}`)
       AsyncStorage.setItem('is_remember', isRemember ? '1' : '0')
       loginSuccess(response);
-      this.setState({ isOpenVeggieModal: true, responseData: response  })
+      this.setState({ isOpenVeggieModal: true, responseData: response })
     } else {
       setTimeout(() => {
         Alert.alert(response.message)
@@ -205,7 +205,7 @@ class LoginScreen extends BaseComponent {
               <CTextInputWithIcon
                 icon={AppImages.ic_lock}
                 rightIcon={showPassText ? AppImages.ic_eye_hide : AppImages.ic_eye_show}
-                onRightPress={()=>{this.setState({showPassText:!showPassText})}}
+                onRightPress={() => { this.setState({ showPassText: !showPassText }) }}
                 placeholder={'Password'}
                 secureTextEntry={!showPassText}
                 color={'#111'}
@@ -214,19 +214,19 @@ class LoginScreen extends BaseComponent {
                 onChangeText={(val) => this.setState({ password: val })}
                 value={this.state.password}
               />
-              <View style={{flexDirection:'row-reverse', alignItems:'center'}}>
-                <Switch  
+              <View style={{ flexDirection: 'row-reverse', alignItems: 'center' }}>
+                <Switch
                   // trackColor={{ false: "#767577", true: "#81b0ff" }}
                   // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
                   // ios_backgroundColor="#3e3e3e"
-                  onValueChange={()=> this.setState({
-                    isRemember:!isRemember
+                  onValueChange={() => this.setState({
+                    isRemember: !isRemember
                   })}
                   value={isRemember} />
-                <View style={{width: 16}} />
+                <View style={{ width: 16 }} />
                 <CTextColor align={'right'} color={"#999"} fontSize={StyleConfig.countPixelRatio(14)} >{'Remember Me'}</CTextColor>
               </View>
-              
+
 
               <Button
                 onPress={this.onPressSignIn}

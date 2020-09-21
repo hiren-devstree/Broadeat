@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image, View, TouchableWithoutFeedback, Text
 } from 'react-native';
@@ -33,6 +33,7 @@ import SearchResult from '../screens/SearchResult';
 import AddContent from '../screens/AddContent';
 import UserAccount from '../screens/UserAccount';
 import ChangePassword from '../screens/ChangePassword';
+import CommentList from '../screens/CommentList';
 
 
 const Stack = createStackNavigator();
@@ -181,15 +182,17 @@ const ProfileNavigator = createStackNavigator();
 const ProfileStackNavigator = withTheme(({ theme, ...props }) => {
   return (
     <ProfileNavigator.Navigator options={
-      {tabBarOnPress: (tab, jumpToIndex) => {
-        jumpToIndex(tab.index)
-        navigation.dispatch(NavigationActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Profile' }) // go to first screen of the StackNavigator
-          ]
-        }))
-      }}
+      {
+        tabBarOnPress: (tab, jumpToIndex) => {
+          jumpToIndex(tab.index)
+          navigation.dispatch(NavigationActions.reset({
+            index: 0,
+            actions: [
+              NavigationActions.navigate({ routeName: 'Profile' }) // go to first screen of the StackNavigator
+            ]
+          }))
+        }
+      }
     }>
       <ProfileNavigator.Screen
         options={{ headerShown: false }}
@@ -255,7 +258,7 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
         tabPress: e => {
           HomeScreen.reloadScreen()
         }
-      }}  name="Home" component={HomeStackNavigator} />
+      }} name="Home" component={HomeStackNavigator} />
       <Tab.Screen listeners={{
         tabPress: e => {
           SearchScreen.reloadScreen()
@@ -263,11 +266,11 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
       }} name="Search" component={SearchStackNavigator} />
       <Tab.Screen name="Filter" component={FIlterStackNavigator} />
       <Tab.Screen name="Bookmark" component={BookmarkStackNavigator}
-      listeners={{
-        tabPress: e => {
-          RecipesTab.reloadScreen()
-        }
-      }} />
+        listeners={{
+          tabPress: e => {
+            RecipesTab.reloadScreen()
+          }
+        }} />
       <Tab.Screen listeners={{
         tabPress: e => {
           ProfileScreen.reloadScreen()
@@ -278,8 +281,8 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
   )
 })
 
-const AppNavigator =  ({ theme, ...props }) => {
-  
+const AppNavigator = ({ theme, ...props }) => {
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -293,34 +296,35 @@ const AppNavigator =  ({ theme, ...props }) => {
           headerBackTitleVisible: false,
         }}
       >
-        <Stack.Screen options={{ headerShown: false }} name="Init" component={InitScreen} path={'init'}/>
+        <Stack.Screen options={{ headerShown: false }} name="Init" component={InitScreen} path={'init'} />
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
-        
+
         <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={TabNavigator} />
         <Stack.Screen options={{ headerShown: false }} name="EmailVerify" component={EmailVerifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EditAccount" component={EditAccount} />
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
-        
-        <ProfileNavigator.Screen
-        options={{ headerShown: false }}
-        name={'ProfileMenu'} component={ProfileScreen}
-      />
-        <Stack.Screen 
-        options={{ headerShown: false }} 
-        name="AddContent" 
-        component={AddContent} />
+        <Stack.Screen options={{ headerShown: false }} name={'CommentList'} component={CommentList} />
 
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name={'PreviewReceipe'} component={PhotoRecipeDetails}
-      />
+        <ProfileNavigator.Screen
+          options={{ headerShown: false }}
+          name={'ProfileMenu'} component={ProfileScreen}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="AddContent"
+          component={AddContent} />
+
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name={'PreviewReceipe'} component={PhotoRecipeDetails}
+        />
         {/* <Stack.Screen options={{ headerShown: false }} name="AddContent" component={AddContent} /> */}
         <Stack.Screen
-        options={{ headerShown: false }}
-        name={'receipe'} 
-        component={DetailsStackNavigator}
-      />
+          options={{ headerShown: false }}
+          name={'receipe'}
+          component={DetailsStackNavigator}
+        />
         <Stack.Screen options={{ headerShown: false }} name="ChangePassword" component={ChangePassword} />
         <Stack.Screen options={{
           headerShown: true,
@@ -331,13 +335,13 @@ const AppNavigator =  ({ theme, ...props }) => {
             shadowOpacity: 0
           },
         }} name="UserAccount" component={UserAccount} />
-        
+
       </Stack.Navigator>
 
     </NavigationContainer >
   );
 }
-const AppContainer =  withTheme(AppNavigator)
+const AppContainer = withTheme(AppNavigator)
 export default () => {
   const prefix = 'broadeat://'
   return <AppContainer uriPrefix={prefix} />
