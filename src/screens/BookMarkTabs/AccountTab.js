@@ -55,7 +55,11 @@ class AccountTab extends React.Component {
     // this._getBookmarListAPICalled()
   }
 
-
+  componentWillUnmount=()=>{
+    this.setState({
+      data:[]
+    })
+  }
   _goToBookamrk = (item) => {
     console.log("_goToBookamrk",item)
     this.props.navigation.navigate('UserAccount', { userDetails: item, userId:item.id })
