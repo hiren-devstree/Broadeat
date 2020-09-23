@@ -25,12 +25,14 @@ export const ManageThemeProvider = ({ children }) => {
   const setMode = mode => {
     setThemeState(mode)
   }
+
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       setThemeState(colorScheme)
     })
     return () => subscription.remove()
   }, [])
+  
   if(!StyleConfig.isIphone){
     getAndroidThemeState( (theme)=>{
       setThemeState(theme)
@@ -38,6 +40,7 @@ export const ManageThemeProvider = ({ children }) => {
   }
   
   return (
+    
     <ThemeContext.Provider value={{ mode: themeState, setMode }}>
       <ThemeProvider
         theme={themeState === 'dark' ? darkTheme.theme : lightTheme.theme}>

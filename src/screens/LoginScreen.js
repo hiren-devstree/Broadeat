@@ -29,8 +29,8 @@ class LoginScreen extends BaseComponent {
     super(props);
     this.state = {
       showForgotPasswordModal: false,
-      email: 'bhavesh.iblazing@gmail.com',
-      password: 'asdasdasd',
+      email: '',
+      password: '',
       isOpenVeggieModal: false,
       isRemember: false,
       showPassText: false

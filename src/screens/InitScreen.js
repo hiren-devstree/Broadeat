@@ -16,10 +16,11 @@ import { SafeAreaViewC, CButtonColor, CTextColor, CTextColor2 } from '../compone
 import BaseComponent from '../containers/BaseComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { CommonActions } from '@react-navigation/native';
-
+// import crashlytics from '@react-native-firebase/crashlytics';
 class InitScreen extends BaseComponent {
 
     componentDidMount= () =>{
+        // crashlytics().log('App mounted.');
         AsyncStorage.getItem('is_remember').then((response)=>{
             if(response != null && response != undefined && response != '0'){
                 this.props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Dashboard' }] }))

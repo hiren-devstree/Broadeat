@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "789393784172",
+    "firebase_url": "https://broadeat-abe02.firebaseio.com",
+    "project_id": "broadeat-abe02",
+    "storage_bucket": "broadeat-abe02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789393784172:android:9b7ad95bbb57d8f07e4749",
+        "android_client_info": {
+          "package_name": "com.broadeat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "789393784172-riquiavptc1f0e64rh504s8v0fv0uvju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnjdxS469pGZWi17ZM--1JT2HoCOsGVWk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "789393784172-riquiavptc1f0e64rh504s8v0fv0uvju.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,13 +13,14 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
 
 import { getUserDetails } from './../apiManager'
-
+import {KEY_PREF_ANDROID_THEME} from './../helper/Constants'
 import StyleConfig from '../assets/styles/StyleConfig'
 import { SafeAreaView, View1CC, ViewX, CText, TextX } from '../components/common'
 
 import imgBack from '../assets/images/ic_back.png'
 import imgDummy from '../assets/images/ic_dummy.png'
 import { withTheme } from 'styled-components';
+import App from '../../App'
 let _this
 const BUTTON_TEXT = StyleConfig.convertHeightPerVal(16);
 
@@ -35,8 +36,14 @@ class ProfileScreen extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    
     this._getProfileDetailsAPICalling()
+    let theme =await AsyncStorage.getItem(KEY_PREF_ANDROID_THEME )
+    console.log({theme})
+    if(theme == "dark"){
+      this.setState({isDarkTheme:true})
+    }
   }
 
   static reloadScreen = async () => {
@@ -239,9 +246,12 @@ class ProfileScreen extends Component {
 
   themeChange = async () => {
     const { isDarkTheme } = this.state
-    await AsyncStorage.setItem(isDarkTheme ? 'light' : 'dark')
-    this.setState({ isDarkTheme: !isDarkTheme })
-
+    console.log({isDarkTheme})
+    await AsyncStorage.setItem(KEY_PREF_ANDROID_THEME ,isDarkTheme ? 'light' : 'dark')
+    App.reloadApp()
+    this.setState({ isDarkTheme: !isDarkTheme },()=>{
+      console.log({isDarkTheme2: this.state.isDarkTheme})
+    })
   }
 
   renderSettingsOptions = () => {
