@@ -623,12 +623,14 @@ class PhotoRecipeDetails extends Component {
         renderItem={this.renderMethodListCellContainer}
         ListFooterComponent={() => {
           return (
-            <TouchableOpacity style={{ marginTop: 10 }}
-              onPress={() => { this.props.navigation.navigate('CommentList') }}>
+            <TouchableOpacity style={{ marginVertical: 10 }}
+              onPress={() => {
+                this.props.navigation.navigate('CommentList', { recipeData: data })
+              }}>
               <TextX
                 align='left'
                 fontSize={StyleConfig.countPixelRatio(16)}
-              >{`View all ${0} comments`}</TextX>
+              >{`View all ${data.Recipe.comment_count} comments`}</TextX>
             </TouchableOpacity>
           )
         }}

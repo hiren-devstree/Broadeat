@@ -1,24 +1,26 @@
 import React from 'react'
 import {
   KEY_POST_LOGIN,
-   REGISTER_URL, 
-   FORGOT_PASSWORD_URL, 
-   CHANGE_PASSWORD_URL,
-  ADD_RECIPE_URL, 
-  RECIPE_DATA_URL, 
-  USER_DETAILS_URL, 
+  REGISTER_URL,
+  FORGOT_PASSWORD_URL,
+  CHANGE_PASSWORD_URL,
+  ADD_RECIPE_URL,
+  RECIPE_DATA_URL,
+  USER_DETAILS_URL,
   UPDATE_USER_DETAILS_URL,
-  FAVOURITE_LIST_URL, 
-  BOOKMARK_USER_URL, TAG_URL, 
+  FAVOURITE_LIST_URL,
+  BOOKMARK_USER_URL, TAG_URL,
   SEARCH_RECIPE_URL,
-  GET_RECIPE_DETAILS_URL, 
-  GET_USER_WISE_RECIPE_DETAILS_URL, 
+  GET_RECIPE_DETAILS_URL,
+  GET_USER_WISE_RECIPE_DETAILS_URL,
   GET_RECENT_SEARCH_URL,
-  DELETE_SEARCH_RECORD_URL, 
+  DELETE_SEARCH_RECORD_URL,
   DELETE_RECIPE,
   FILTER_URL,
   POST_ADD_UPDATE_ACTIVITY,
-  POST_USER_BOOKMARK
+  POST_USER_BOOKMARK,
+  GET_COMMENT_LIST,
+  POST_COMMENT_LIST,
 } from './../helper/Constants'
 
 
@@ -103,10 +105,10 @@ const ApiManager = {
         'Content-Type': 'multipart/form-data'
       },
       body: data
-    }).then((response) => response.json()).then((json)=>{
-      console.log({"ADD_CONTANT_RES":json})
+    }).then((response) => response.json()).then((json) => {
+      console.log({ "ADD_CONTANT_RES": json })
       return json;
-    }, (error)=> {
+    }, (error) => {
       console.log('error', error)
     }).catch((error) => {
       console.log('error', error)
@@ -288,7 +290,7 @@ const ApiManager = {
       method: 'GET',
       headers: myHeaders,
     }).then((response) => response.json()
-    ).then((res)=>{
+    ).then((res) => {
       console.log(res);
       return res;
     }).catch((error) => {
@@ -363,6 +365,42 @@ const ApiManager = {
     }).catch((error) => {
       console.log('error', error)
     });
+  },
+  getCommentList: async (token, recipeId) => {
+    let myHeaders = new Headers()
+    myHeaders.append('Authorization', `Bearer ${token}`)
+
+    console.log('GET_COMMENT_LIST API: ', GET_COMMENT_LIST + `${recipeId}`)
+
+    return fetch(GET_COMMENT_LIST + `${recipeId}`, {
+      method: 'GET',
+      headers: myHeaders,
+    }).then((response) => response.json()
+    ).then((res) => {
+      console.log("getCommentList ", res);
+      return res;
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
+  postComment: async (data, token) => {
+    console.log('COMMENT LIST API CALLED Data: ', data)
+    await fetch(POST_COMMENT_LIST, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then((response) => response.json()).then((json) => {
+      console.log("ADD_CONTANT_RES", json)
+      return json;
+    }, (error) => {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    })
   },
 }
 module.exports = ApiManager;

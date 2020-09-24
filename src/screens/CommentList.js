@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import {
   View, StyleSheet, Image, TouchableOpacity,
-  ScrollView, FlatList, Text, Alert, Share, StatusBar, KeyboardAvoidingView, TextInput
+  FlatList, KeyboardAvoidingView, TextInput, ScrollView,
+  Alert, Platform
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import Feather from 'react-native-vector-icons/Feather';
@@ -12,34 +13,15 @@ import FastImage from 'react-native-fast-image'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import StyleConfig from '../assets/styles/StyleConfig';
+import { getCommentList, postComment } from './../apiManager'
 
 // Component Imports
 import {
-  SafeAreaView, ViewX, TextX, CText, CTextColor
+  SafeAreaView, ViewX, TextX,
 } from '../components/common'
 
 import imgBack from '../assets/images/ic_back.png'
-import imgDummy from '../assets/images/ic_dummy.png'
-import { CommonActions } from '@react-navigation/native';
-const LIST_DATA=[
-  {id: '1', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'A'},
-  {id: '2', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'meaning of a writing Comments on the passage were printed in the margin. 3a : an observation or remark expressing an opinion or attitude critical comments constructive comments.'},
-  {id: '3', user_id: 1, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'C',
-    data:[
-      {id: '111', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'A'},
-      {id: '112', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'A'},
-    ]},
-  {id: '4', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'D'},
-  {id: '5', user_id: 1, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'meaning of a writing Comments on the passage were printed in the margin. 3a : an observation or remark expressing an opinion or attitude critical comments constructive comments.'},
-  {id: '6', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'F'},
-  {id: '7', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'G'},
-  {id: '8', user_id: 1, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'H'},
-  {id: '9', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'I'},
-  {id: '10', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'J'},
-  {id: '11', user_id: 50, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'K'},
-  {id: '12', user_id: 1, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'L'},
-  {id: '13', user_id: 1, "profile_image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTcMXQcG6LW57tK_4APU5KKHj6GNQtm2k5pNw&usqp=CAU",value: 'M'}
-];
+
 class CommentList extends Component {
   constructor(props) {
     super(props)
@@ -48,12 +30,18 @@ class CommentList extends Component {
 
     this.state = {
       comments: [],
-      commentText: "afsdfa",
+      commentText: "Bhargav Comment",
+      commentId: undefined,
+      user_id: undefined,
+      recipeData: undefined
     }
   }
 
   componentDidMount() {
-    AsyncStorage.getItem("user_id").then((user_id) => this.setState({ user_id }))
+    let recipeData = this.props.route.params.recipeData
+    if (recipeData != undefined) this.setState({ recipeData: recipeData }, () => this._getCommentList())
+    AsyncStorage.getItem("user_id").then((user_id) => this.setState({ user_id: user_id }))
+
   }
 
   render() {
@@ -70,9 +58,75 @@ class CommentList extends Component {
   .########..#######...######...####..######...######.
   */
 
-
-
   _keyExtractor = (item, index) => index.toString()
+
+  onBack = () => {
+    this.props.navigation.goBack()
+  }
+
+  _replyBtnPressed = (item) => {
+    this.setState({ commentId: item.comment_id }, () => {
+      this.inputRef.focus()
+    })
+  }
+
+  _onSendBtnPressed = async () => {
+    const { commentId, commentText, user_id, recipeData } = this.state
+    let token = await AsyncStorage.getItem('user_token')
+    const { loader } = this.props
+
+    let myHeaders = new Headers()
+    myHeaders.append('Authorization', `Bearer ${token}`)
+    myHeaders.append("Accept", "application/json")
+    myHeaders.append("Content-Type", "application/json")
+
+    var urlencoded = {}
+
+    if (commentId != undefined) {
+      urlencoded = {
+        "recipe_id": recipeData.Recipe.id,
+        "user_id": user_id,
+        "comment_type": "reply",
+        "reply_comment_id": commentId,
+        "message": commentText,
+      }
+    } else {
+      urlencoded = {
+        "recipe_id": recipeData.Recipe.id,
+        "user_id": user_id,
+        "comment_type": "comment",
+        "message": commentText,
+      }
+    }
+
+    loader(true)
+    let result = await postComment(urlencoded, token)
+    console.log(result)
+    // debugger
+    // this.props.loader(false)
+
+    this._getCommentList()
+
+
+
+  }
+
+  _getCommentList = async () => {
+    const { recipeData } = this.state
+    const { loader } = this.props
+    loader(true)
+    let token = await AsyncStorage.getItem('user_token')
+    let response = await getCommentList(token, recipeData.Recipe.id)
+    this.props.loader(false)
+
+    if (response.code === 1) {
+      this.setState({ comments: response.data, commentText: '' })
+    } else {
+      setTimeout(() => {
+        Alert.alert(response.message)
+      }, 500)
+    }
+  }
 
 
   /*
@@ -86,49 +140,21 @@ class CommentList extends Component {
   */
 
   renderMainView = () => {
-    const { selectedTab, showOptionMenu, commentText } = this.state
-    const { theme } = this.props;
     return (
-      <SafeAreaView {...this.props} style={{ flex: 1, }}>
+      <SafeAreaView {...this.props} style={{ flex: 1 }}>
         {this.renderHeaderView()}
-        <View style={{ flex: 1, width:StyleConfig.width }}>
-          <FlatList
-            data={LIST_DATA}
-            renderItem={({item, index})=>(<View style={{ 
-              width: StyleConfig.width,
-              flexDirection: 'row',
-              alignItems:'flex-start',
-              backgroundColor:'transparent',
-              justifyContent:'flex-start',
-              paddingHorizontal: StyleConfig.countPixelRatio(16),
-              paddingVertical: StyleConfig.countPixelRatio(8)}}>
-                
-              <View style={{width:StyleConfig.width*0.9, backgroundColor:'transparent', flexDirection: 'row',}}>
-                  <Image source={{uri: item.profile_image}} style={styles.imgProfile} />
-                  <View style={{
-                    width: StyleConfig.width*0.9 - StyleConfig.countPixelRatio(68),
-                    marginLeft: StyleConfig.countPixelRatio(8),
-                    paddingHorizontal: StyleConfig.countPixelRatio(8),
-                    paddingVertical: StyleConfig.countPixelRatio(4),
-                    backgroundColor:'transparent'
-                    }}>
-                    <TextX align={'left'} fontSize={StyleConfig.fontSizeH3} >{'Hiren Vaghela'}</TextX>
-                    <TextX align={'left'} fontSize={StyleConfig.fontSizeH2_3} style={{flexWrap: 'wrap'}} >{item.value}</TextX>
-                    
-                    {item.user_id != 1 && <TextX align={'right'} fontSize={StyleConfig.fontSizeH3} >{'Reply'}</TextX>}
-                  </View>
-                </View>
-            </View>)}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </View>
-        {this.renderCommentInputView()}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' && 'padding'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+          style={{ flex: 1 }}
+        >
+          <ScrollView style={{ flex: 1, }} contentContainerStyle={{ paddingBottom: 20, justifyContent: 'center', }}>
+            {this.renderFlatlistVIew()}
+          </ScrollView>
+          {this.renderCommentInputView()}
+        </KeyboardAvoidingView>
       </SafeAreaView>
     )
-  }
-
-  onBack = () => {
-    this.props.navigation.goBack()
   }
 
   renderHeaderView = () => {
@@ -150,39 +176,107 @@ class CommentList extends Component {
     )
   }
 
+  renderFlatlistVIew = () => {
+    const { comments } = this.state
+    return (
+      <FlatList
+        style={{ flex: 1 }}
+        data={comments}
+        renderItem={({ item, index }) => (
+          <View style={{
+            width: StyleConfig.width,
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            backgroundColor: 'transparent',
+            justifyContent: 'flex-start',
+            paddingHorizontal: StyleConfig.countPixelRatio(16),
+            paddingVertical: StyleConfig.countPixelRatio(8)
+          }}>
+
+            <View style={{ width: StyleConfig.width * 0.9, backgroundColor: 'transparent', flexDirection: 'row', }}>
+              <Image source={{ uri: item.profilepic }} style={styles.imgProfile} />
+              <View style={{
+                width: StyleConfig.width * 0.9 - StyleConfig.countPixelRatio(68),
+                marginLeft: StyleConfig.countPixelRatio(8),
+                paddingHorizontal: StyleConfig.countPixelRatio(8),
+                paddingVertical: StyleConfig.countPixelRatio(4),
+                backgroundColor: 'transparent'
+              }}>
+                <TextX align={'left'} fontSize={StyleConfig.fontSizeH3} >{item.name}</TextX>
+                <TextX align={'left'} fontSize={StyleConfig.fontSizeH2_3} style={{ flexWrap: 'wrap' }} >{item.message}</TextX>
+
+                {<TouchableOpacity onPress={() => this._replyBtnPressed(item)}>
+                  <TextX align={'right'} fontSize={StyleConfig.fontSizeH3} >{'Reply'}</TextX>
+                </TouchableOpacity>}
+                {item.reply && item.reply.length > 0 &&
+                  item.reply.map((item, index) => {
+                    return this.renderReplyUI(item, index)
+                  })
+                }
+              </View>
+            </View>
+          </View>)}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    )
+  }
+
   renderCommentInputView = () => {
     const { commentText } = this.state
     return (
-      <KeyboardAvoidingView style={{ marginHorizontal: 0 }}>
-        <View style={{
-          marginHorizontal: 16,
-          height: 40,
-          flexDirection: 'row',
-          borderRadius: 20,
-          borderWidth: 1,
-          borderColor: '#777',
-          alignItems: 'center'
-        }}>
-          <TextInput
-            value={commentText}
-            placeholder="Add a comment"
-            placeholderTextColor={"#777"}
-            style={{
-              flex: 1,
-              paddingLeft: 15,
-              color: "#777",
-              marginLeft: 10
-            }}
-            onChangeText={(text) => this.setState({ commentText: text })}
-          />
-          {
-            commentText.length > 0 &&
-            <TouchableOpacity style={{ marginRight: 16 }}>
-              <Feather name='send' color={"#777"} size={22} />
-            </TouchableOpacity>
-          }
+      <View style={{
+        marginHorizontal: 16,
+        marginVertical: 8,
+        height: 40,
+        flexDirection: 'row',
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#777',
+        alignItems: 'center',
+        alignSelf: 'flex-end',
+      }}>
+        <TextInput
+          ref={(input) => this.inputRef = input}
+          value={commentText}
+          placeholder="Add a comment"
+          placeholderTextColor={"#777"}
+          style={{
+            flex: 1,
+            paddingLeft: 15,
+            color: "#777",
+            marginLeft: 10
+          }}
+          onChangeText={(text) => this.setState({ commentText: text })}
+        />
+        {
+          commentText.length > 0 &&
+          <TouchableOpacity style={{ marginRight: 16 }} onPress={() => this._onSendBtnPressed()}>
+            <Feather name='send' color={"#777"} size={22} />
+          </TouchableOpacity>
+        }
+      </View>
+    )
+  }
+
+  renderReplyUI = (item, index) => {
+    return (
+      <View key={index} style={{
+        marginTop: StyleConfig.countPixelRatio(10),
+      }}>
+        <View style={{ width: StyleConfig.width * 0.9, backgroundColor: 'transparent', flexDirection: 'row', }}>
+          <Image source={{ uri: item.profilepic }} style={styles.imgProfile} />
+          <View style={{
+            width: StyleConfig.width * 0.9 - StyleConfig.countPixelRatio(68),
+            marginLeft: StyleConfig.countPixelRatio(8),
+            paddingHorizontal: StyleConfig.countPixelRatio(8),
+            paddingVertical: StyleConfig.countPixelRatio(4),
+            backgroundColor: 'transparent'
+          }}>
+            <TextX align={'left'} fontSize={StyleConfig.fontSizeH3} >{item.name}</TextX>
+            <TextX align={'left'} fontSize={StyleConfig.fontSizeH2_3} style={{ flexWrap: 'wrap' }} >{item.message}</TextX>
+          </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     )
   }
 
@@ -220,7 +314,7 @@ const styles = StyleSheet.create({
     height: StyleConfig.countPixelRatio(44),
     width: StyleConfig.countPixelRatio(44),
     borderRadius: StyleConfig.countPixelRatio(22),
-    marginTop:StyleConfig.countPixelRatio(4)
+    marginTop: StyleConfig.countPixelRatio(4)
   },
 })
 
