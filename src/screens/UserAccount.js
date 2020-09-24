@@ -62,8 +62,8 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
             }}
             source={{ uri: item.image }}
           /> :
-          <View>
-              <Video 
+            <View>
+              <Video
                 repeat={false}
                 playInBackground={false}
                 paused={true}
@@ -75,12 +75,12 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
                 }}
                 source={{ uri: item.image }}
               />
-              <View style={{ height:"90%",position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
-                    <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
-                </View>
+              <View style={{ height: "90%", position: 'absolute', flex: 1, alignSelf: 'center', justifyContent: 'center', zIndex: 99 }}>
+                <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
               </View>
-            
-        }
+            </View>
+
+          }
         </ViewX>
         <TextX style={{
           width: "88%",
@@ -109,8 +109,8 @@ class UserAccount extends Component {
         INIT_FILTER[0],
       ],
       isAlreadyBookMarked: false,
-      userDetails:{
-        
+      userDetails: {
+
       }
     }
   }
@@ -134,13 +134,13 @@ class UserAccount extends Component {
   async componentDidMount() {
     const { loader } = this.props
     loader(true);
-    console.log("PARAMS->",this.props.route.params)
-    if(this.props.route.params == undefined){
+    console.log("PARAMS->", this.props.route.params)
+    if (this.props.route.params == undefined) {
       await this._getProfileDetailsAPICalling()
     }
     let token = await AsyncStorage.getItem('user_token')
     let currentUserId = await AsyncStorage.getItem('user_id')
-    let userId = this.props.route.params == undefined ? undefined : this.props.route.params.userId 
+    let userId = this.props.route.params == undefined ? undefined : this.props.route.params.userId
     let isAlreadyBookMarked = false;
     if (userId == undefined) {
       userId = currentUserId
@@ -222,26 +222,26 @@ class UserAccount extends Component {
     const { theme } = this.props
     let userDetails = this.props.route.params && this.props.route.params.userDetails ? this.props.route.params.userDetails : this.state.userDetails
     const { hashTagAvailable, filteredData, user_id, isAlreadyBookMarked } = this.state;
-    
+
     let showBookmark = true;
     if (this.props.route.params == undefined || (this.props.route.params.userId == undefined || this.props.route.params.userId == user_id)) {
       showBookmark = false;
     }
     return (
       <SafeAreaView {...this.props}>
-        <ViewX style={{ marginVertical: 10, padding: 20 }} >
+        <ViewX style={{ marginVertical: 10, paddingHorizontal: 20, paddingBottom: 20 }} >
           <ViewX style={{
             paddingVertical: StyleConfig.convertHeightPerVal(10),
             flexDirection: "row",
             alignItems: "center",
           }} >
-              <ViewX style={{ flex: 1, flexDirection: "row", justifyContent: "flex-start" }} >
-                <Image source={{ uri: userDetails.profilepic }} style={styles.imgProfile} /> 
-                <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20), alignItems:'flex-start' }} >
-                  <TextX align={'left'} style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{`${userDetails.name}`}</TextX>
-                  <TextX align={'left'} style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4 }} >{userDetails.description}</TextX>
-                </ViewX>
+            <ViewX style={{ flex: 1, flexDirection: "row", justifyContent: "flex-start" }} >
+              <Image source={{ uri: userDetails.profilepic }} style={styles.imgProfile} />
+              <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20), alignItems: 'flex-start' }} >
+                <TextX align={'left'} style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{`${userDetails.name}`}</TextX>
+                <TextX align={'left'} style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4 }} >{userDetails.email}</TextX>
               </ViewX>
+            </ViewX>
             {showBookmark && <TouchableOpacity onPress={this._onBookmarkUser}>
               <Image
                 resizeMode="contain"
@@ -296,5 +296,5 @@ const styles = StyleSheet.create({
     width: StyleConfig.countPixelRatio(60),
     borderRadius: StyleConfig.countPixelRatio(30)
   },
-  
+
 });
