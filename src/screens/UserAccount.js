@@ -229,9 +229,9 @@ class UserAccount extends Component {
     }
     return (
       <SafeAreaView {...this.props}>
-        <ViewX style={{ marginVertical: 10, paddingHorizontal: 20, paddingBottom: 20 }} >
+        <ViewX style={{ marginBottom: 0, paddingHorizontal: 20, paddingBottom: 20 }} >
           <ViewX style={{
-            paddingVertical: StyleConfig.convertHeightPerVal(10),
+            paddingVertical: StyleConfig.convertHeightPerVal(5),
             flexDirection: "row",
             alignItems: "center",
           }} >
@@ -245,7 +245,7 @@ class UserAccount extends Component {
             {showBookmark && <TouchableOpacity onPress={this._onBookmarkUser}>
               <Image
                 resizeMode="contain"
-                style={{ width: StyleConfig.iconSize, aspectRatio: 1, tintColor: isAlreadyBookMarked ? 'blue' : 'grey' }}
+                style={{ width: 25, height: 30, tintColor: isAlreadyBookMarked ? 'blue' : 'grey' }}
                 source={AppImages.ic_bookmark}
               />
             </TouchableOpacity>}
@@ -261,7 +261,7 @@ class UserAccount extends Component {
             showsHorizontalScrollIndicator={false}
           >
             <ViewX style={{
-              margin: StyleConfig.convertHeightPerVal(5),
+              marginHorizontal: StyleConfig.convertHeightPerVal(5),
               flexDirection: "row"
             }} >
               {

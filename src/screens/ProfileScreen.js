@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
 
 import { getUserDetails } from './../apiManager'
-import {KEY_PREF_ANDROID_THEME} from './../helper/Constants'
+import { KEY_PREF_ANDROID_THEME } from './../helper/Constants'
 import StyleConfig from '../assets/styles/StyleConfig'
 import { SafeAreaView, View1CC, ViewX, CText, TextX } from '../components/common'
 
@@ -37,12 +37,12 @@ class ProfileScreen extends Component {
   }
 
   async componentDidMount() {
-    
+
     this._getProfileDetailsAPICalling()
-    let theme =await AsyncStorage.getItem(KEY_PREF_ANDROID_THEME )
-    console.log({theme})
-    if(theme == "dark"){
-      this.setState({isDarkTheme:true})
+    let theme = await AsyncStorage.getItem(KEY_PREF_ANDROID_THEME)
+    console.log({ theme })
+    if (theme == "dark") {
+      this.setState({ isDarkTheme: true })
     }
   }
 
@@ -76,7 +76,7 @@ class ProfileScreen extends Component {
     }
   }
 
-  addContent = async  () => {
+  addContent = async () => {
     const { navigation } = this.props;
     // await ImagePicker.clean();
 
@@ -86,12 +86,12 @@ class ProfileScreen extends Component {
       //   skipBackup: true,
       //   path: 'images',
       // },
-      
+
       mediaType: 'mixed'
     };
 
     ImagePicker.launchImageLibrary(options, (images) => {
-      console.log({images})
+      console.log({ images })
       navigation.navigate('AddContent', { images: [images] });
     });
 
@@ -246,11 +246,11 @@ class ProfileScreen extends Component {
 
   themeChange = async () => {
     const { isDarkTheme } = this.state
-    console.log({isDarkTheme})
-    await AsyncStorage.setItem(KEY_PREF_ANDROID_THEME ,isDarkTheme ? 'light' : 'dark')
+    console.log({ isDarkTheme })
+    await AsyncStorage.setItem(KEY_PREF_ANDROID_THEME, isDarkTheme ? 'light' : 'dark')
     App.reloadApp()
-    this.setState({ isDarkTheme: !isDarkTheme },()=>{
-      console.log({isDarkTheme2: this.state.isDarkTheme})
+    this.setState({ isDarkTheme: !isDarkTheme }, () => {
+      console.log({ isDarkTheme2: this.state.isDarkTheme })
     })
   }
 

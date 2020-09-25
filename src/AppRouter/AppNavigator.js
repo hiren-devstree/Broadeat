@@ -330,7 +330,7 @@ const AppNavigator = ({ theme, ...props }) => {
           headerShown: true,
           headerTitle: "",
           headerStyle: {
-            backgroundColor: theme.background,
+            backgroundColor: theme.headerBac,
             elevation: 0,
             shadowOpacity: 0
           },

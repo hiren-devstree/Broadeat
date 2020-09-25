@@ -21,7 +21,8 @@ const dark = {
     text2: "#333",
     textInputBac2: "#eee",
     headerBack: "#1f1f1f",
-    profileDeviderColor: "#ffffff55"
+    profileDeviderColor: "#ffffff55",
+    headerBac: 'rgb(39,39,39)'
   }
 }
 

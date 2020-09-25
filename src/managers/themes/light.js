@@ -20,7 +20,8 @@ const light = {
     text2: "#eee",
     textInputBac2: "#333",
     headerBack: "#eee",
-    profileDeviderColor: "#00000055"
+    profileDeviderColor: "#00000055",
+    headerBac: '#fff'
   }
 }
 export default light
