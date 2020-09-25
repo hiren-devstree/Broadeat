@@ -30,7 +30,7 @@ class CommentList extends Component {
 
     this.state = {
       comments: [],
-      commentText: "Bhargav Comment",
+      commentText: "",
       commentId: undefined,
       user_id: undefined,
       recipeData: undefined
@@ -121,7 +121,7 @@ class CommentList extends Component {
 
     if (response.code === 1) {
       this.setState({ comments: response.data, commentText: '' })
-    } else {
+    } else  if(response.message != "No data found"){
       setTimeout(() => {
         Alert.alert(response.message)
       }, 500)
