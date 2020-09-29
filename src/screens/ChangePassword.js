@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { withTheme } from 'styled-components'
 import { SafeAreaView, TextX, ViewX } from '../components/common';
 
+import imgBack from '../assets/images/ic_back.png'
 import imgShowPsw from '../assets/images/ic_show_psw.png'
 import imghidePsw from '../assets/images/ic_hide_psw.png'
 
@@ -94,6 +95,7 @@ export class ChangePassword extends Component {
   renderMainView = () => {
     return (
       <SafeAreaView {...this.props}>
+        {this.renderHeader()}
         <ScrollView style={{ paddingHorizontal: StyleConfig.convertWidthPerVal(30), }}>
           {this.renderHeaderView()}
           {this.renderOldPasswordField()}
@@ -102,6 +104,14 @@ export class ChangePassword extends Component {
           {this.renderConfirmChangeButton()}
         </ScrollView>
       </SafeAreaView>
+    )
+  }
+
+  renderHeader = () => {
+    return (
+      <TouchableOpacity style={{ height: 30, width: 30, marginLeft: 12, }} onPress={() => this.props.navigation.goBack()}>
+        <Image source={imgBack} style={styles.backBtn} />
+      </TouchableOpacity>
     )
   }
 
@@ -187,7 +197,7 @@ export class ChangePassword extends Component {
   renderConfirmChangeButton = () => {
     return (
       <TouchableOpacity style={styles.confirmChange} activeOpacity={0.5} onPress={() => this._onPressConfirmChangedPassword()}>
-        <TextX fontSize={20}>Confirm changed</TextX>
+        <TextX fontSize={20}>Confirm change</TextX>
       </TouchableOpacity>
     )
   }
@@ -231,5 +241,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: StyleConfig.convertWidthPerVal(40),
     paddingVertical: StyleConfig.convertWidthPerVal(4)
+  },
+  backBtn: {
+    width: StyleConfig.countPixelRatio(22),
+    height: StyleConfig.countPixelRatio(22)
   }
 })

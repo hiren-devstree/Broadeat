@@ -92,7 +92,9 @@ class ProfileScreen extends Component {
 
     ImagePicker.launchImageLibrary(options, (images) => {
       console.log({ images })
-      navigation.navigate('AddContent', { images: [images] });
+      if (!images.didCancel) {
+        navigation.navigate('AddContent', { images: [images] });
+      }
     });
 
     // ImagePicker.openPicker({

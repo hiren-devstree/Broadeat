@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components/native'
 import { Appearance, AppearanceProvider } from 'react-native-appearance'
 import lightTheme from './themes/light'
 import darkTheme from './themes/dark'
-import {KEY_PREF_ANDROID_THEME} from './../helper/Constants'
+import { KEY_PREF_ANDROID_THEME } from './../helper/Constants'
 import StyleConfig from '../assets/styles/StyleConfig'
 const defaultMode = 'dark';
 const ThemeContext = createContext({
@@ -14,7 +14,7 @@ const ThemeContext = createContext({
 
 export const useTheme = () => React.useContext(ThemeContext)
 
-const getAndroidThemeState = async(callback)=>{
+const getAndroidThemeState = async (callback) => {
   let themestate = await AsyncStorage.getItem(KEY_PREF_ANDROID_THEME)
   callback(themestate == 'dark' ? 'dark' : 'light')
 }
@@ -32,15 +32,15 @@ export const ManageThemeProvider = ({ children }) => {
     })
     return () => subscription.remove()
   }, [])
-  
-  if(!StyleConfig.isIphone){
-    getAndroidThemeState( (theme)=>{
+
+  if (!StyleConfig.isIphone) {
+    getAndroidThemeState((theme) => {
       setThemeState(theme)
     })
   }
-  
+
   return (
-    
+
     <ThemeContext.Provider value={{ mode: themeState, setMode }}>
       <ThemeProvider
         theme={themeState === 'dark' ? darkTheme.theme : lightTheme.theme}>

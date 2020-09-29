@@ -102,14 +102,14 @@ export const CTextInputWithIcon = props => <INPUT_WRAPPER {...props}>
   <TEXTINPUT
     {...props}
   />
-  <TouchableOpacity 
+  <TouchableOpacity
     onPress={props.onRightPress}
     style={{ width: StyleConfig.countPixelRatio(22), marginRight: 8 }} >
     {props.rightIcon && <Image source={props.rightIcon} resizeMode={'contain'} style={{
-    height: StyleConfig.countPixelRatio(18),
-    width: StyleConfig.countPixelRatio(22),
-    marginRight: 8
-  }} />}
+      height: StyleConfig.countPixelRatio(18),
+      width: StyleConfig.countPixelRatio(22),
+      marginRight: 8
+    }} />}
   </TouchableOpacity>
 </INPUT_WRAPPER>
 const INPUT_WRAPPER = styled.View` 
@@ -129,7 +129,7 @@ export const TEXTINPUT = styled.TextInput.attrs(props => ({
   secureTextEntry: props.secureTextEntry ? props.secureTextEntry : false,
   underlineColorAndroid: "#00000000",
   textAlign: props.align ? props.align : 'center',
-  fontSize: props.fontSize? props.fontSize : 16,
+  fontSize: props.fontSize ? props.fontSize : 16,
 }))`
   color: ${props => props.color ? props.color : props.theme.text};
   flex: 1;

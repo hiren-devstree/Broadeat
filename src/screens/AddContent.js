@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
-import { View,
+import {
+  View,
   TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView,
   ScrollView, TextInput, TextInputProps, TouchableWithoutFeedback, Alert
 } from 'react-native';
@@ -23,20 +24,19 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import imgBack from '../assets/images/ic_back.png'
 const HASH_TAGS = [
-  { _id:1, name:"Pastas", isSelected: false},
-  { _id:2, name:"Salads", isSelected: false},
-  { _id:3, name:"Desserts", isSelected: false},
-  { _id:4, name:"Vegetarian", isSelected: false}
+  { _id: 1, name: "Pastas", isSelected: false },
+  { _id: 2, name: "Salads", isSelected: false },
+  { _id: 3, name: "Desserts", isSelected: false },
+  { _id: 4, name: "Vegetarian", isSelected: false }
 ]
 
-const AddX = withTheme(({ theme }) =><Octicons name={"plus"} size={StyleConfig.countPixelRatio(30)} color={theme.text} /> )
+const AddX = withTheme(({ theme }) => <Octicons name={"plus"} size={StyleConfig.countPixelRatio(30)} color={theme.text} />)
 
 const IngredientTextInput = (props: TextInputProps) => <InputTextX {...props} >{props.children}</InputTextX>
 
 const InputTextX = styled.TextInput`
     paddingVertical: ${StyleConfig.convertHeightPerVal(4)}px;
     font-size: ${StyleConfig.fontSizeH2_3}px;
-    background: ${props => props.theme.textInputBac2};
     color:${props => props.theme.text2};
     text-align: center;
     border-width: 0.5px;
@@ -53,7 +53,7 @@ const MultiTextInput = styled.TextInput`
     padding: 10px;
 `
 
-const IngredientsWrapper = withTheme(({item, theme, idx, showBackground, _onChangeIngredients, ...props }) => {
+const IngredientsWrapper = withTheme(({ item, theme, idx, showBackground, _onChangeIngredients, ...props }) => {
   return (<ViewX style={{
     flex: 1,
     marginVertical: StyleConfig.convertHeightPerVal(2),
@@ -66,34 +66,43 @@ const IngredientsWrapper = withTheme(({item, theme, idx, showBackground, _onChan
   }} >
     <IngredientTextInput
       style={{
-        width: StyleConfig.convertWidthPerVal(40)
+        width: StyleConfig.convertWidthPerVal(40),
+        backgroundColor: theme.tabBackground,
+        color: theme.textInputBac2
       }}
       placeholder={"Qty"}
+      placeholderTextColor={theme.textHint}
       value={item.qty}
       onChangeText={(text) => _onChangeIngredients(idx, 'q', text)}
     />
     <IngredientTextInput
       style={{
         width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.9),
-        textAlign: "center"
+        textAlign: "center",
+        backgroundColor: theme.tabBackground,
+        color: theme.textInputBac2
       }}
       placeholder={"Measure"}
+      placeholderTextColor={theme.textHint}
       value={item.measuremnt}
       onChangeText={(text) => _onChangeIngredients(idx, 'm', text)}
     />
     <IngredientTextInput
       style={{
         width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
-        textAlign: "center"
+        textAlign: "center",
+        backgroundColor: theme.tabBackground,
+        color: theme.textInputBac2
       }}
       placeholder={"Ingredient"}
+      placeholderTextColor={theme.textHint}
       value={item.ingredient}
       onChangeText={(text) => _onChangeIngredients(idx, 'i', text)}
     />
   </ViewX>)
 })
 
-const MethodWrapper = withTheme(({desc, theme, idx, _onChangeMethods, ...props }) => {
+const MethodWrapper = withTheme(({ desc, theme, idx, _onChangeMethods, ...props }) => {
   return (
     <ViewX style={{
       flex: 1,
@@ -113,9 +122,9 @@ const MethodWrapper = withTheme(({desc, theme, idx, _onChangeMethods, ...props }
       <MultiTextInputX
         style={{
           minHeight: StyleConfig.convertHeightPerVal(50),
-          marginHorizontal:StyleConfig.convertWidthPerVal(12),
-          marginBottom:StyleConfig.convertWidthPerVal(10),
-          width: StyleConfig.width-StyleConfig.convertWidthPerVal(24)
+          marginHorizontal: StyleConfig.convertWidthPerVal(12),
+          marginBottom: StyleConfig.convertWidthPerVal(10),
+          width: StyleConfig.width - StyleConfig.convertWidthPerVal(24)
         }}
         value={desc}
         onChangeText={(text) => _onChangeMethods(idx, text)}
@@ -140,53 +149,55 @@ class AddContent extends Component {
       nutritionFat: '',
       nutritionCarbs: '',
       timeDuration: '',
-      tagData:[],
+      tagData: [],
       hashTag: HASH_TAGS,
-      id:null
+      id: null
     }
   }
-  
 
-  componentDidMount= async () => {
+
+  componentDidMount = async () => {
     const _ = this.props.route.params;
-    const {loader} = this.props ;
-    console.log({params:this.props.route.params})
+    const { loader } = this.props;
+    console.log({ params: this.props.route.params })
     let token = await AsyncStorage.getItem('user_token')
 
     let response = await getTagList(token)
     let tempArr = []
-    let images = [] ;
-    
-    if(_.hasOwnProperty('mode') && _.mode == "edit"){
-      images.push({ uri : _.data.Recipe.image, type: _.data.Recipe.image_type })
-      for(let ind in _.data.Media){
-        images.push({ uri : _.data.Media[ind].media_name, 
-          id: _.data.Media[ind].id , type: _.data.Media[ind].media_type })
+    let images = [];
+
+    if (_.hasOwnProperty('mode') && _.mode == "edit") {
+      images.push({ uri: _.data.Recipe.image, type: _.data.Recipe.image_type })
+      for (let ind in _.data.Media) {
+        images.push({
+          uri: _.data.Media[ind].media_name,
+          id: _.data.Media[ind].id, type: _.data.Media[ind].media_type
+        })
       }
 
       response.data.category_list.forEach(item => {
         let temp = []
-        let tags = _.data.Rac_Tag ;
+        let tags = _.data.Rac_Tag;
         response.data.tag_list[`${item.category_type}`].forEach((ele) => {
-          let isSelected = false ;
-          for( let ind in tags){
-            if(tags[ind].category_type == item.category_type && tags[ind].tag_name == ele.tag_name ){
-              isSelected= true;
+          let isSelected = false;
+          for (let ind in tags) {
+            if (tags[ind].category_type == item.category_type && tags[ind].tag_name == ele.tag_name) {
+              isSelected = true;
             }
           }
           temp.push({ ...ele, isSelected })
         })
         tempArr.push({ title: item.category_type, data: temp })
       })
-      let ingredients= _.data.Rec_Ingredient.map((item,ind)=>({ qty: item.quantity, measuremnt: item.measure, ingredient: item.ingredient }))
-      let methods = _.data.Method.map((item,ind)=>({ text: item.method_description }));
+      let ingredients = _.data.Rec_Ingredient.map((item, ind) => ({ qty: item.quantity, measuremnt: item.measure, ingredient: item.ingredient }))
+      let methods = _.data.Method.map((item, ind) => ({ text: item.method_description }));
       let hashTags = _.data.recipe_hashtags;
       let hashTag = [];
-      for(let ind in HASH_TAGS){
+      for (let ind in HASH_TAGS) {
         let isSelected = false
-        for(let ind2 in hashTags){
-          if(HASH_TAGS[ind].name == hashTags[ind2].hashtag_name){
-            isSelected=true;
+        for (let ind2 in hashTags) {
+          if (HASH_TAGS[ind].name == hashTags[ind2].hashtag_name) {
+            isSelected = true;
           }
         }
         hashTag.push({
@@ -200,11 +211,11 @@ class AddContent extends Component {
         nutrition_carbs: nutritionCarbs,
         nutrition_fat: nutritionFat,
         nutrition_protein: nutritionProtein,
-        time_duration :timeDuration,
+        time_duration: timeDuration,
         id
       } = _.data.Recipe
-      
-      this.setState({ 
+
+      this.setState({
         id,
         title: _.data.Recipe.recipe_title,
         description: _.data.Recipe.description,
@@ -219,7 +230,8 @@ class AddContent extends Component {
         timeDuration,
         hashTag,
         images: images,
-        tagData:tempArr })
+        tagData: tempArr
+      })
     } else {
       images = _.images
       response.data.category_list.forEach(item => {
@@ -229,21 +241,21 @@ class AddContent extends Component {
         })
         tempArr.push({ title: item.category_type, data: temp })
       })
-      this.setState({ images: images, tagData:tempArr })
+      this.setState({ images: images, tagData: tempArr })
     }
-    
+
   }
 
-  onAddPress=()=>{
-    let images = this.state.images ;
+  onAddPress = () => {
+    let images = this.state.images;
     const options = {
       mediaType: 'mixed'
     };
 
     ImagePicker.launchImageLibrary(options, (image) => {
-      console.log({image})
+      console.log({ image })
       images.push(image)
-      this.setState({images})
+      this.setState({ images })
     });
   }
 
@@ -271,7 +283,7 @@ class AddContent extends Component {
       console.log(this.state.methods)
     })
   }
-  showAlert =(msg) => Alert.alert(msg)
+  showAlert = (msg) => Alert.alert(msg)
   _doneButtonPressed = async () => {
     const {
       ingredients, methods, images, title, description,
@@ -281,60 +293,60 @@ class AddContent extends Component {
     } = this.state
     const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
-    let hasError = false ;
+    let hasError = false;
     let selectedTag = [];
-    
+
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "multipart/form-data");
 
     var formdata = new FormData();
-    if(title.length == 0){
-      hasError = true ;
+    if (title.length == 0) {
+      hasError = true;
       this.showAlert("Please Enter Title")
-      return ;
+      return;
     }
     formdata.append("recipe_title", title);
     formdata.append("meal_preference", mealPreference);
-   
+
     // if(description.length == 0){
     //   hasError = true ;
     //   this.showAlert("Please Enter Description")
     //   return ;
     // }
-    if(description.length != 0){
+    if (description.length != 0) {
       formdata.append("description", description);
     }
-    let hasAnyIngredients = false ;
+    let hasAnyIngredients = false;
     ingredients.forEach((item, index) => {
-      if(item.qty.length > 0 || item.measuremnt.length > 0 || item.ingredient.length > 0){
-        hasAnyIngredients = true ;
+      if (item.qty.length > 0 || item.measuremnt.length > 0 || item.ingredient.length > 0) {
+        hasAnyIngredients = true;
         formdata.append(`recipe_ingredients[${index}][quantity]`, item.qty)
         formdata.append(`recipe_ingredients[${index}][measure]`, String(item.measuremnt))
         formdata.append(`recipe_ingredients[${index}][ingredient]`, String(item.ingredient))
       }
-      
+
     })
-    if(!hasAnyIngredients){
-      hasError = true ;
+    if (!hasAnyIngredients) {
+      hasError = true;
       this.showAlert("Please Enter Ingredients")
-      return ;
+      return;
     }
 
-    let hasAnyMethod = false ;
+    let hasAnyMethod = false;
     methods.forEach((item) => {
-      if(item.text.length > 0){
-        hasAnyMethod = true ;
+      if (item.text.length > 0) {
+        hasAnyMethod = true;
         formdata.append("recipe_method[]", item.text)
       }
     })
-    if(!hasAnyMethod){
-      hasError = true ;
+    if (!hasAnyMethod) {
+      hasError = true;
       this.showAlert("Please Enter Cooking Method.")
-      return ;
+      return;
     }
-    
+
     // if(nutritionCalories.length == 0 ){
     //   hasError = true ;
     //   this.showAlert("Please Enter Nutrition Calories")
@@ -344,10 +356,10 @@ class AddContent extends Component {
     //   this.showAlert("Please Enter Valid Nutrition Calories")
     //   return ;
     // }
-    if(nutritionCalories.length != 0 && Number(nutritionCalories).toString() != "NaN"  ){
+    if (nutritionCalories.length != 0 && Number(nutritionCalories).toString() != "NaN") {
       formdata.append("nutrition_calories", nutritionCalories)
     }
-    
+
 
     // if(nutritionProtein.length == 0 ){
     //   hasError = true ;
@@ -358,10 +370,10 @@ class AddContent extends Component {
     //   this.showAlert("Please Enter Valid Nutrition Protein")
     //   return ;
     // }
-    if( nutritionProtein.length != 0 && Number(nutritionProtein).toString() != "NaN" ){
+    if (nutritionProtein.length != 0 && Number(nutritionProtein).toString() != "NaN") {
       formdata.append("nutrition_protein", nutritionProtein)
     }
-    
+
     // if(nutritionFat.length == 0 ){
     //   hasError = true ;
     //   this.showAlert("Please Enter Nutrition Fat")
@@ -371,10 +383,10 @@ class AddContent extends Component {
     //   this.showAlert("Please Enter Valid Nutrition Fat")
     //   return ;
     // }
-    if( nutritionFat.length != 0 && Number(nutritionFat).toString() != "NaN" ){
+    if (nutritionFat.length != 0 && Number(nutritionFat).toString() != "NaN") {
       formdata.append("nutrition_fat", nutritionFat)
     }
-    
+
     // if(nutritionCarbs.length == 0 ){
     //   hasError = true ;
     //   this.showAlert("Please Enter Nutrition Carbs")
@@ -384,20 +396,20 @@ class AddContent extends Component {
     //   this.showAlert("Please Enter Valid Nutrition Carbs")
     //   return ;
     // }
-    if( nutritionCarbs.length != 0 && Number(nutritionCarbs).toString() != "NaN" ){
+    if (nutritionCarbs.length != 0 && Number(nutritionCarbs).toString() != "NaN") {
       formdata.append("nutrition_carbs", nutritionCarbs)
     }
-    
+
     // if(timeDuration.length == 0 ){
     //   hasError = true ;
     //   this.showAlert("Please Enter Time Duration")
     //   return ;
     // } 
 
-    if(timeDuration.length > 0 ){
+    if (timeDuration.length > 0) {
       formdata.append("time_duration", timeDuration.length == 0 ? '' : timeDuration);
     }
-    
+
 
     // if(noOfPerson.length == 0 ){
     //   hasError = true ;
@@ -408,43 +420,43 @@ class AddContent extends Component {
     //   this.showAlert("Please Enter Valid No Of Person")
     //   return ;
     // }
-    if( noOfPerson.length != 0 && Number(noOfPerson).toString() != "NaN" ){
+    if (noOfPerson.length != 0 && Number(noOfPerson).toString() != "NaN") {
       formdata.append("no_of_person", noOfPerson)
     }
-    
-    for(let groupInd in tagData){
+
+    for (let groupInd in tagData) {
       let groupData = tagData[groupInd].data
-      for(let ind in groupData){
-        if(groupData[ind].isSelected){
+      for (let ind in groupData) {
+        if (groupData[ind].isSelected) {
           selectedTag.push(groupData[ind].id);
         }
       }
     }
-    
-    if(selectedTag.length == 0){
+
+    if (selectedTag.length == 0) {
       // hasError = true ;
       // this.showAlert("Please Select one Tag")
       // return ;
-    } else{
-      for(let ind in selectedTag){
-        formdata.append("recipe_tags[]", String(selectedTag[ind]));  
+    } else {
+      for (let ind in selectedTag) {
+        formdata.append("recipe_tags[]", String(selectedTag[ind]));
       }
     }
 
     let selectedHashTag = hashTag.filter((item) => item.isSelected == true);
-    if(selectedHashTag.length == 0){
+    if (selectedHashTag.length == 0) {
       // hasError = true ;
       // this.showAlert("Please Select one Hash Tag")
       // return ;
-    } else{
-      for(let ind in selectedHashTag){
-        formdata.append("recipe_hashtags[]", String(selectedHashTag[ind].name));  
+    } else {
+      for (let ind in selectedHashTag) {
+        formdata.append("recipe_hashtags[]", String(selectedHashTag[ind].name));
       }
     }
     let recipe_media = []
     let mainImage = null;
     for (let ind in images) {
-      if (images[ind].uri != '' && !images[ind].uri.startsWith("http://") ) {
+      if (images[ind].uri != '' && !images[ind].uri.startsWith("http://")) {
         let IMAGE_CROP = images[ind].uri.slice(images[ind].uri.lastIndexOf("/"));
         let videoMime = images[ind].uri.slice(images[ind].uri.lastIndexOf("."));
         let myImage = StyleConfig.isIphone ?
@@ -458,16 +470,16 @@ class AddContent extends Component {
         }
       }
     }
-    if(!hasError){
+    if (!hasError) {
       loader(true)
-      let url ;
-      if(this.state.id == null){
-        url = "http://3.20.100.25/broadeat/api/recipe/add" ;
+      let url;
+      if (this.state.id == null) {
+        url = "http://3.20.100.25/broadeat/api/recipe/add";
       } else {
         formdata.append("id", this.state.id)
-        url = "http://3.20.100.25/broadeat/api/recipe/update" ;
+        url = "http://3.20.100.25/broadeat/api/recipe/update";
       }
-      const response = await fetch( url, {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -479,30 +491,36 @@ class AddContent extends Component {
       loader(false)
       const json = await response.json();
       console.log(`Add Receipe: ${JSON.stringify(json)}`);
-      if(json.code == 1 && json.code == '1'){
-        setTimeout(()=>{
+      if (json.code == 1 && json.code == '1') {
+        setTimeout(() => {
           Alert.alert(
             "Receipe Added Successfully",
             "",
             [
-              { text: "OK", onPress: () => { 
-                this.props.navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'PreviewReceipe', params:{ 
-                data: json.data.id, backKey: "AddContent" } }] }))
+              {
+                text: "OK", onPress: () => {
+                  this.props.navigation.dispatch(CommonActions.reset({
+                    index: 1, routes: [{
+                      name: 'PreviewReceipe', params: {
+                        data: json.data.id, backKey: "AddContent"
+                      }
+                    }]
+                  }))
                 }
               }
-                
+
             ],
             { cancelable: false }
           );
-        },500)
-        
-        
-      }else{
+        }, 500)
+
+
+      } else {
         Alert.alert(json.message)
       }
     }
   }
-  _onPreview=()=>{
+  _onPreview = () => {
     const {
       ingredients, methods, images, title, description,
       mealPreference, noOfPerson, nutritionCalories,
@@ -510,16 +528,16 @@ class AddContent extends Component {
       tagData, hashTag
     } = this.state
     let Method = [];
-    for(let ind in methods){
+    for (let ind in methods) {
       Method.push({
-        "method_step": Number(ind)+1,
-          "method_description": methods[ind].text 
+        "method_step": Number(ind) + 1,
+        "method_description": methods[ind].text
       })
     }
     let Rac_Tag = []
-    for(let ind in tagData){
-      for(let subInd in tagData[ind].data){
-        if(tagData[ind].data[subInd].isSelected){
+    for (let ind in tagData) {
+      for (let subInd in tagData[ind].data) {
+        if (tagData[ind].data[subInd].isSelected) {
           Rac_Tag.push({
             "category_type": tagData[ind].title,
             "tag_name": tagData[ind].data[subInd].tag_name
@@ -528,11 +546,11 @@ class AddContent extends Component {
       }
     }
     let Rec_Ingredient = [];
-    for( let ind in ingredients){
+    for (let ind in ingredients) {
       Rec_Ingredient.push({
-        "ingredient": ingredients[ind].ingredient ,
-          "quantity": ingredients[ind].qty ,
-          "measure": ingredients[ind].measuremnt
+        "ingredient": ingredients[ind].ingredient,
+        "quantity": ingredients[ind].qty,
+        "measure": ingredients[ind].measuremnt
       })
     }
     let data = {
@@ -543,10 +561,10 @@ class AddContent extends Component {
         "image": images[0].uri,
         "meal_preference": mealPreference,
         "description": description,
-        "nutrition_calories": nutritionCalories.length > 0 ? nutritionCalories : null ,
-        "nutrition_protein": nutritionProtein.length > 0 ? nutritionProtein : null ,
-        "nutrition_fat": nutritionFat.length > 0 ? nutritionFat : null ,
-        "nutrition_carbs": nutritionCarbs.length > 0 ? nutritionCarbs : null ,
+        "nutrition_calories": nutritionCalories.length > 0 ? nutritionCalories : null,
+        "nutrition_protein": nutritionProtein.length > 0 ? nutritionProtein : null,
+        "nutrition_fat": nutritionFat.length > 0 ? nutritionFat : null,
+        "nutrition_carbs": nutritionCarbs.length > 0 ? nutritionCarbs : null,
         "time_duration": timeDuration,
         "no_of_person": noOfPerson,
         "creator_name": "",
@@ -559,23 +577,23 @@ class AddContent extends Component {
       "Method": Method,
       "Rac_Tag": Rac_Tag,
       "Rec_Ingredient": Rec_Ingredient,
-      "Activity": [ ],
-      "Activity_data": [ ]
+      "Activity": [],
+      "Activity_data": []
     }
-    this.props.navigation.navigate("PreviewReceipe", { data: 0, ReceipeData: data});
+    this.props.navigation.navigate("PreviewReceipe", { data: 0, ReceipeData: data });
 
   }
   render() {
     const { ingredients, methods, images } = this.state;
     const { theme } = this.props;
-    console.log({images})
+    console.log({ images })
     return (
       <SafeAreaView {...this.props}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}
           style={{ flex: 1 }}>
 
-            <ViewX style={styles.headerTopView}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <ViewX style={styles.headerTopView}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <CTextColor
                 align={'left'}
                 color={theme.text}
@@ -584,13 +602,13 @@ class AddContent extends Component {
               >
                 {'Cancel'}
               </CTextColor>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.onAddPress}>
-                <Image source={AppImages.ic_add} style={styles.backBtn} />
-                </TouchableOpacity>
-              
-            </ViewX>
-          <ScrollView style={{flex:1, paddingBottom: 20 }}>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.onAddPress}>
+              <Image source={AppImages.ic_add} style={[styles.backBtn, { tintColor: theme.text }]} />
+            </TouchableOpacity>
+
+          </ViewX>
+          <ScrollView style={{ flex: 1, paddingBottom: 20 }}>
 
 
             <ViewX style={{
@@ -607,22 +625,22 @@ class AddContent extends Component {
                     width: StyleConfig.convertWidthPerVal(120),
                     height: StyleConfig.convertWidthPerVal(120)
                   }}>
-                    { 
-                      itm && itm.type == "video" ?
-                    <View>
-                      <Video 
-                        ref={(ref) => {
-                          this.player = ref
-                        }}
-                        resizeMode={'contain'}
-                        repeat={false}
-                        controls={true} 
-                        playInBackground={false}
-                        paused={true}
-                        style={{ width: "95%", height: "95%" }}
-                        source={{uri:itm.uri}}
-                      />
-                      <View style={{ height:"95%",position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
+                  {
+                    itm && itm.type == "video" ?
+                      <View>
+                        <Video
+                          ref={(ref) => {
+                            this.player = ref
+                          }}
+                          resizeMode={'contain'}
+                          repeat={false}
+                          controls={true}
+                          playInBackground={false}
+                          paused={true}
+                          style={{ width: "95%", height: "95%" }}
+                          source={{ uri: itm.uri }}
+                        />
+                        <View style={{ height: "95%", position: 'absolute', flex: 1, alignSelf: 'center', justifyContent: 'center', zIndex: 99 }}>
                           <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
                         </View>
                       </View>
@@ -632,11 +650,11 @@ class AddContent extends Component {
                         key={`images-${idx}`}
                         style={{ width: "95%", height: "95%" }}
                         source={{ uri: itm.uri }}
-                      /> 
-                    }
+                      />
+                  }
                 </ViewX>)
               }
-              
+
             </ViewX>
             <TextInput
               style={{
@@ -646,7 +664,7 @@ class AddContent extends Component {
               }}
               placeholderTextColor={theme.textHint}
               value={this.state.title}
-              onChangeText={(title) => this.setState({title})}
+              onChangeText={(title) => this.setState({ title })}
               placeholder={"Write a title..."}
 
             />
@@ -680,16 +698,20 @@ class AddContent extends Component {
               alignItems: "center",
               flexDirection: "row"
             }} >
-              <TextX style={{ width: StyleConfig.convertWidthPerVal(40), textAlign:'left', fontSize: StyleConfig.fontSizeH2_3 }}>Qty</TextX>
+              <TextX style={{
+                width: StyleConfig.convertWidthPerVal(40),
+                textAlign: 'left',
+                fontSize: StyleConfig.fontSizeH2_3
+              }}>Qty</TextX>
               <TextX style={{
                 // flex: 1,
-                textAlign:'left',
+                textAlign: 'left',
                 width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.9),
                 fontSize: StyleConfig.fontSizeH2_3
               }} >Measure</TextX>
               <TextX style={{
                 // flex: 1,
-                textAlign:'left',
+                textAlign: 'left',
                 width: StyleConfig.convertWidthPerVal(StyleConfig.width / 3.2),
                 fontSize: StyleConfig.fontSizeH2_3
               }} >Ingredient</TextX>
@@ -700,7 +722,11 @@ class AddContent extends Component {
             <TouchableWithoutFeedback onPress={() => {
               this.setState((prevState, props) => {
                 return {
-                  ingredients: [...prevState.ingredients, { qty: '', measuremnt: '', ingredient: '' }]
+                  ingredients: [...prevState.ingredients, {
+                    qty: '',
+                    measuremnt: '',
+                    ingredient: ''
+                  }]
                 }
               })
             }} >
@@ -803,9 +829,10 @@ class AddContent extends Component {
                   backgroundColor: theme.textInputBac2,
                   marginRight: 10,
                   borderRadius: 5,
-                  borderWidth:0.5,
-                  borderColor: theme.borderAlt
-
+                  borderWidth: 0.5,
+                  borderColor: theme.borderAlt,
+                  backgroundColor: theme.tabBackground,
+                  color: theme.textInputBac2
                 }}
                 maxLength={3}
                 keyboardType='number-pad'
@@ -840,12 +867,15 @@ class AddContent extends Component {
                   backgroundColor: theme.textInputBac2,
                   marginRight: 10,
                   borderRadius: 5,
-                  borderWidth:0.5,
-                  borderColor: theme.borderAlt
-
+                  borderWidth: 0.5,
+                  borderColor: theme.borderAlt,
+                  backgroundColor: theme.tabBackground,
+                  color: theme.textInputBac2
                 }}
                 placeholderTextColor={theme.textHint}
                 onChangeText={(text) => this.setState({ timeDuration: text })}
+                keyboardType='number-pad'
+                returnKeyType='done'
                 placeholder={"00:00:00"}
                 value={this.state.timeDuration}
               />
@@ -874,9 +904,10 @@ class AddContent extends Component {
                   backgroundColor: theme.textInputBac2,
                   marginRight: 10,
                   borderRadius: 5,
-                  borderWidth:0.5,
-                  borderColor: theme.borderAlt
-
+                  borderWidth: 0.5,
+                  borderColor: theme.borderAlt,
+                  backgroundColor: theme.tabBackground,
+                  color: theme.textInputBac2
                 }}
                 placeholderTextColor={theme.textHint}
                 onChangeText={(text) => this.setState({ nutritionCalories: text })}
@@ -910,9 +941,10 @@ class AddContent extends Component {
                   backgroundColor: theme.textInputBac2,
                   marginRight: 10,
                   borderRadius: 5,
-                  borderWidth:0.5,
-                  borderColor: theme.borderAlt
-
+                  borderWidth: 0.5,
+                  borderColor: theme.borderAlt,
+                  backgroundColor: theme.tabBackground,
+                  color: theme.textInputBac2
                 }}
                 placeholderTextColor={theme.textHint}
                 onChangeText={(text) => this.setState({ nutritionProtein: text })}
@@ -946,9 +978,10 @@ class AddContent extends Component {
                   backgroundColor: theme.textInputBac2,
                   marginRight: 10,
                   borderRadius: 5,
-                  borderWidth:0.5,
-                  borderColor: theme.borderAlt
-
+                  borderWidth: 0.5,
+                  borderColor: theme.borderAlt,
+                  backgroundColor: theme.tabBackground,
+                  color: theme.textInputBac2
                 }}
                 placeholderTextColor={theme.textHint}
                 keyboardType='number-pad'
@@ -982,9 +1015,10 @@ class AddContent extends Component {
                   backgroundColor: theme.textInputBac2,
                   marginRight: 10,
                   borderRadius: 5,
-                  borderWidth:0.5,
-                  borderColor: theme.borderAlt
-
+                  borderWidth: 0.5,
+                  borderColor: theme.borderAlt,
+                  backgroundColor: theme.tabBackground,
+                  color: theme.textInputBac2
                 }}
                 placeholderTextColor={theme.textHint}
                 keyboardType='number-pad'
@@ -1016,88 +1050,89 @@ class AddContent extends Component {
       </SafeAreaView >
     );
   }
-  renderTag=()=>{
+  renderTag = () => {
     let { tagData, hashTag } = this.state;
     const { theme } = this.props;
-    return(
-      <ViewX style={{marginVertical:4,  alignItems:'flex-start'}}>
-        {tagData.map((groupItem, groupIndex)=>{
+    return (
+      <ViewX style={{ marginVertical: 4, alignItems: 'flex-start' }}>
+        {tagData.map((groupItem, groupIndex) => {
           return (
             <ViewX>
-            <TextX style={{
-              width: StyleConfig.width,
-              textAlign: "left",
-              color: theme.text,
-              backgroundColor: theme.headerBack,
-              fontSize: StyleConfig.fontSizeH2_3,
-              padding: StyleConfig.convertWidthPerVal(10),
-              paddingVertical: StyleConfig.convertHeightPerVal(10),
-            }}>{groupItem.title}</TextX>
-            <ViewX style={{flexDirection: 'row', flexWrap: "wrap", alignItems:'flex-start',justifyContent:'flex-start', margin:4}}>
-              {groupItem.data.map((item, itemIndex)=>{
-                return(
-                  <TouchableOpacity onPress={()=>{
-                    tagData[groupIndex]["data"][itemIndex].isSelected = !tagData[groupIndex]["data"][itemIndex].isSelected 
-                    this.setState({tagData})
-                  }}>
-                    <ViewX style={{
-                      borderWidth:0.8,
-                      borderRadius:8,
-                      marginHorizontal:4,
-                      backgroundColor: item.isSelected ? theme.selectedIconColor : theme.tabBackground
+              <TextX style={{
+                width: StyleConfig.width,
+                textAlign: "left",
+                textTransform: 'capitalize',
+                color: theme.text,
+                backgroundColor: theme.headerBack,
+                fontSize: StyleConfig.fontSizeH2_3,
+                padding: StyleConfig.convertWidthPerVal(10),
+                paddingVertical: StyleConfig.convertHeightPerVal(10),
+              }}>{groupItem.title}</TextX>
+              <ViewX style={{ flexDirection: 'row', flexWrap: "wrap", alignItems: 'flex-start', justifyContent: 'flex-start', margin: 4 }}>
+                {groupItem.data.map((item, itemIndex) => {
+                  return (
+                    <TouchableOpacity onPress={() => {
+                      tagData[groupIndex]["data"][itemIndex].isSelected = !tagData[groupIndex]["data"][itemIndex].isSelected
+                      this.setState({ tagData })
                     }}>
-                    <TextX style={{
-                      textAlign: "left",
-                      color: theme.text,
-                      fontSize: StyleConfig.fontSizeH2_3,
-                      padding: StyleConfig.convertWidthPerVal(10),
-                      paddingVertical: StyleConfig.convertHeightPerVal(10),
-                    }}>{item.tag_name}</TextX>
-                    </ViewX>
-                  </TouchableOpacity>
-                )
-              })}
+                      <ViewX style={{
+                        borderWidth: 0.8,
+                        borderRadius: 8,
+                        marginHorizontal: 4,
+                        backgroundColor: item.isSelected ? theme.selectedIconColor : theme.tabBackground
+                      }}>
+                        <TextX style={{
+                          textAlign: "left",
+                          color: theme.text,
+                          fontSize: StyleConfig.fontSizeH2_3,
+                          padding: StyleConfig.convertWidthPerVal(10),
+                          paddingVertical: StyleConfig.convertHeightPerVal(10),
+                        }}>{item.tag_name}</TextX>
+                      </ViewX>
+                    </TouchableOpacity>
+                  )
+                })}
               </ViewX>
             </ViewX>
           )
         })}
-         <TextX style={{
-              width: StyleConfig.width,
-              textAlign: "left",
-              color: theme.text,
-              backgroundColor: theme.headerBack,
-              fontSize: StyleConfig.fontSizeH2_3,
-              padding: StyleConfig.convertWidthPerVal(10),
-              paddingVertical: StyleConfig.convertHeightPerVal(10),
-            }}>Select Tag</TextX>
-        <ViewX style={{flexDirection: 'row', flexWrap: "wrap", alignItems:'flex-start',justifyContent:'flex-start', margin:4}}>
-              {hashTag.map((item, itemIndex)=>{
-                return(
-                  <TouchableOpacity onPress={()=>{
-                    hashTag[itemIndex].isSelected = !hashTag[itemIndex].isSelected ; 
-                    this.setState({hashTag})
-                  }}>
-                    <ViewX style={{
-                      borderWidth:0.8,
-                      borderRadius:8,
-                      marginHorizontal:4,
-                      backgroundColor: item.isSelected ? theme.selectedIconColor : theme.tabBackground
-                    }}>
-                    <TextX style={{
-                      textAlign: "left",
-                      color: theme.text,
-                      fontSize: StyleConfig.fontSizeH2_3,
-                      padding: StyleConfig.convertWidthPerVal(10),
-                      paddingVertical: StyleConfig.convertHeightPerVal(10),
-                    }}>{item.name}</TextX>
-                    </ViewX>
-                  </TouchableOpacity>
-                )
-              })}
-              </ViewX>
+        <TextX style={{
+          width: StyleConfig.width,
+          textAlign: "left",
+          color: theme.text,
+          backgroundColor: theme.headerBack,
+          fontSize: StyleConfig.fontSizeH2_3,
+          padding: StyleConfig.convertWidthPerVal(10),
+          paddingVertical: StyleConfig.convertHeightPerVal(10),
+        }}>Select Tag</TextX>
+        <ViewX style={{ flexDirection: 'row', flexWrap: "wrap", alignItems: 'flex-start', justifyContent: 'flex-start', margin: 4 }}>
+          {hashTag.map((item, itemIndex) => {
+            return (
+              <TouchableOpacity onPress={() => {
+                hashTag[itemIndex].isSelected = !hashTag[itemIndex].isSelected;
+                this.setState({ hashTag })
+              }}>
+                <ViewX style={{
+                  borderWidth: 0.8,
+                  borderRadius: 8,
+                  marginHorizontal: 4,
+                  backgroundColor: item.isSelected ? theme.selectedIconColor : theme.tabBackground
+                }}>
+                  <TextX style={{
+                    textAlign: "left",
+                    color: theme.text,
+                    fontSize: StyleConfig.fontSizeH2_3,
+                    padding: StyleConfig.convertWidthPerVal(10),
+                    paddingVertical: StyleConfig.convertHeightPerVal(10),
+                  }}>{item.name}</TextX>
+                </ViewX>
+              </TouchableOpacity>
+            )
+          })}
+        </ViewX>
       </ViewX>
     )
-    
+
   }
 }
 
@@ -1106,7 +1141,7 @@ export default withTheme(withLoader(withToast(AddContent)));
 const styles = StyleSheet.create({
   headerTopView: {
     flexDirection: 'row',
-    alignItems:'center',
+    alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: StyleConfig.countPixelRatio(12),
     marginBottom: StyleConfig.countPixelRatio(12),
@@ -1120,7 +1155,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     paddingVertical: 7,
-   
+
   },
   bottomBtn: {
     paddingHorizontal: StyleConfig.countPixelRatio(16),
