@@ -28,7 +28,7 @@ const FilterBubble = withTheme(({ theme, ...props }) => {
         margin: StyleConfig.convertWidthPerVal(5),
         backgroundColor: isSelected ? theme.filterOn : theme.filterOff
       }} >
-        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.fontSizeH2_3 }} >{name}</TextX>
+        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.fontSizeH3 }} >{name}</TextX>
       </ViewX>
     </TouchableWithoutFeedback>
   )
@@ -89,38 +89,6 @@ class FilterScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data1: [
-        {
-          title: "Main dishes",
-          data: [
-            { type: "Pizza", select: false },
-            { type: "Burger", select: false, },
-            { type: "Risotto", select: false, },
-          ]
-        },
-        {
-          title: "Sides",
-          data: [
-            { type: "French Fries", select: false, },
-            { type: "Onion Rings", select: false, },
-            { type: "Fried Shrimps", select: false, }
-          ]
-        },
-        {
-          title: "Drinks",
-          data: [
-            { type: "Water", select: false },
-            { type: "Coke", select: false },
-            { type: "Beer", select: false },
-          ]
-        },
-        {
-          title: "Desserts",
-          data: [
-            { type: "Cheese Cake", select: false },
-            { type: "Ice Cream", select: false }]
-        }
-      ],
       data: [],
       selectedTag: []
     }
@@ -142,7 +110,7 @@ class FilterScreen extends Component {
       })
       tempArr.push({ title: item.category_type, data: temp })
     })
-
+    console.log({"data":tempArr})
     this.setState({ data: tempArr })
   }
 
@@ -155,7 +123,7 @@ class FilterScreen extends Component {
         tags: data
       }
       let response = await applyFilters(raw, token)
-      console.log(response)
+      
       if (response.code === 1) {
         if (response.data.length > 0) {
           this.props.navigation.navigate("SearchResult", { data: response.data })
@@ -180,6 +148,22 @@ class FilterScreen extends Component {
         }
       }
     }
+    let formatedData = [];
+    for(let ind in data){
+      let {data:subData, ...rest} = data[ind];
+      let newSubData= [[]];
+      let currInd=0; 
+      for(let subInd in data[ind].data){
+        newSubData[currInd].push(data[ind]['data'][subInd]);
+        if((subInd+1) %3 == 0){
+          newSubData.push([]);
+          currInd++;
+        }
+      }
+      formatedData.push({...rest, data:newSubData});
+    }
+    console.log({formatedData})
+
     return (
       <SafeAreaView  {...this.props}>
         <FilterHeader {...{ navigation }} onPress={() => this._applyFilters()} />
@@ -215,7 +199,7 @@ class FilterScreen extends Component {
         <ScrollView>
           <ViewX style={{ alignItems: 'flex-start' }}  {...this.props} >
             {
-              data.map((_, idx) => {
+              formatedData.map((_, idx) => {
                 return (
                   <ViewX
                     key={`filter-${idx}`}
@@ -229,8 +213,8 @@ class FilterScreen extends Component {
                       fontWeight: "bold",
                       fontSize: StyleConfig.fontSizeH3
                     }} >{_.title.toUpperCase()}</TextX>
-
-                    <ViewX style={{
+                    <View>
+                      {_.data.map((mItem, ind)=><ViewX style={{
                       paddingVertical: 5,
                       width: StyleConfig.width,
                       flexWrap: "wrap",
@@ -238,8 +222,7 @@ class FilterScreen extends Component {
                       flexDirection: "row"
                     }} >
                       {
-                        _.data
-                          .map((itm, idx) => <FilterBubble
+                        mItem.map((itm, idx) => <FilterBubble
                             key={`fb-${idx}`}
                             name={itm.tag_name}
                             isSelected={itm.select}
@@ -259,7 +242,9 @@ class FilterScreen extends Component {
                             }}
                           />)
                       }
-                    </ViewX>
+                    </ViewX>)}
+                    </View>
+                    
                   </ViewX>
                 )
               })
