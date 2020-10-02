@@ -11,6 +11,7 @@ const light = {
     borderAlt2: "#707070",
     text: '#171717',
     textHint: '#272727',
+    textPlaceholder: '#555',
     backgroundAlt2: "#575ccd",
     filterOff: "#0F7795",
     filterOn: "#FA9000",
@@ -21,7 +22,8 @@ const light = {
     textInputBac2: "#333",
     headerBack: "#eee",
     profileDeviderColor: "#00000055",
-    headerBac: '#fff'
+    headerBac: '#fff',
+    searchTextInputBack: "#00000011"
   }
 }
 export default light

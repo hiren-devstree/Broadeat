@@ -70,10 +70,11 @@ class SaerchHeader extends React.Component {
             inputContainerStyle={{
               borderRadius: 10,
               height: StyleConfig.convertHeightPerVal(38),
-              backgroundColor: theme.backgroundAlt
+              backgroundColor: theme.searchTextInputBack
             }}
             textContentType={"name"}
             placeholder="Search"
+            placeholderTextColor={theme.textPlaceholder}
             returnKeyType="search"
             onChangeText={this.updateSearch}
             onSubmitEditing={this.moveToSearchResults}

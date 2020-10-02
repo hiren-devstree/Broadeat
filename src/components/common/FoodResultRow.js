@@ -14,7 +14,7 @@ class FoodResultRow extends PureComponent {
     return (
       <ViewX>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: data.id })}
+          onPress={() => this.props.navigation.navigate( "PhotoRecipeDetails", { data: data.id })}
           style={{ width: StyleConfig.width * 0.94, paddingVertical: 10 }}
         >
           {data.image_type == "image" ? <Image

@@ -12,6 +12,7 @@ const dark = {
     borderAlt2: "#707070",
     text: '#ECEFF4',
     textHint: '#DCDFE4',
+    textPlaceholder: '#CCC',
     backgroundAlt2: "#575ccd",
     filterOff: "#0F7795",
     filterOn: "#FA9000",
@@ -22,7 +23,8 @@ const dark = {
     textInputBac2: "#eee",
     headerBack: "#1f1f1f",
     profileDeviderColor: "#ffffff55",
-    headerBac: 'rgb(39,39,39)'
+    headerBac: 'rgb(39,39,39)',
+    searchTextInputBack: "#ffffff11"
   }
 }
 

@@ -42,7 +42,6 @@ class SearchScreen extends Component {
   }
 
   _onDeleteRecord = async (item) => {
-    console.log(item)
     let token = await AsyncStorage.getItem('user_token')
     let data = {
       id: item.id
@@ -50,10 +49,8 @@ class SearchScreen extends Component {
 
     var formdata = new FormData();
     formdata.append("id", item.id);
-
     let response = await deleteSearchRecord(formdata, token)
-
-    console.log(response)
+    console.log('deleteSearchRecord',response)
     if (response.code === 1) {
       this._getRecentSearchAPICalled()
     } else {
@@ -77,6 +74,7 @@ class SearchScreen extends Component {
     if (response && response.code === 1) {
       this.setState({ data: response.data })
     } else {
+      this.setState({ data: [] })
       //console.log(response.message)
 
     }
@@ -104,8 +102,6 @@ class SearchScreen extends Component {
       "title": sText
     }
     let response = await getSearchRecipeList(data, token)
-
-    console.log("getSearchRecipeList ==>", response)
     if (response.code === 1) {
       if (response.data.length > 0) {
         this.props.navigation.navigate("SearchResult", { data: response.data })
@@ -115,7 +111,6 @@ class SearchScreen extends Component {
     } else {
       Alert.alert(response.message)
     }
-
   }
 
   render() {
@@ -174,8 +169,8 @@ class SearchScreen extends Component {
                     </TouchableWithoutFeedback>
                     <Ionicons
                       name={"ios-close"}
-                      color={theme.backgroundAlt}
-                      size={StyleConfig.iconSize}
+                      color={theme.text}
+                      size={StyleConfig.iconSize*1.4}
                       onPress={() => this._onDeleteRecord(item)}
                     />
                   </ViewX>

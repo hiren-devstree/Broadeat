@@ -62,7 +62,7 @@ const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
 
           }}
 
-          inputStyle={{ color: theme.text }}
+          inputStyle={{ color: theme.text, textAlign:'center' }}
           inputContainerStyle={{
             // borderWidth: StyleConfig.countPixelRatio(0.6),
             // borderColor: theme.text,
@@ -72,6 +72,8 @@ const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
             height: 40,
             marginTop: -15,
           }}
+          placeholder={'Search'}
+          placeholderTextColor={theme.textHint}
           onChange={onChange}
           value={value}
         />
@@ -79,6 +81,7 @@ const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
       <Button
         title={"Done"}
         buttonStyle={{ backgroundColor: theme.background }}
+        titleStyle={{color: StyleConfig.blue}}
         onPress={() => onPress()}
       />
     </ViewX>

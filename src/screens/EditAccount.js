@@ -2,22 +2,21 @@
 import React, { Component } from 'react'
 import {
   Image, StyleSheet, TouchableOpacity, ScrollView,
-  Text, View, Alert, Platform
+  Text, View, Alert, Keyboard
 } from 'react-native'
 import withLoader from '../redux/actionCreator/withLoader'
 import withToast from '../redux/actionCreator/withToast'
 import AsyncStorage from '@react-native-community/async-storage'
-// import ImagePicker from "react-native-customized-image-picker"
-// import ImagePicker from 'react-native-image-crop-picker';
 import ImagePicker from 'react-native-image-picker';
 import { UPDATE_USER_DETAILS_URL } from './../helper/Constants'
 import ProfileScreen from './ProfileScreen'
-
+import FastImage from 'react-native-fast-image'
 import StyleConfig from '../assets/styles/StyleConfig'
 import { SafeAreaView, ViewX, TEXTINPUT, TextX } from '../components/common'
 import { withTheme } from 'styled-components';
 import imgDummy from '../assets/images/ic_dummy.png'
-const BUTTON_TEXT = StyleConfig.convertHeightPerVal(18);
+const BUTTON_TEXT = StyleConfig.convertHeightPerVal(16);
+const LABEL_SIZE = "30%";
 class EditAccount extends Component {
 
   constructor(props) {
@@ -33,6 +32,7 @@ class EditAccount extends Component {
       description: '',
       email: '',
       mobile: '',
+      keyboardOffset: 0,
       location: ''
     }
   }
@@ -50,7 +50,33 @@ class EditAccount extends Component {
       mobile: userDetails.mobile_number ? userDetails.mobile_number : '',
       location: userDetails.location ? userDetails.location : '',
     })
+
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+        'keyboardDidHide',
+        this._keyboardDidHide,
+    );
   }
+
+  componentWillUnmount() {
+      this.keyboardDidShowListener.remove();
+      this.keyboardDidHideListener.remove();
+  }
+  _keyboardDidShow =(event)=> {
+    this.setState({
+        keyboardOffset: event.endCoordinates.height,
+    })
+  }
+
+  _keyboardDidHide=()=> {
+      this.setState({
+          keyboardOffset: 0,
+      })
+  }
+
 
   _validations = () => {
     const { name, username, website, description, email, mobile, location } = this.state
@@ -81,13 +107,13 @@ class EditAccount extends Component {
 
     let myHeaders = new Headers()
     myHeaders.append('Authorization', `Bearer ${token}`)
-
+    let filename =proPic ? proPic.uri.split('/').pop() : 'image' 
     var photo = {
       uri: proPic ? proPic.uri : '',
       type: 'image/jpg',
-      name: proPic ? proPic.filename ? proPic.filename : 'image' : 'image',
+      name: filename
     }
-
+    
     var formdata = new FormData();
     formdata.append("email", email);
     formdata.append("name", name);
@@ -151,9 +177,11 @@ class EditAccount extends Component {
       <SafeAreaView {...this.props}>
         {this.renderHeaderView()}
         <ScrollView style={{ flex: 1 }}>
+          
           {this.renderUserDetailsView()}
           {this.renderUserPersonalDetails()}
           {this.renderUserInformation()}
+          <View style={{height:this.state.keyboardOffset}} />
         </ScrollView>
       </SafeAreaView>
     )
@@ -168,12 +196,16 @@ class EditAccount extends Component {
         <TextX
           fontSize={BUTTON_TEXT}
           align={'center'}
-          style={{ marginLeft: 15, flex: 1 }}
+          style={{  flex: 1 }}
         >
-          {'Edit Account'}
+          {'Edit'}
         </TextX>
         <TouchableOpacity onPress={() => this._validations()}>
-          <Text style={{ color: StyleConfig.blue, fontSize: StyleConfig.countPixelRatio(16) }}>{'Done'}</Text>
+        <TextX color={StyleConfig.blue} fontSize={BUTTON_TEXT}
+        >
+          {'Done'}
+        </TextX>
+          
         </TouchableOpacity>
       </ViewX>
     )
@@ -181,12 +213,24 @@ class EditAccount extends Component {
 
   renderUserDetailsView = () => {
     const { proPic } = this.state
+    let img='';
+    if(proPic){
+     img = proPic.path ? proPic.path : proPic.uri;
+    }
+    console.log('img', img)
     const { theme } = this.props
     return (
       <>
         <ViewX style={styles.userDetails}>
-          {proPic ?
-            <Image source={{ uri: proPic.uri }} style={styles.imgProfile} />
+          {img != '' ?
+             <FastImage
+             style={styles.imgProfile}
+              source={{
+                uri: img,
+                priority: FastImage.priority.high,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
             : <Image source={imgDummy} style={styles.imgProfile} />}
 
           <TouchableOpacity style={{ marginTop: 15 }} onPress={() => {
@@ -230,7 +274,7 @@ class EditAccount extends Component {
         <ViewX style={{ paddingRight: StyleConfig.countPixelRatio(15) }}>
           <ViewX style={styles.userPersonalDetails}>
             <TextX
-              style={{ width: '35%' }}
+              style={{ width: LABEL_SIZE }}
               align='left'
               fontSize={BUTTON_TEXT}>
               {'Name'}
@@ -246,7 +290,7 @@ class EditAccount extends Component {
 
           <ViewX style={styles.userPersonalDetails}>
             <TextX
-              style={{ width: '35%' }}
+              style={{ width: LABEL_SIZE }}
               align='left'
               fontSize={BUTTON_TEXT}>
               {'Username'}
@@ -263,7 +307,7 @@ class EditAccount extends Component {
 
           <ViewX style={styles.userPersonalDetails}>
             <TextX
-              style={{ width: '35%' }}
+              style={{ width: LABEL_SIZE }}
               align='left'
               fontSize={BUTTON_TEXT}>
               {'Website'}
@@ -279,7 +323,7 @@ class EditAccount extends Component {
 
           <ViewX style={styles.userPersonalDetails}>
             <TextX
-              style={{ width: '35%' }}
+              style={{ width: LABEL_SIZE }}
               align='left'
               fontSize={BUTTON_TEXT}>
               {'Description'}
@@ -329,7 +373,7 @@ class EditAccount extends Component {
         <ViewX>
           <ViewX style={styles.userPersonalDetails}>
             <TextX
-              style={{ width: '35%' }}
+              style={{ width: LABEL_SIZE }}
               align='left'
               fontSize={BUTTON_TEXT}>
               {'Email'}
@@ -345,7 +389,7 @@ class EditAccount extends Component {
 
           <ViewX style={styles.userPersonalDetails}>
             <TextX
-              style={{ width: '35%' }}
+              style={{ width: LABEL_SIZE }}
               align='left'
               fontSize={BUTTON_TEXT}>
               {'Mobile'}
@@ -353,15 +397,17 @@ class EditAccount extends Component {
             <TEXTINPUT
               fontSize={BUTTON_TEXT}
               align={'left'}
+              keyboardType={'phone-pad'}
               placeholder={'+1-999-999-9999'}
               value={mobile}
+              
               onChangeText={(text) => this.setState({ mobile: text })}
             />
           </ViewX>
 
           <ViewX style={styles.userPersonalDetails}>
             <TextX
-              style={{ width: '35%' }}
+              style={{ width: LABEL_SIZE }}
               align='left'
               fontSize={BUTTON_TEXT}>
               {'Location'}
@@ -387,7 +433,6 @@ export default withTheme( withLoader(withToast(EditAccount)))
 const styles = StyleSheet.create({
   headerTopView: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     paddingHorizontal: StyleConfig.countPixelRatio(12),
     marginBottom: StyleConfig.countPixelRatio(12),
     height: StyleConfig.countPixelRatio(44)

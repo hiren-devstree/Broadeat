@@ -35,9 +35,6 @@ import { CommonActions } from '@react-navigation/native';
 class PhotoRecipeDetails extends Component {
   constructor(props) {
     super(props)
-
-    console.disableYellowBox = true
-
     this.state = {
       noOfUser: 2,
       timer: '15-20',
@@ -684,7 +681,21 @@ class PhotoRecipeDetails extends Component {
 
   renderNutritionView = () => {
     const { data } = this.state
-    return (
+    console.log({recipe:data ? data.Recipe :''})
+    let calories = "";
+    let carbs = "";
+    let fat = "";
+    let protein = "";
+    if(data){
+      calories = data.Recipe.nutrition_calories;
+      carbs = data.Recipe.nutrition_carbs;
+      fat = data.Recipe.nutrition_fat;
+      protein = data.Recipe.nutrition_protein;
+    }
+
+    let showNutrition = calories == "" && carbs == "" && fat == "" && protein == "";
+
+    return !showNutrition ? (
       <ViewX style={{ marginVertical: 15, paddingHorizontal: StyleConfig.countPixelRatio(15), }}>
         <TextX
           style={{ width: '100%' }}
@@ -697,23 +708,23 @@ class PhotoRecipeDetails extends Component {
         <ViewX style={styles.nutritionSubView}>
           <ViewX>
             <Text style={{ color: StyleConfig.grey, fontSize: 12 }}>Calories</Text>
-            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{data ? data.Recipe.nutrition_calories : ''}</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{calories}</TextX>
           </ViewX>
           <ViewX>
             <Text style={{ color: StyleConfig.grey, fontSize: 12 }}>Protein</Text>
-            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{data ? data.Recipe.nutrition_protein : ''}</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{protein}</TextX>
           </ViewX>
           <ViewX>
             <Text style={{ color: StyleConfig.grey, fontSize: 12 }}>Total Fat</Text>
-            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{data ? data.Recipe.nutrition_fat : ''}</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{fat}</TextX>
           </ViewX>
           <ViewX>
             <Text style={{ color: StyleConfig.grey, fontSize: 12 }}>Total Carbs</Text>
-            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{data ? data.Recipe.nutrition_carbs : ''}</TextX>
+            <TextX fontSize={StyleConfig.countPixelRatio(19)}>{carbs}</TextX>
           </ViewX>
         </ViewX>
       </ViewX >
-    )
+    ) : null;
   }
 
 }
@@ -794,6 +805,7 @@ const styles = StyleSheet.create({
   nutritionSubView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-start',
     width: '100%',
     marginTop: 8
   },

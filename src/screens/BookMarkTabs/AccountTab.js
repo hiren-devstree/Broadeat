@@ -78,6 +78,8 @@ class AccountTab extends React.Component {
   _getBookmarListAPICalled = async () => {
     let token = await AsyncStorage.getItem('user_token')
     let response = await getUserBookmarkList(token)
+    console.log("userBookmark->",response)
+    
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {

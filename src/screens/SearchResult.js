@@ -27,9 +27,8 @@ class SearchResult extends Component {
 
   componentDidMount() {
     let data = this.props.route.params.data
-    this.setState({ data: data })
+    this.setState({ data })
   }
-
 
   render() {
     return (

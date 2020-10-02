@@ -99,6 +99,12 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
         }}
         name={'SearchScreenModal'} component={SearchScreen}
       />
+       <HomeNavigator.Screen
+        options={({ route, navigation }) => ({
+          header: () => (<HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />)
+        })}
+        name="SearchResult" component={SearchResult}
+      />
       <HomeNavigator.Screen
         options={{ headerShown: false }}
         name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
@@ -112,7 +118,7 @@ const SearchNavigator = createStackNavigator();
 
 const SearchStackNavigator = withTheme(({ theme, ...props }) => {
   return (
-    <SearchNavigator.Navigator>
+    <SearchNavigator.Navigator mode="modal">
       <SearchNavigator.Screen
         options={{
           headerStyle: {
@@ -142,7 +148,7 @@ const BookmarkNavigator = createStackNavigator();
 
 const BookmarkStackNavigator = withTheme(({ theme, ...props }) => {
   return (
-    <BookmarkNavigator.Navigator>
+    <BookmarkNavigator.Navigator mode="modal">
       <BookmarkNavigator.Screen
         options={{ headerShown: false }}
         name={'Bookmark'} component={BookmarkScreen}
@@ -161,7 +167,7 @@ const FIlterNavigator = createStackNavigator();
 
 const FIlterStackNavigator = withTheme(({ theme, ...props }) => {
   return (
-    <FIlterNavigator.Navigator>
+    <FIlterNavigator.Navigator mode="modal">
       <FIlterNavigator.Screen
         options={{ headerShown: false }}
         name={'Filter'} component={FilterScreen}
@@ -172,6 +178,11 @@ const FIlterStackNavigator = withTheme(({ theme, ...props }) => {
         })}
         name="SearchResult" component={SearchResult}
       />
+      <SearchNavigator.Screen
+        options={{ headerShown: false }}
+        name={'PhotoRecipeDetails'} component={PhotoRecipeDetails}
+        path={'receipe_details/:receipeId'}
+      />
 
     </FIlterNavigator.Navigator >
   )
@@ -181,7 +192,7 @@ const ProfileNavigator = createStackNavigator();
 
 const ProfileStackNavigator = withTheme(({ theme, ...props }) => {
   return (
-    <ProfileNavigator.Navigator options={
+    <ProfileNavigator.Navigator mode="modal" options={
       {
         tabBarOnPress: (tab, jumpToIndex) => {
           jumpToIndex(tab.index)
@@ -276,6 +287,7 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
           ProfileScreen.reloadScreen()
         }
       }} name="Profile" component={ProfileStackNavigator} />
+       
     </Tab.Navigator>
 
   )
@@ -306,7 +318,7 @@ const AppNavigator = ({ theme, ...props }) => {
         <Stack.Screen options={{ headerShown: false }} name="Filter" component={FilterScreen} />
         <Stack.Screen options={{ headerShown: false }} name={'CommentList'} component={CommentList} />
 
-        <ProfileNavigator.Screen
+        <Stack.Screen
           options={{ headerShown: false }}
           name={'ProfileMenu'} component={ProfileScreen}
         />
