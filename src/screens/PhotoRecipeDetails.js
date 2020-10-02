@@ -148,7 +148,8 @@ class PhotoRecipeDetails extends Component {
       { cancelable: false }
     );
   }
-  _onEdit = () => {
+  _onEdit = async() => {
+    await this.setState({ showOptionMenu: false})
     this.props.navigation.navigate('AddContent', { mode: 'edit', data: this.state.data })
   }
   _postView = async () => {

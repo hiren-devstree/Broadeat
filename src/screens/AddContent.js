@@ -218,7 +218,7 @@ class AddContent extends Component {
       this.setState({
         id,
         title: _.data.Recipe.recipe_title,
-        description: _.data.Recipe.description,
+        description: _.data.Recipe.description == null ? '' : _.data.Recipe.description,
         ingredients,
         methods,
         mealPreference,
@@ -405,7 +405,7 @@ class AddContent extends Component {
     //   this.showAlert("Please Enter Time Duration")
     //   return ;
     // } 
-
+     
     if (timeDuration.length > 0) {
       formdata.append("time_duration", timeDuration.length == 0 ? '' : timeDuration);
     }
@@ -420,6 +420,7 @@ class AddContent extends Component {
     //   this.showAlert("Please Enter Valid No Of Person")
     //   return ;
     // }
+     
     if (noOfPerson.length != 0 && Number(noOfPerson).toString() != "NaN") {
       formdata.append("no_of_person", noOfPerson)
     }
@@ -432,7 +433,7 @@ class AddContent extends Component {
         }
       }
     }
-
+     
     if (selectedTag.length == 0) {
       // hasError = true ;
       // this.showAlert("Please Select one Tag")
@@ -442,7 +443,7 @@ class AddContent extends Component {
         formdata.append("recipe_tags[]", String(selectedTag[ind]));
       }
     }
-
+     
     let selectedHashTag = hashTag.filter((item) => item.isSelected == true);
     if (selectedHashTag.length == 0) {
       // hasError = true ;
@@ -571,7 +572,8 @@ class AddContent extends Component {
         "creator_profilepic": images[0].uri,
         "like": false,
         "dislike": false,
-        "bookmarked": true
+        "bookmarked": true,
+        "comment_count": 0
       },
       "Media": [],
       "Method": Method,
@@ -630,8 +632,9 @@ class AddContent extends Component {
                       <View>
                         <Video
                           ref={(ref) => {
-                            this.player = ref
+                            this[`player${idx}`] = ref
                           }}
+                          onLoad={()=>{this[`player${idx}`].seek(0)}}
                           resizeMode={'contain'}
                           repeat={false}
                           controls={true}

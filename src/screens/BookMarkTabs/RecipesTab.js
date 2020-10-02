@@ -65,8 +65,9 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
             <View>
               <Video 
                 ref={(ref) => {
-                  this.player = ref
-                }}    
+                  this[`player${idx}`] = ref
+                }}
+                onLoad={()=>{this[`player${idx}`].seek(0)}}    
                 repeat={false}
                 resizeMode={'cover'}
                 playInBackground={false}

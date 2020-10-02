@@ -184,12 +184,13 @@ class HomeScreen extends Component {
             <View>
               <Video 
                   ref={(ref) => {
-                    this.player = ref
+                    this[`player${index}`] = ref
                   }}
+                  onLoad={()=>{this[`player${index}`].seek(0)}}
                   resizeMode={'cover'}
                   repeat={false}
-                  playInBackground={false}
                   paused={true}
+                  playInBackground={false}
                   style={{ height: width, width: width }}
                   source={{uri: item.image}} 
                 />
