@@ -24,8 +24,9 @@ class FoodResultRow extends PureComponent {
           /> : <View>
            <Video 
                 ref={(ref) => {
-                  this.player = ref
-                }}    
+                  this[`player${index}`] = ref
+                }}
+                onLoad={()=>{this[`player${index}`].seek(0)}}
                 repeat={false}
                 playInBackground={false}
                 paused={true}
