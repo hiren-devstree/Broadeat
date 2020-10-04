@@ -107,7 +107,8 @@ class EditAccount extends Component {
 
     let myHeaders = new Headers()
     myHeaders.append('Authorization', `Bearer ${token}`)
-    let filename =proPic ? proPic.uri.split('/').pop() : 'image' 
+    console.log( 'typeof proPic->',typeof proPic, proPic)
+    let filename = proPic.hasOwnProperty('uri') ? proPic.uri.split('/').pop() : 'image' 
     var photo = {
       uri: proPic ? proPic.uri : '',
       type: 'image/jpg',

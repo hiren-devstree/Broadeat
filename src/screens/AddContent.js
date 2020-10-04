@@ -495,7 +495,7 @@ class AddContent extends Component {
       if (json.code == 1 && json.code == '1') {
         setTimeout(() => {
           Alert.alert(
-            "Receipe Added Successfully",
+            this.state.id == null ? "Receipe Added Successfully" : "Recipe updated successfully",
             "",
             [
               {
@@ -990,7 +990,7 @@ class AddContent extends Component {
                 keyboardType='number-pad'
                 returnKeyType='done'
                 onChangeText={(text) => this.setState({ nutritionFat: text })}
-                placeholder={"Nutrition Protein"}
+                placeholder={"Nutrition Fat"}
                 value={this.state.nutritionFat}
               />
             </ViewX>
