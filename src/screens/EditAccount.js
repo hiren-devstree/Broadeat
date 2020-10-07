@@ -56,25 +56,25 @@ class EditAccount extends Component {
       this._keyboardDidShow,
     );
     this.keyboardDidHideListener = Keyboard.addListener(
-        'keyboardDidHide',
-        this._keyboardDidHide,
+      'keyboardDidHide',
+      this._keyboardDidHide,
     );
   }
 
   componentWillUnmount() {
-      this.keyboardDidShowListener.remove();
-      this.keyboardDidHideListener.remove();
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
-  _keyboardDidShow =(event)=> {
+  _keyboardDidShow = (event) => {
     this.setState({
-        keyboardOffset: event.endCoordinates.height,
+      keyboardOffset: event.endCoordinates.height,
     })
   }
 
-  _keyboardDidHide=()=> {
-      this.setState({
-          keyboardOffset: 0,
-      })
+  _keyboardDidHide = () => {
+    this.setState({
+      keyboardOffset: 0,
+    })
   }
 
 
@@ -101,20 +101,20 @@ class EditAccount extends Component {
   }
 
   _updateProfileAPICalled = async () => {
-    const { loader,navigation } = this.props
+    const { loader, navigation } = this.props
     const { name, email, website, mobile, description, location, proPic } = this.state
     let token = await AsyncStorage.getItem('user_token')
 
     let myHeaders = new Headers()
     myHeaders.append('Authorization', `Bearer ${token}`)
-    console.log( 'typeof proPic->',typeof proPic, proPic)
-    let filename = proPic.hasOwnProperty('uri') ? proPic.uri.split('/').pop() : 'image' 
+    console.log('typeof proPic->', typeof proPic, proPic)
+    let filename = proPic.hasOwnProperty('uri') ? proPic.uri.split('/').pop() : 'image'
     var photo = {
       uri: proPic ? proPic.uri : '',
       type: 'image/jpg',
       name: filename
     }
-    
+
     var formdata = new FormData();
     formdata.append("email", email);
     formdata.append("name", name);
@@ -145,8 +145,8 @@ class EditAccount extends Component {
               "",
               [{
                 onPress: this.onDoneSuccess,
-                text: 'Okay', 
-                
+                text: 'Okay',
+
               }],
               { cancelable: false }
             )
@@ -165,7 +165,7 @@ class EditAccount extends Component {
         }, 500)
       });
   }
-  onDoneSuccess=()=>{
+  onDoneSuccess = () => {
     ProfileScreen.reloadScreen()
     this.props.navigation.goBack()
   }
@@ -178,11 +178,11 @@ class EditAccount extends Component {
       <SafeAreaView {...this.props}>
         {this.renderHeaderView()}
         <ScrollView style={{ flex: 1 }}>
-          
+
           {this.renderUserDetailsView()}
           {this.renderUserPersonalDetails()}
           {this.renderUserInformation()}
-          <View style={{height:this.state.keyboardOffset}} />
+          <View style={{ height: this.state.keyboardOffset }} />
         </ScrollView>
       </SafeAreaView>
     )
@@ -197,16 +197,16 @@ class EditAccount extends Component {
         <TextX
           fontSize={BUTTON_TEXT}
           align={'center'}
-          style={{  flex: 1 }}
+          style={{ flex: 1 }}
         >
           {'Edit'}
         </TextX>
         <TouchableOpacity onPress={() => this._validations()}>
-        <TextX color={StyleConfig.blue} fontSize={BUTTON_TEXT}
-        >
-          {'Done'}
-        </TextX>
-          
+          <TextX color={StyleConfig.blue} fontSize={BUTTON_TEXT}
+          >
+            {'Done'}
+          </TextX>
+
         </TouchableOpacity>
       </ViewX>
     )
@@ -214,9 +214,9 @@ class EditAccount extends Component {
 
   renderUserDetailsView = () => {
     const { proPic } = this.state
-    let img='';
-    if(proPic){
-     img = proPic.path ? proPic.path : proPic.uri;
+    let img = '';
+    if (proPic) {
+      img = proPic.path ? proPic.path : proPic.uri;
     }
     console.log('img', img)
     const { theme } = this.props
@@ -224,24 +224,20 @@ class EditAccount extends Component {
       <>
         <ViewX style={styles.userDetails}>
           {img != '' ?
-             <FastImage
-             style={styles.imgProfile}
-              source={{
-                uri: img,
-                priority: FastImage.priority.high,
-              }}
-              resizeMode={FastImage.resizeMode.cover}
-            />
+            <Image source={{ uri: img }} style={styles.imgProfile} resizeMode='cover' />
             : <Image source={imgDummy} style={styles.imgProfile} />}
 
           <TouchableOpacity style={{ marginTop: 15 }} onPress={() => {
             const options = {
-              
+
             };
-        
+
             ImagePicker.launchImageLibrary(options, (images) => {
-              console.log({images})
-              this.setState({ proPic: images })
+              console.log({ images })
+              if (image.didCancel == true) {
+              } else {
+                this.setState({ proPic: image })
+              }
             });
 
             // ImagePicker.openPicker({
@@ -269,7 +265,7 @@ class EditAccount extends Component {
 
   renderUserPersonalDetails = () => {
     const { name, username, website, description } = this.state
-    const {theme} = this.props 
+    const { theme } = this.props
     return (
       <>
         <ViewX style={{ paddingRight: StyleConfig.countPixelRatio(15) }}>
@@ -297,7 +293,7 @@ class EditAccount extends Component {
               {'Username'}
             </TextX>
             <TEXTINPUT
-            fontSize={BUTTON_TEXT}
+              fontSize={BUTTON_TEXT}
               editable={false}
               align={'left'}
               placeholder={'Enter your username'}
@@ -401,7 +397,7 @@ class EditAccount extends Component {
               keyboardType={'phone-pad'}
               placeholder={'+1-999-999-9999'}
               value={mobile}
-              
+
               onChangeText={(text) => this.setState({ mobile: text })}
             />
           </ViewX>
@@ -429,7 +425,7 @@ class EditAccount extends Component {
 
 }
 
-export default withTheme( withLoader(withToast(EditAccount)))
+export default withTheme(withLoader(withToast(EditAccount)))
 
 const styles = StyleSheet.create({
   headerTopView: {

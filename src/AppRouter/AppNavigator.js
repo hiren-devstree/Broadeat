@@ -99,7 +99,7 @@ const HomeStackNavigator = withTheme(({ theme, ...props }) => {
         }}
         name={'SearchScreenModal'} component={SearchScreen}
       />
-       <HomeNavigator.Screen
+      <HomeNavigator.Screen
         options={({ route, navigation }) => ({
           header: () => (<HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />)
         })}
@@ -287,7 +287,7 @@ const TabNavigator = withTheme(({ theme, ...props }) => {
           ProfileScreen.reloadScreen()
         }
       }} name="Profile" component={ProfileStackNavigator} />
-       
+
     </Tab.Navigator>
 
   )

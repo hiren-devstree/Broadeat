@@ -148,8 +148,8 @@ class PhotoRecipeDetails extends Component {
       { cancelable: false }
     );
   }
-  _onEdit = async() => {
-    await this.setState({ showOptionMenu: false})
+  _onEdit = async () => {
+    await this.setState({ showOptionMenu: false })
     this.props.navigation.navigate('AddContent', { mode: 'edit', data: this.state.data })
   }
   _postView = async () => {
@@ -364,7 +364,7 @@ class PhotoRecipeDetails extends Component {
               let statusBarHeight = StyleConfig.iPhoneX ? 44 : 20
               this.setState({ xPosition: y + height + statusBarHeight })
             }}>
-            <TouchableOpacity style={{ minWidth: 40, alignItems: 'flex-end' }} disabled={!this.state.receipeByMe} onPress={() => this.setState({ showOptionMenu: true })}>
+            <TouchableOpacity style={{ minWidth: 40, alignItems: 'flex-end' }} disabled={!this.state.receipeByMe} onPress={() => this.setState({ showOptionMenu: !this.state.showOptionMenu })}>
               {this.state.receipeByMe &&
                 <Entypo name={'dots-three-horizontal'} size={StyleConfig.countPixelRatio(20)} color='#999' />
               }
@@ -682,12 +682,12 @@ class PhotoRecipeDetails extends Component {
 
   renderNutritionView = () => {
     const { data } = this.state
-    console.log({recipe:data ? data.Recipe :''})
+    console.log({ recipe: data ? data.Recipe : '' })
     let calories = "";
     let carbs = "";
     let fat = "";
     let protein = "";
-    if(data){
+    if (data) {
       calories = data.Recipe.nutrition_calories;
       carbs = data.Recipe.nutrition_carbs;
       fat = data.Recipe.nutrition_fat;
