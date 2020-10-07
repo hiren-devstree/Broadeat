@@ -254,8 +254,13 @@ class AddContent extends Component {
 
     ImagePicker.launchImageLibrary(options, (image) => {
       console.log({ image })
-      images.push(image)
-      this.setState({ images })
+      if(image.didCancel == true){
+
+      } else {
+        images.push(image)
+        this.setState({ images })
+      }
+      
     });
   }
 

@@ -90,14 +90,11 @@ class HomeScreen extends Component {
     })
   }
   static reloadScreen = async () => {
-    console.log("HOME reload screen")
     const { loader } = this.props
     loader(true)
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
-    console.log("Loader", false)
     this.props.loader(false)
-    console.log("getRecipeData", response)
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {
