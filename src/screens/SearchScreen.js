@@ -50,7 +50,7 @@ class SearchScreen extends Component {
     var formdata = new FormData();
     formdata.append("id", item.id);
     let response = await deleteSearchRecord(formdata, token)
-    console.log('deleteSearchRecord',response)
+    console.log('deleteSearchRecord', response)
     if (response.code === 1) {
       this._getRecentSearchAPICalled()
     } else {
@@ -59,6 +59,18 @@ class SearchScreen extends Component {
   }
 
   componentDidMount() {
+    console.log('==========================')
+    this._focusedScreen = this.props.navigation.addListener(
+      'willFocus',
+      this._componentFocused
+    )
+  }
+
+  _componentFocused = () => {
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++')
     this._getRecentSearchAPICalled()
   }
 
@@ -170,7 +182,7 @@ class SearchScreen extends Component {
                     <Ionicons
                       name={"ios-close"}
                       color={theme.text}
-                      size={StyleConfig.iconSize*1.4}
+                      size={StyleConfig.iconSize * 1.4}
                       onPress={() => this._onDeleteRecord(item)}
                     />
                   </ViewX>

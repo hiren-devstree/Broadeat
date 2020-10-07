@@ -254,13 +254,13 @@ class AddContent extends Component {
 
     ImagePicker.launchImageLibrary(options, (image) => {
       console.log({ image })
-      if(image.didCancel == true){
+      if (image.didCancel == true) {
 
       } else {
         images.push(image)
         this.setState({ images })
       }
-      
+
     });
   }
 
@@ -410,7 +410,11 @@ class AddContent extends Component {
     //   this.showAlert("Please Enter Time Duration")
     //   return ;
     // } 
-     
+
+    if (timeDuration.length == 0) {
+      hasError = true;
+      this.showAlert("Please Enter time duration.")
+    }
     if (timeDuration.length > 0) {
       formdata.append("time_duration", timeDuration.length == 0 ? '' : timeDuration);
     }
@@ -425,7 +429,7 @@ class AddContent extends Component {
     //   this.showAlert("Please Enter Valid No Of Person")
     //   return ;
     // }
-     
+
     if (noOfPerson.length != 0 && Number(noOfPerson).toString() != "NaN") {
       formdata.append("no_of_person", noOfPerson)
     }
@@ -438,7 +442,7 @@ class AddContent extends Component {
         }
       }
     }
-     
+
     if (selectedTag.length == 0) {
       // hasError = true ;
       // this.showAlert("Please Select one Tag")
@@ -448,7 +452,7 @@ class AddContent extends Component {
         formdata.append("recipe_tags[]", String(selectedTag[ind]));
       }
     }
-     
+
     let selectedHashTag = hashTag.filter((item) => item.isSelected == true);
     if (selectedHashTag.length == 0) {
       // hasError = true ;
@@ -639,7 +643,7 @@ class AddContent extends Component {
                           ref={(ref) => {
                             this[`player${idx}`] = ref
                           }}
-                          onLoad={()=>{this[`player${idx}`].seek(0)}}
+                          onLoad={() => { this[`player${idx}`].seek(0) }}
                           resizeMode={'contain'}
                           repeat={false}
                           controls={true}
@@ -882,7 +886,6 @@ class AddContent extends Component {
                 }}
                 placeholderTextColor={theme.textHint}
                 onChangeText={(text) => this.setState({ timeDuration: text })}
-                keyboardType='number-pad'
                 returnKeyType='done'
                 placeholder={"00:00:00"}
                 value={this.state.timeDuration}

@@ -414,7 +414,7 @@ class PhotoRecipeDetails extends Component {
               </TouchableOpacity>
               <Image source={imgTimer} style={{ width: 15, height: 15, marginLeft: 15, marginRight: 3 }} />
               <TextX>{data ? data.Recipe.time_duration : ''}</TextX>
-              <TextX style={{ marginLeft: 15 }}>{data ? data.Recipe.meal_preference : ''}</TextX>
+              <TextX style={{ marginLeft: 15, textTransform: 'capitalize' }}>{data ? data.Recipe.meal_preference === 'all_meals' ? 'All meals' : data.Recipe.meal_preference : ''}</TextX>
             </ViewX>
           </ViewX>
         </ViewX>

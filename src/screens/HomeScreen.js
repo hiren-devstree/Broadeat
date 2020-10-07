@@ -27,8 +27,8 @@ class HomeScreen extends Component {
     this.state = {
       data: []
     }
-    
-    
+
+
     _getProfileDetailsAPICalling = async () => {
       const { loader } = this.props
       let token = await AsyncStorage.getItem('user_token')
@@ -73,7 +73,7 @@ class HomeScreen extends Component {
                 }}
               />
             </View>
-            <Text style={{}} > {"Search"} </Text>
+            <Text style={{ color: '#777' }} > {"Search"} </Text>
           </View>
         </TouchableWithoutFeedback>
       ),
@@ -104,7 +104,7 @@ class HomeScreen extends Component {
     }
   }
 
-  refreshScreen = async () =>{
+  refreshScreen = async () => {
     console.log("HOME reload screen")
     const { loader } = this.props
     loader(true)
@@ -139,7 +139,7 @@ class HomeScreen extends Component {
         Alert.alert(response.message)
       }, 500)
     }
-    
+
   }
 
   render() {
@@ -169,7 +169,7 @@ class HomeScreen extends Component {
           () => <View style={{ height: 3 }} />
         }
         renderItem={({ item, index }) => (
-          <TouchableOpacity style={{ marginLeft: index % 3 == 0 ? 0 : 3 }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id, reloadScreen: this.refreshScreen})}>
+          <TouchableOpacity style={{ marginLeft: index % 3 == 0 ? 0 : 3 }} onPress={() => this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id, reloadScreen: this.refreshScreen })}>
             { item.thumbnail_image.length > 0 ? <FastImage
               style={{ height: width, width: width }}
               source={{
@@ -178,26 +178,26 @@ class HomeScreen extends Component {
               }}
               resizeMode={FastImage.resizeMode.cover}
             /> :
-            <View>
-              <Video 
+              <View>
+                <Video
                   ref={(ref) => {
                     this[`player${index}`] = ref
                   }}
-                  onLoad={()=>{this[`player${index}`].seek(0)}}
+                  onLoad={() => { this[`player${index}`].seek(0) }}
                   resizeMode={'cover'}
                   repeat={false}
                   paused={true}
                   playInBackground={false}
                   style={{ height: width, width: width }}
-                  source={{uri: item.image}} 
+                  source={{ uri: item.image }}
                 />
-              <View style={{ height:width,position:'absolute',flex:1, alignSelf:'center', justifyContent:'center',zIndex:99}}>
+                <View style={{ height: width, position: 'absolute', flex: 1, alignSelf: 'center', justifyContent: 'center', zIndex: 99 }}>
                   {/* <View style={{height:StyleConfig.countPixelRatio(50), width: StyleConfig.countPixelRatio(50),
                     alignItems:'center', 
                     justifyContent:'center',
                     paddingLeft:2,
                     borderRadius:StyleConfig.countPixelRatio(30), backgroundColor:'#00000066'}}> */}
-                    <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
+                  <FontAwesome5 name='play' color={'#ffffffda'} size={StyleConfig.countPixelRatio(32)} />
                   {/* </View> */}
                 </View>
               </View>
