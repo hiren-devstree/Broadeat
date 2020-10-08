@@ -15,7 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { withTheme } from 'styled-components';
 import HeaderSearchBar from '../components/common/HeaderSearchBar';
 
-let _this
+let _this = undefined
 class SearchScreen extends Component {
   constructor(props) {
     super(props)
@@ -28,7 +28,7 @@ class SearchScreen extends Component {
 
     props.navigation.setOptions({
       header: ({ tintColor }) => (
-        <HeaderSearchBar  {...props} isBack={true} onChangeSearchText={this.onChangeSearchText} onSubmitPressed={this._onSubmitPressed} />
+        <HeaderSearchBar  {...props} reload={true} onChangeSearchText={this.onChangeSearchText} onSubmitPressed={this._onSubmitPressed} />
       )
     })
   }
@@ -60,17 +60,7 @@ class SearchScreen extends Component {
 
   componentDidMount() {
     console.log('==========================')
-    this._focusedScreen = this.props.navigation.addListener(
-      'willFocus',
-      this._componentFocused
-    )
-  }
 
-  _componentFocused = () => {
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++')
     this._getRecentSearchAPICalled()
   }
 
@@ -78,9 +68,9 @@ class SearchScreen extends Component {
     const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
 
-    loader(true)
+    // loader(true)
     let response = await getRecentSearch(token)
-    loader(false)
+    // loader(false)
 
     console.log("response ==> ", response)
     if (response && response.code === 1) {
@@ -93,13 +83,21 @@ class SearchScreen extends Component {
   }
 
   static reloadScreen = async () => {
+    if (_this) {
+      _this.props.navigation.setOptions({
+        header: ({ tintColor }) => (
+          <HeaderSearchBar  {..._this.props} isBack={true} onChangeSearchText={_this.onChangeSearchText} onSubmitPressed={_this._onSubmitPressed} />
+        )
+      })
+    }
+
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecentSearch(token)
 
-    console.log(response)
     if (response.code === 1) {
       _this.setState({ data: response.data })
     } else {
+
       // setTimeout(() => {
       //   Alert.alert(response.message)
       // }, 500)
@@ -116,7 +114,7 @@ class SearchScreen extends Component {
     let response = await getSearchRecipeList(data, token)
     if (response.code === 1) {
       if (response.data.length > 0) {
-        this.props.navigation.navigate("SearchResult", { data: response.data })
+        this.props.navigation.navigate("SearchResult", { data: response.data, text: tagName })
       } else {
         Alert.alert(response.message)
       }

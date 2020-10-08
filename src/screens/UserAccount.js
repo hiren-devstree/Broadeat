@@ -1,12 +1,7 @@
 import React, { Component } from "react";
 import {
-  View,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-  FlatList,
-  Image,
-  TouchableWithoutFeedback
+  View, Alert, TouchableOpacity, StyleSheet,
+  FlatList, Image, TouchableWithoutFeedback
 } from "react-native";
 import withLoader from '../redux/actionCreator/withLoader'
 import { getUserWiseRcipeDetails, getUserBookmarkList, postUserBookmark, getUserDetails } from '../apiManager'
@@ -64,10 +59,10 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
           /> :
             <View>
               <Video
-              ref={(ref) => {
-                this[`player${idx}`] = ref
-              }}
-              onLoad={()=>{this[`player${idx}`].seek(0)}}
+                ref={(ref) => {
+                  this[`player${idx}`] = ref
+                }}
+                onLoad={() => { this[`player${idx}`].seek(0) }}
                 repeat={false}
                 playInBackground={false}
                 paused={true}
@@ -242,7 +237,7 @@ class UserAccount extends Component {
             <ViewX style={{ flex: 1, flexDirection: "row", justifyContent: "flex-start" }} >
               <Image source={{ uri: userDetails.profilepic }} style={styles.imgProfile} />
               <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20), alignItems: 'flex-start' }} >
-                <TextX align={'left'} style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{`${userDetails.name}`}</TextX>
+                <TextX align={'left'} style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{userDetails.name ? `${userDetails.name}` : ''}</TextX>
                 <TextX align={'left'} style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4 }} >{userDetails.email}</TextX>
               </ViewX>
             </ViewX>

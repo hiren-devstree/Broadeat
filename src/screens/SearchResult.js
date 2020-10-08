@@ -15,6 +15,8 @@ import StyleConfig from '../assets/styles/StyleConfig';
 import { SafeAreaView, View1CC, Devider, CText, CTextColor, TextX } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
 import Video from 'react-native-video';
+import HeaderSearchBar from '../components/common/HeaderSearchBar'
+
 class SearchResult extends Component {
   constructor(props) {
     super(props)
@@ -22,7 +24,12 @@ class SearchResult extends Component {
     this.state = {
       data: []
     }
-    
+
+    props.navigation.setOptions({
+      header: ({ tintColor }) => (
+        <HeaderSearchBar  {...props} back={true} reload={true} text={props.route.params.text} />
+      )
+    })
   }
 
   componentDidMount() {

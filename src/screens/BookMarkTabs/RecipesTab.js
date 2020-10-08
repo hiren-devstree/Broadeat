@@ -17,7 +17,7 @@ import AppImages from '../../assets/images';
 import Video from 'react-native-video';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 const INIT_FILTER = [
-  { "_id": 0, "name": "View All", isSelected: false },
+  { "_id": 0, "name": "View All", isSelected: true },
   { "_id": 1, "name": "Pastas", isSelected: false },
   { "_id": 2, "name": "Salads", isSelected: false },
   { "_id": 3, "name": "Deserts", isSelected: false },

@@ -120,18 +120,18 @@ const SearchStackNavigator = withTheme(({ theme, ...props }) => {
   return (
     <SearchNavigator.Navigator mode="modal">
       <SearchNavigator.Screen
-        options={{
-          headerStyle: {
-            height: StyleConfig.headerHeight,
-            backgroundColor: theme.background
-          },
-          headerTitleStyle: { color: theme.text }
-        }}
+        // options={{
+        //   headerStyle: {
+        //     height: StyleConfig.headerHeight,
+        //     backgroundColor: theme.background
+        //   },
+        //   headerTitleStyle: { color: theme.text }
+        // }}
         name={'SearchScreen'} component={SearchScreen}
       />
       <SearchNavigator.Screen
         options={({ route, navigation }) => ({
-          header: () => (<HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />)
+          // header: () => (<HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />)
         })}
         name="SearchResult" component={SearchResult}
       />

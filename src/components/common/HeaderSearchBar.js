@@ -25,6 +25,9 @@ class SaerchHeader extends React.Component {
     if (this.searchTextInput) {
       this.searchTextInput.focus()
     }
+    if (this.props.text) {
+      this.setState({ search: this.props.text })
+    }
   }
 
 
@@ -44,7 +47,7 @@ class SaerchHeader extends React.Component {
 
   render() {
     const { search } = this.state;
-    const { theme, route, showFilterMenu, navigation, back } = this.props;
+    const { theme, route, showFilterMenu, navigation, back, reload } = this.props;
     return (
       <View style={{
         alignItems: "flex-end",
@@ -54,7 +57,7 @@ class SaerchHeader extends React.Component {
       }} >
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
           {
-            back && <BackButton {...{ navigation }} />
+            back && <BackButton {...{ navigation, reload }} />
           }
           <SearchBar
             ref={input => {
@@ -99,6 +102,7 @@ class SaerchHeader extends React.Component {
                 />
               </View>
               : <Button
+                titleStyle={{ color: theme.text }}
                 buttonStyle={{ backgroundColor: theme.background, paddingHorizontal: 10 }}
                 title={"Cancel"}
                 onPress={() => { this.props.navigation.goBack() }}

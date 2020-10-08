@@ -411,14 +411,9 @@ class AddContent extends Component {
     //   return ;
     // } 
 
-    if (timeDuration.length == 0) {
-      hasError = true;
-      this.showAlert("Please Enter time duration.")
-    }
     if (timeDuration.length > 0) {
       formdata.append("time_duration", timeDuration.length == 0 ? '' : timeDuration);
     }
-
 
     // if(noOfPerson.length == 0 ){
     //   hasError = true ;
