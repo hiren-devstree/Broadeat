@@ -27,8 +27,8 @@ export const Account = withTheme(({ item, theme, onPres, isActive }) => (
           source={{ uri: item.profilepic }}
         />
         <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20) }} >
-          <TextX style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{item.name}</TextX>
-          <TextX style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4 }} >{item.description}</TextX>
+          <TextX style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3, alignSelf: 'flex-start' }} numberOfLines={1}>{`${item.name}`.trim()}</TextX>
+          <TextX align={'left'} style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4, alignSelf: 'flex-start' }} numberOfLines={1}>{item.description}</TextX>
         </ViewX>
       </ViewX>
     </TouchableOpacity>
@@ -37,7 +37,7 @@ export const Account = withTheme(({ item, theme, onPres, isActive }) => (
       style={{ width: StyleConfig.iconSize, aspectRatio: 1 }}
       source={isActive ? AppImages.ic_fav_selected : AppImages.ic_bookmark}
     />
-  </ViewX>
+  </ViewX >
 ))
 
 let _this
@@ -55,14 +55,14 @@ class AccountTab extends React.Component {
     // this._getBookmarListAPICalled()
   }
 
-  componentWillUnmount=()=>{
+  componentWillUnmount = () => {
     this.setState({
-      data:[]
+      data: []
     })
   }
   _goToBookamrk = (item) => {
-    console.log("_goToBookamrk",item)
-    this.props.navigation.navigate('UserAccount', { userDetails: item, userId:item.id })
+    console.log("_goToBookamrk", item)
+    this.props.navigation.navigate('UserAccount', { userDetails: item, userId: item.id })
   }
   static async reloadScreen() {
     let token = await AsyncStorage.getItem('user_token')
@@ -71,19 +71,31 @@ class AccountTab extends React.Component {
     if (response.code === 1) {
       _this.setState({ data: response.data })
     } else {
-      Alert.alert(response.message)
+      _this.setState({ data: [] }, () => {
+        if (response.message != 'No data found') {
+          Alert.alert(response.message)
+        }
+      })
     }
+  }
+
+  static reloadScreen1() {
+    _this._getBookmarListAPICalled()
   }
 
   _getBookmarListAPICalled = async () => {
     let token = await AsyncStorage.getItem('user_token')
     let response = await getUserBookmarkList(token)
-    console.log("userBookmark->",response)
-    
+    console.log("userBookmark->", response)
+
     if (response.code === 1) {
       this.setState({ data: response.data })
     } else {
-      Alert.alert(response.message)
+      this.setState({ data: [] }, () => {
+        if (response.message != 'No data found') {
+          Alert.alert(response.message)
+        }
+      })
     }
   }
 

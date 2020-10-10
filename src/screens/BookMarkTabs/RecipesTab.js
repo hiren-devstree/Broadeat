@@ -42,6 +42,7 @@ const FilterBubble = withTheme(({ theme, item, onPress }) => {
 const POST_SIZE = (StyleConfig.width - 15) / 2;
 
 const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
+  debugger
   return (
     <TouchableWithoutFeedback onPress={onPres} >
       <ViewX
@@ -67,7 +68,7 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
                 ref={(ref) => {
                   this[`player${idx}`] = ref
                 }}
-                onLoad={() => { this[`player${idx}`].seek(0) }}
+                onLoad={() => { idx != undefined && this[`player${idx}`].seek(0) }}
                 repeat={false}
                 resizeMode={'cover'}
                 playInBackground={false}

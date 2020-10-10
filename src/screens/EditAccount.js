@@ -234,9 +234,9 @@ class EditAccount extends Component {
 
             ImagePicker.launchImageLibrary(options, (images) => {
               console.log({ images })
-              if (image.didCancel == true) {
+              if (images.didCancel == true) {
               } else {
-                this.setState({ proPic: image })
+                this.setState({ proPic: images })
               }
             });
 

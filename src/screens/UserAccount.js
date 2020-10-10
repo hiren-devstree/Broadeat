@@ -16,6 +16,9 @@ import AppImages from '../assets/images';
 import { Account } from "./BookMarkTabs/AccountTab";
 import Video from 'react-native-video';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import HeaderSearchBar from '../components/common/HeaderSearchBar'
+import AccountTab from './BookMarkTabs/AccountTab'
+
 const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
   return (
@@ -215,6 +218,7 @@ class UserAccount extends Component {
     }, token);
     console.log("USER_BOOKMARK-> ", response)
     loader(false);
+    AccountTab.reloadScreen1()
     this.setState({ isAlreadyBookMarked: !isAlreadyBookMarked })
   }
   render() {
