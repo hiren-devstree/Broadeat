@@ -129,7 +129,7 @@ class FilterScreen extends Component {
       
       if (response.code === 1) {
         if (response.data.length > 0) {
-          this.props.navigation.navigate("SearchResult", { data: response.data })
+          this.props.navigation.navigate("SearchResult", { data: response.data, selectedTag })
         } else {
           Alert.alert(response.message)
         }

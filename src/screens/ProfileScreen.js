@@ -171,7 +171,7 @@ class ProfileScreen extends Component {
 
           <ViewX style={styles.userDetailTextContainer}>
             <TextX fontSize={BUTTON_TEXT}>{userDetails ? userDetails.name : ''}</TextX>
-            <TextX fontSize={StyleConfig.countPixelRatio(14)}>{userDetails ? userDetails.email : ''}</TextX>
+            <TextX align={'left'} fontSize={StyleConfig.countPixelRatio(14)}>{userDetails ? userDetails.email : ''}</TextX>
           </ViewX>
 
           <TouchableOpacity onPress={() => this.props.navigation.push('EditAccount', { userDetails: userDetails })}>

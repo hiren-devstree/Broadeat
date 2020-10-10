@@ -133,6 +133,21 @@ const MethodWrapper = withTheme(({ desc, theme, idx, _onChangeMethods, ...props 
   )
 })
 
+const FilterBubble = withTheme(({ theme, ...props }) => {
+  const { name, onPress, isSelected } = props
+  return (
+    <TouchableWithoutFeedback onPress={onPress} >
+      <ViewX style={{
+        borderRadius: StyleConfig.convertWidthPerVal(20),
+        padding: StyleConfig.convertWidthPerVal(10),
+        margin: StyleConfig.convertWidthPerVal(5),
+        backgroundColor: isSelected ? theme.filterOn : theme.filterOff
+      }} >
+        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.fontSizeH3 }} >{name}</TextX>
+      </ViewX>
+    </TouchableWithoutFeedback>
+  )
+})
 class AddContent extends Component {
   constructor(props) {
     super(props);
@@ -488,7 +503,8 @@ class AddContent extends Component {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
+          "Accept": "application/json"
         },
         body: formdata
       });
@@ -1059,9 +1075,25 @@ class AddContent extends Component {
   renderTag = () => {
     let { tagData, hashTag } = this.state;
     const { theme } = this.props;
+    let formatedData = [];
+    for(let ind in tagData){
+      let {tagData:subData, ...rest} = tagData[ind];
+      let newSubData= [[]];
+      let currInd=0; 
+      for(let subInd in tagData[ind].data){
+        newSubData[currInd].push(tagData[ind]['data'][subInd]);
+        if((subInd+1) %3 == 0){
+          newSubData.push([]);
+          currInd++;
+        }
+      }
+      formatedData.push({...rest, data:newSubData});
+    }
+    console.log({formatedData})
+
     return (
       <ViewX style={{ marginVertical: 4, alignItems: 'flex-start' }}>
-        {tagData.map((groupItem, groupIndex) => {
+        {formatedData.map((groupItem, groupIndex) => {
           return (
             <ViewX>
               <TextX style={{
@@ -1074,31 +1106,41 @@ class AddContent extends Component {
                 padding: StyleConfig.convertWidthPerVal(10),
                 paddingVertical: StyleConfig.convertHeightPerVal(10),
               }}>{groupItem.title}</TextX>
-              <ViewX style={{ flexDirection: 'row', flexWrap: "wrap", alignItems: 'flex-start', justifyContent: 'flex-start', margin: 4 }}>
+              <View>
                 {groupItem.data.map((item, itemIndex) => {
-                  return (
-                    <TouchableOpacity onPress={() => {
-                      tagData[groupIndex]["data"][itemIndex].isSelected = !tagData[groupIndex]["data"][itemIndex].isSelected
-                      this.setState({ tagData })
-                    }}>
-                      <ViewX style={{
-                        borderWidth: 0.8,
-                        borderRadius: 8,
-                        marginHorizontal: 4,
-                        backgroundColor: item.isSelected ? theme.selectedIconColor : theme.tabBackground
-                      }}>
-                        <TextX style={{
-                          textAlign: "left",
-                          color: theme.text,
-                          fontSize: StyleConfig.fontSizeH2_3,
-                          padding: StyleConfig.convertWidthPerVal(10),
-                          paddingVertical: StyleConfig.convertHeightPerVal(10),
-                        }}>{item.tag_name}</TextX>
-                      </ViewX>
-                    </TouchableOpacity>
-                  )
-                })}
-              </ViewX>
+                  return(
+                    <ViewX style={{ flexDirection: 'row', width: StyleConfig.width, alignItems: 'flex-start', justifyContent: 'flex-start', margin: 4 }}>
+                      {
+                        item.map((subItem,subIndex)=>{
+                          return(
+                            <TouchableOpacity onPress={() => {
+                              tagData[groupIndex]["data"][(itemIndex*3)+subIndex].isSelected = !tagData[groupIndex]["data"][(itemIndex*3)+subIndex].isSelected
+                              this.setState({ tagData })
+                            }}>
+                              <ViewX style={{
+                                borderWidth: 0.8,
+                                borderRadius: 8,
+                                marginHorizontal: 4,
+                                backgroundColor: subItem.isSelected ? theme.selectedIconColor : theme.tabBackground
+                              }}>
+                                <TextX style={{
+                                  textAlign: "left",
+                                  color: theme.text,
+                                  fontSize: StyleConfig.fontSizeH3,
+                                  paddingHorizontal: StyleConfig.convertWidthPerVal(10),
+                                  paddingVertical: StyleConfig.convertHeightPerVal(8),
+                                }}>{subItem.tag_name}</TextX>
+                              </ViewX>
+                            </TouchableOpacity>
+                          )
+                        })
+                      }
+                    </ViewX>
+                  )}
+                  
+                  )}
+                </View>
+
             </ViewX>
           )
         })}
@@ -1125,11 +1167,11 @@ class AddContent extends Component {
                   backgroundColor: item.isSelected ? theme.selectedIconColor : theme.tabBackground
                 }}>
                   <TextX style={{
-                    textAlign: "left",
-                    color: theme.text,
-                    fontSize: StyleConfig.fontSizeH2_3,
-                    padding: StyleConfig.convertWidthPerVal(10),
-                    paddingVertical: StyleConfig.convertHeightPerVal(10),
+                     textAlign: "left",
+                     color: theme.text,
+                     fontSize: StyleConfig.fontSizeH3,
+                     paddingHorizontal: StyleConfig.convertWidthPerVal(10),
+                     paddingVertical: StyleConfig.convertHeightPerVal(8),
                   }}>{item.name}</TextX>
                 </ViewX>
               </TouchableOpacity>

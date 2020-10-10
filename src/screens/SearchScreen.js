@@ -84,6 +84,7 @@ class SearchScreen extends Component {
 
   static reloadScreen = async () => {
     if (_this) {
+      console.log("Recipe tag ->", _this.props.route)
       _this.props.navigation.setOptions({
         header: ({ tintColor }) => (
           <HeaderSearchBar  {..._this.props} isBack={true} onChangeSearchText={_this.onChangeSearchText} onSubmitPressed={_this._onSubmitPressed} />

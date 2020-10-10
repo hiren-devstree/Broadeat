@@ -3,7 +3,7 @@ import { SearchBar, Button } from 'react-native-elements';
 import { withTheme } from 'styled-components';
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 
 import StyleConfig from '../../assets/styles/StyleConfig';
 import BackButton from './BackButton';
@@ -47,7 +47,7 @@ class SaerchHeader extends React.Component {
 
   render() {
     const { search } = this.state;
-    const { theme, route, showFilterMenu, navigation, back, reload } = this.props;
+    const { theme, route, showFilterMenu, showFilter, showMenu, navigation, back, reload } = this.props;
     return (
       <View style={{
         alignItems: "flex-end",
@@ -87,19 +87,20 @@ class SaerchHeader extends React.Component {
             showFilterMenu
               ?
               <View style={{ flexDirection: "row" }} >
-                <Ionicons
-                  onPress={() => { navigation.push('Filter') }}
+                { showFilter && <Ionicons
+                  onPress={this.props.onFilterPress}
                   style={{ paddingRight: StyleConfig.convertHeightPerVal(10) }}
                   name={"ios-funnel"}
                   color={theme.text}
                   size={StyleConfig.iconSize}
-                />
-                <Feather
+                />}
+                { showMenu && <Feather
+                  onPress={()=> navigation.navigate('ProfileMenu')}
                   style={{ paddingRight: StyleConfig.convertHeightPerVal(10) }}
                   name={"menu"}
                   color={theme.text}
                   size={StyleConfig.iconSize}
-                />
+                />}
               </View>
               : <Button
                 titleStyle={{ color: theme.text }}
