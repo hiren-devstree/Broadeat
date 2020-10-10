@@ -76,14 +76,14 @@ class InitScreen extends BaseComponent {
                             onPress={() => this.props.navigation.navigate('Register')}
                             containerStyle={{ marginBottom: StyleConfig.convertHeightPerVal(22), marginTop: StyleConfig.convertHeightPerVal(27) }}
                         >
-                            <CTextColor style={{ marginTop: 2 }} color={"#fff"} fontWeight={'bold'} fontSize={StyleConfig.countPixelRatio(20)}>{'SIGN UP'}</CTextColor>
+                            <CTextColor style={{ includeFontPadding:false, }} color={"#fff"} fontWeight={'bold'} fontSize={StyleConfig.countPixelRatio(20)}>{'SIGN UP'}</CTextColor>
                         </CButtonColor>
 
                         <CButtonColor
                             color={"#fff"}
                             borderColor={"#83D557"}
                             onPress={ () => this.props.navigation.navigate('Login') } >
-                            <CTextColor style={{ marginTop: 2 }} color={"#83D557"} fontWeight={'bold'} fontSize={StyleConfig.countPixelRatio(20)}>{'LOGIN'}</CTextColor>
+                            <CTextColor style={{ includeFontPadding:false, }} color={"#83D557"} fontWeight={'bold'} fontSize={StyleConfig.countPixelRatio(20)}>{'LOGIN'}</CTextColor>
                         </CButtonColor>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: StyleConfig.convertHeightPerVal(60), marginBottom: StyleConfig.convertHeightPerVal(20) }}>
                             <Icon name="chevron-up" size={16} color="#8A8A8F" />
