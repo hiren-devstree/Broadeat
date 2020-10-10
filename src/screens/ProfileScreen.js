@@ -164,9 +164,9 @@ class ProfileScreen extends Component {
     return (
       <>
         <ViewX style={styles.userDetails}>
-          {userDetails != undefined && userDetails.profilepic != '' ?
-            <Image source={{ uri: userDetails.profilepic }} style={styles.imgProfile} /> :
-            <Image source={imgDummy} style={styles.imgProfile} />
+          {userDetails != undefined && userDetails.profilepic != ''
+            ? <Image source={{ uri: userDetails.profilepic }} style={styles.imgProfile} />
+            : <Image source={imgDummy} style={styles.imgProfile} />
           }
 
           <ViewX style={styles.userDetailTextContainer}>

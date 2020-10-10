@@ -67,7 +67,7 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
                 ref={(ref) => {
                   this[`player${idx}`] = ref
                 }}
-                onLoad={() => { this[`player${idx}`].seek(0) }}
+                onLoad={() => { idx != undefined && this[`player${idx}`].seek(0) }}
                 repeat={false}
                 resizeMode={'cover'}
                 playInBackground={false}
