@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Feather'
 import Video from 'react-native-video';
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { SafeAreaView, TextX, ViewX, CTextColor } from '../components/common';
+import { SafeAreaView, TextX, ViewX, CTextColor, CTextColor2 } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
 import styled, { withTheme, ThemeConsumer } from 'styled-components';
 import { CommonActions } from '@react-navigation/native';
@@ -311,6 +311,7 @@ class AddContent extends Component {
       nutritionProtein, nutritionFat, nutritionCarbs, timeDuration,
       tagData, hashTag
     } = this.state
+    console.log({tagData})
     const { loader } = this.props
     let token = await AsyncStorage.getItem('user_token')
     let hasError = false;
@@ -473,15 +474,16 @@ class AddContent extends Component {
         formdata.append("recipe_hashtags[]", String(selectedHashTag[ind].name));
       }
     }
-    let recipe_media = []
     let mainImage = null;
     for (let ind in images) {
+      console.log(images[ind]);
       if (images[ind].uri != '' && !images[ind].uri.startsWith("http://")) {
-        let IMAGE_CROP = images[ind].uri.slice(images[ind].uri.lastIndexOf("/"));
+        let IMAGE_CROP = images[ind].uri.slice(images[ind].uri.lastIndexOf("/")+1);
         let videoMime = images[ind].uri.slice(images[ind].uri.lastIndexOf("."));
         let myImage = StyleConfig.isIphone ?
           { "uri": images[ind].uri, "filename": IMAGE_CROP, "name": IMAGE_CROP } :
           { "uri": images[ind].uri, "name": IMAGE_CROP, "type": images[ind].type ? images[ind].type : `video/${videoMime}` };
+        console.log({myImage})
         if (mainImage == null && this.state.id == null) {
           mainImage = myImage;
           formdata.append("image", myImage)
@@ -493,6 +495,7 @@ class AddContent extends Component {
     if (!hasError) {
       loader(true)
       let url;
+      console.log("formdata 1 ",formdata)
       if (this.state.id == null) {
         url = "http://3.20.100.25/broadeat/api/recipe/add";
       } else {
@@ -608,7 +611,7 @@ class AddContent extends Component {
   render() {
     const { ingredients, methods, images } = this.state;
     const { theme } = this.props;
-    console.log({ images })
+    // console.log({ images })
     return (
       <SafeAreaView {...this.props}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -616,14 +619,13 @@ class AddContent extends Component {
 
           <ViewX style={styles.headerTopView}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-              <CTextColor
+              <CTextColor2
                 align={'left'}
                 color={theme.text}
-                fontSize={StyleConfig.countPixelRatio(16)}
-                style={{ marginLeft: 15 }}
+                fontSize={StyleConfig.fontSizeH2_3}
               >
                 {'Cancel'}
-              </CTextColor>
+              </CTextColor2>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onAddPress}>
               <Image source={AppImages.ic_add} style={[styles.backBtn, { tintColor: theme.text }]} />
@@ -1089,8 +1091,6 @@ class AddContent extends Component {
       }
       formatedData.push({...rest, data:newSubData});
     }
-    console.log({formatedData})
-
     return (
       <ViewX style={{ marginVertical: 4, alignItems: 'flex-start' }}>
         {formatedData.map((groupItem, groupIndex) => {

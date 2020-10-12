@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react'
-import { StatusBar, AsyncStorage } from 'react-native'
+import { StatusBar} from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import { ThemeProvider } from 'styled-components/native'
 import { Appearance, AppearanceProvider } from 'react-native-appearance'
 import lightTheme from './themes/light'
