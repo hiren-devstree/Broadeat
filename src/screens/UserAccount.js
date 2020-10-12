@@ -17,8 +17,8 @@ import { Account } from "./BookMarkTabs/AccountTab";
 import Video from 'react-native-video';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import HeaderSearchBar from '../components/common/HeaderSearchBar'
-import AccountTab from './BookMarkTabs/AccountTab'
-
+import AccountTab from './BookMarkTabs/AccountTab';
+import Feather from 'react-native-vector-icons/Feather';
 const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
   return (
@@ -63,9 +63,9 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
             <View>
               <Video
                 ref={(ref) => {
-                  this[`player${idx}`] = ref
+                  this[`userAcc${idx}`] = ref
                 }}
-                onLoad={() => { this[`player${idx}`].seek(0) }}
+                onLoad={() => { this[`userAcc${idx}`].seek(0) }}
                 repeat={false}
                 playInBackground={false}
                 paused={true}
@@ -136,7 +136,6 @@ class UserAccount extends Component {
   async componentDidMount() {
     const { loader } = this.props
     loader(true);
-    console.log("PARAMS->", this.props.route.params)
     if (this.props.route.params == undefined) {
       await this._getProfileDetailsAPICalling()
     }
@@ -222,7 +221,7 @@ class UserAccount extends Component {
     this.setState({ isAlreadyBookMarked: !isAlreadyBookMarked })
   }
   render() {
-    const { theme } = this.props
+    const { theme,navigation } = this.props
     let userDetails = this.props.route.params && this.props.route.params.userDetails ? this.props.route.params.userDetails : this.state.userDetails
     const { hashTagAvailable, filteredData, user_id, isAlreadyBookMarked } = this.state;
 
@@ -240,18 +239,26 @@ class UserAccount extends Component {
           }} >
             <ViewX style={{ flex: 1, flexDirection: "row", justifyContent: "flex-start" }} >
               <Image source={{ uri: userDetails.profilepic }} style={styles.imgProfile} />
-              <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(20), alignItems: 'flex-start' }} >
+              <ViewX style={{ paddingHorizontal: StyleConfig.convertHeightPerVal(10), alignItems: 'flex-start' }} >
                 <TextX align={'left'} style={{ color: theme.text, fontSize: StyleConfig.fontSizeH3 }}>{userDetails.name ? `${userDetails.name}` : ''}</TextX>
                 <TextX align={'left'} style={{ color: theme.textHint, fontSize: StyleConfig.fontSizeH3_4 }} >{userDetails.email}</TextX>
               </ViewX>
             </ViewX>
-            {showBookmark && <TouchableOpacity onPress={this._onBookmarkUser}>
+            {showBookmark ? <TouchableOpacity onPress={this._onBookmarkUser}>
               <Image
                 resizeMode="contain"
                 style={{ width: 25, height: 30, tintColor: isAlreadyBookMarked ? 'blue' : 'grey' }}
                 source={AppImages.ic_bookmark}
               />
-            </TouchableOpacity>}
+            </TouchableOpacity> :
+            <Feather
+              onPress={()=> navigation.navigate('ProfileMenu')}
+              style={{ paddingRight: StyleConfig.convertHeightPerVal(10) }}
+              name={"menu"}
+              color={theme.text}
+              size={StyleConfig.iconSize}
+            />
+            }
           </ViewX>
 
 
@@ -280,7 +287,7 @@ class UserAccount extends Component {
           numColumns={2}
           keyExtractor={(_, idx) => `foodGlr-${idx}`}
           data={filteredData}
-          renderItem={({ item, idx }) => <FavoriteFood {...{ item, idx }} onPres={() => this.onFoodItemPress(item)} />}
+          renderItem={({ item, index }) => <FavoriteFood {...{ item, idx:index }} onPres={() => this.onFoodItemPress(item)} />}
         />
       </SafeAreaView>
     );
