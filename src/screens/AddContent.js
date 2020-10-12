@@ -1155,6 +1155,9 @@ class AddContent extends Component {
         }}>Select Tag</TextX>
         <ViewX style={{ flexDirection: 'row', flexWrap: "wrap", alignItems: 'flex-start', justifyContent: 'flex-start', margin: 4 }}>
           {hashTag.map((item, itemIndex) => {
+            if(itemIndex == 3){
+              return null;
+            }else{
             return (
               <TouchableOpacity onPress={() => {
                 hashTag[itemIndex].isSelected = !hashTag[itemIndex].isSelected;
@@ -1172,11 +1175,32 @@ class AddContent extends Component {
                      fontSize: StyleConfig.fontSizeH3,
                      paddingHorizontal: StyleConfig.convertWidthPerVal(10),
                      paddingVertical: StyleConfig.convertHeightPerVal(8),
-                  }}>{item.name}</TextX>
+                    }}>{item.name}</TextX>
                 </ViewX>
               </TouchableOpacity>
-            )
+            )}
           })}
+        </ViewX>
+        <ViewX style={{ flexDirection: 'row', flexWrap: "wrap", alignItems: 'flex-start', justifyContent: 'flex-start', margin: 4 }}>
+              <TouchableOpacity onPress={() => {
+                hashTag[3].isSelected = !hashTag[3].isSelected;
+                this.setState({ hashTag })
+              }}>
+                <ViewX style={{
+                  borderWidth: 0.8,
+                  borderRadius: 8,
+                  marginHorizontal: 4,
+                  backgroundColor: hashTag[3].isSelected ? theme.selectedIconColor : theme.tabBackground
+                }}>
+                  <TextX style={{
+                     textAlign: "left",
+                     color: theme.text,
+                     fontSize: StyleConfig.fontSizeH3,
+                     paddingHorizontal: StyleConfig.convertWidthPerVal(10),
+                     paddingVertical: StyleConfig.convertHeightPerVal(8),
+                    }}>{hashTag[3].name}</TextX>
+                </ViewX>
+              </TouchableOpacity>
         </ViewX>
       </ViewX>
     )
@@ -1192,7 +1216,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: StyleConfig.countPixelRatio(12),
-    marginBottom: StyleConfig.countPixelRatio(12),
+    
     height: StyleConfig.countPixelRatio(44)
   },
   backBtn: {
