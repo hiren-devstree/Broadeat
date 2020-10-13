@@ -95,7 +95,7 @@ class HomeScreen extends Component {
     // const { loader } = this.props
     // loader(true)
     console.log('==============')
-    debugger
+
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
     // this.props.loader(false)

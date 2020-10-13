@@ -34,11 +34,15 @@ const FilterBubble = withTheme(({ theme, ...props }) => {
   )
 })
 
-const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
+const FilterHeader = withTheme(({ theme, onPress, onChangeValue, ...props }) => {
 
   const { navigation } = props;
   const [value, setValue] = useState('')
-  const onChange = (value) => (setValue(value));
+  const onChange = (value) => {
+    const { text } = value.nativeEvent
+    onChangeValue(text)
+    setValue(value)
+  }
 
   return (
     <ViewX style={{ flexDirection: "row", }} >
@@ -57,12 +61,12 @@ const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
           containerStyle={{
             flex: 1,
             backgroundColor: "transparent",
-            borderTopWidth:0,
-            borderBottomWidth:0
+            borderTopWidth: 0,
+            borderBottomWidth: 0
 
           }}
 
-          inputStyle={{ color: theme.text, textAlign:'center' }}
+          inputStyle={{ color: theme.text, textAlign: 'center' }}
           inputContainerStyle={{
             // borderWidth: StyleConfig.countPixelRatio(0.6),
             // borderColor: theme.text,
@@ -81,7 +85,7 @@ const FilterHeader = withTheme(({ theme, onPress, ...props }) => {
       <Button
         title={"Done"}
         buttonStyle={{ backgroundColor: theme.background }}
-        titleStyle={{color: StyleConfig.blue}}
+        titleStyle={{ color: StyleConfig.blue }}
         onPress={() => onPress()}
       />
     </ViewX>
@@ -93,7 +97,8 @@ class FilterScreen extends Component {
     super(props);
     this.state = {
       data: [],
-      selectedTag: []
+      selectedTag: [],
+      searchText: ''
     }
   }
 
@@ -113,23 +118,24 @@ class FilterScreen extends Component {
       })
       tempArr.push({ title: item.category_type, data: temp })
     })
-    console.log({"data":tempArr})
+    console.log({ "data": tempArr })
     this.setState({ data: tempArr })
   }
 
   _applyFilters = async () => {
-    const { selectedTag } = this.state
+    const { selectedTag, searchText } = this.state
+    console.log({ searchText })
     let token = await AsyncStorage.getItem('user_token')
     let data = selectedTag.toString()
-    if(data.length > 0){
+    if (data.length > 0) {
       let raw = {
         tags: data
       }
       let response = await applyFilters(raw, token)
-      
+
       if (response.code === 1) {
         if (response.data.length > 0) {
-          this.props.navigation.navigate("SearchResult", { data: response.data, selectedTag })
+          this.props.navigation.navigate("SearchResult", { data: response.data, selectedTag, text: searchText })
         } else {
           Alert.alert(response.message)
         }
@@ -137,68 +143,71 @@ class FilterScreen extends Component {
         Alert.alert(response.message)
       }
     }
-    
+
+  }
+
+  _onChangeSearchValue = (value) => {
+    this.setState({ searchText: value })
   }
 
   render() {
     const { theme, navigation } = this.props;
-    const { data } = this.state
+    const { data, searchText } = this.state
     let selectedTag = [];
-    for(let ind in data){
-      for(let subInd in data[ind].data){
-        if(data[ind]['data'][subInd].select){
+    for (let ind in data) {
+      for (let subInd in data[ind].data) {
+        if (data[ind]['data'][subInd].select) {
           selectedTag.push(data[ind]['data'][subInd])
         }
       }
     }
     let formatedData = [];
-    for(let ind in data){
-      let {data:subData, ...rest} = data[ind];
-      let newSubData= [[]];
-      let currInd=0; 
-      for(let subInd in data[ind].data){
+    for (let ind in data) {
+      let { data: subData, ...rest } = data[ind];
+      let newSubData = [[]];
+      let currInd = 0;
+      for (let subInd in data[ind].data) {
         newSubData[currInd].push(data[ind]['data'][subInd]);
-        if((subInd+1) %3 == 0){
+        if ((subInd + 1) % 3 == 0) {
           newSubData.push([]);
           currInd++;
         }
       }
-      formatedData.push({...rest, data:newSubData});
+      formatedData.push({ ...rest, data: newSubData });
     }
-    console.log({formatedData})
 
     return (
       <SafeAreaView  {...this.props}>
-        <FilterHeader {...{ navigation }} onPress={() => this._applyFilters()} />
-        {selectedTag.length > 0 && 
-          <View style={{height: StyleConfig.convertHeightPerVal(54)}}>
-          <FlatList
-            horizontal 
-            data={selectedTag}
-            extraData={this.state}
-            renderItem={({item,index})=>(
-              <View key={`header-${index}`}>
-              <FilterBubble
-                onPress={() => {
-                  item.select = !item.select
-                  let selectedTag = this.state.selectedTag
-                  if (selectedTag.includes(item.tag_name)) {
-                    let index = selectedTag.indexOf(item.tag_name)
-                    if (index !== -1) {
-                      selectedTag.splice(index, 1)
-                    }
-                  } else {
-                    selectedTag.push(item.tag_name)
-                  }
-                  this.setState({ data: data, selectedTag: selectedTag })
-                }}
-                name={item.tag_name}
-                isSelected={item.select}
+        <FilterHeader {...{ navigation }} onChangeValue={(event) => this._onChangeSearchValue(event)} onPress={this._applyFilters} />
+        {selectedTag.length > 0 &&
+          <View style={{ height: StyleConfig.convertHeightPerVal(54) }}>
+            <FlatList
+              horizontal
+              data={selectedTag}
+              extraData={this.state}
+              renderItem={({ item, index }) => (
+                <View key={`header-${index}`}>
+                  <FilterBubble
+                    onPress={() => {
+                      item.select = !item.select
+                      let selectedTag = this.state.selectedTag
+                      if (selectedTag.includes(item.tag_name)) {
+                        let index = selectedTag.indexOf(item.tag_name)
+                        if (index !== -1) {
+                          selectedTag.splice(index, 1)
+                        }
+                      } else {
+                        selectedTag.push(item.tag_name)
+                      }
+                      this.setState({ data: data, selectedTag: selectedTag })
+                    }}
+                    name={item.tag_name}
+                    isSelected={item.select}
+                  />
+                </View>
+              )}
             />
-          </View>
-            )}
-          />
-        </View>}
+          </View>}
         <ScrollView>
           <ViewX style={{ alignItems: 'flex-start' }}  {...this.props} >
             {
@@ -217,15 +226,15 @@ class FilterScreen extends Component {
                       fontSize: StyleConfig.fontSizeH3
                     }} >{_.title.toUpperCase()}</TextX>
                     <View>
-                      {_.data.map((mItem, ind)=><ViewX style={{
-                      paddingVertical: 5,
-                      width: StyleConfig.width,
-                      flexWrap: "wrap",
-                      justifyContent: "flex-start",
-                      flexDirection: "row"
-                    }} >
-                      {
-                        mItem.map((itm, idx) => <FilterBubble
+                      {_.data.map((mItem, ind) => <ViewX style={{
+                        paddingVertical: 5,
+                        width: StyleConfig.width,
+                        flexWrap: "wrap",
+                        justifyContent: "flex-start",
+                        flexDirection: "row"
+                      }} >
+                        {
+                          mItem.map((itm, idx) => <FilterBubble
                             key={`fb-${idx}`}
                             name={itm.tag_name}
                             isSelected={itm.select}
@@ -244,10 +253,10 @@ class FilterScreen extends Component {
                               this.setState({ data: data, selectedTag: selectedTag })
                             }}
                           />)
-                      }
-                    </ViewX>)}
+                        }
+                      </ViewX>)}
                     </View>
-                    
+
                   </ViewX>
                 )
               })

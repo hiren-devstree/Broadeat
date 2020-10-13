@@ -9,10 +9,16 @@ import StyleConfig from '../../assets/styles/StyleConfig';
 import BackButton from './BackButton';
 
 class SaerchHeader extends React.Component {
+  constructor(props) {
+    super(props)
+    console.log('CONSTRUCTOR-', props.text)
+    this.state = {
+      search: props.text,
+    }
 
-  state = {
-    search: '',
-  };
+
+  }
+
 
   updateSearch = search => {
     this.setState({ search });
@@ -25,9 +31,10 @@ class SaerchHeader extends React.Component {
     if (this.searchTextInput) {
       this.searchTextInput.focus()
     }
-    if (this.props.text) {
-      this.setState({ search: this.props.text })
-    }
+    // console.log(this.props.text)
+    // if (this.props.text) {
+    //   this.setState({ search: this.props.text })
+    // }
   }
 
 
@@ -87,15 +94,15 @@ class SaerchHeader extends React.Component {
             showFilterMenu
               ?
               <View style={{ flexDirection: "row" }} >
-                { showFilter && <Ionicons
+                {showFilter && <Ionicons
                   onPress={this.props.onFilterPress}
                   style={{ paddingRight: StyleConfig.convertHeightPerVal(10) }}
                   name={"ios-funnel"}
                   color={theme.text}
                   size={StyleConfig.iconSize}
                 />}
-                { showMenu && <Feather
-                  onPress={()=> navigation.navigate('ProfileMenu')}
+                {showMenu && <Feather
+                  onPress={() => navigation.navigate('ProfileMenu')}
                   style={{ paddingRight: StyleConfig.convertHeightPerVal(10) }}
                   name={"menu"}
                   color={theme.text}

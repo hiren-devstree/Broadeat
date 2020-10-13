@@ -2,6 +2,8 @@ const SERVER = 'http://3.20.100.25/'
 const BASE_URL = `${SERVER}broadeat/api/`
 export const IMAGE_PATH = `${SERVER}broadeat/`
 
+export const SENTRY_URL = 'https://38bd6b601bd149daa3c0ba7f4ec4c814@o326473.ingest.sentry.io/5461554'
+
 export const KEY_POST_LOGIN = `${BASE_URL}user/login`
 export const REGISTER_URL = `${BASE_URL}user/register`
 export const FORGOT_PASSWORD_URL = `${BASE_URL}user/forgotpassword`

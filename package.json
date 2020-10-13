@@ -22,6 +22,7 @@
     "@react-navigation/bottom-tabs": "^5.4.5",
     "@react-navigation/native": "^5.2.4",
     "@react-navigation/stack": "^5.2.19",
+    "@sentry/react-native": "^1.9.0",
     "jetifier": "^1.6.6",
     "react": "16.11.0",
     "react-native": "0.62.2",

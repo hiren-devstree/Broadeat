@@ -34,24 +34,25 @@ const FilterBubble = withTheme(({ theme, ...props }) => {
 class SearchResult extends Component {
   constructor(props) {
     super(props)
-    console.log({ selectedTag: props.route.params.selectedTag })
+    console.log("text-- ", props.route.params.text)
     this.state = {
       data: [],
       showFilter: false,
       selectedTag: props.route.params.selectedTag
     }
-
-    props.navigation.setOptions({
-      header: ({ tintColor }) => (
-        <HeaderSearchBar  {...props} showMenu showFilter={props.route.params.selectedTag ? true : false} showFilterMenu onFilterPress={this.onFilterPress} back={true} reload={true} text={props.route.params.text} />
-      )
-    })
   }
 
   onFilterPress = () => {
     this.setState({ showFilters: true })
   }
   componentDidMount() {
+
+    this.props.navigation.setOptions({
+      header: ({ tintColor }) => (
+        <HeaderSearchBar  {...this.props} showMenu showFilter={this.props.route.params.selectedTag ? true : false} showFilterMenu onFilterPress={this.onFilterPress} back={true} reload={true} text={this.props.route.params.text} />
+      )
+    })
+
     let data = this.props.route.params.data
     this.setState({ data })
   }
@@ -61,7 +62,7 @@ class SearchResult extends Component {
     return (
       <SafeAreaView {...this.props}>
         <View1CC style={{ flex: 0, }} {...this.props} >
-          {selectedTag.length > 0 && showFilters &&
+          {selectedTag && selectedTag.length > 0 && showFilters &&
             <View style={{ width: StyleConfig.width, height: StyleConfig.convertHeightPerVal(54) }}>
               <FlatList
                 horizontal
