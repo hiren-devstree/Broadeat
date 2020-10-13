@@ -11,7 +11,7 @@ import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import AppImages from '../assets/images';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { SafeAreaView, View1CC, ViewX,Devider, CText, CTextColor, TextX } from '../components/common';
+import { SafeAreaView, View1CC, ViewX, Devider, CText, CTextColor, TextX } from '../components/common';
 import FoodResultRow from '../components/common/FoodResultRow';
 import Video from 'react-native-video';
 import HeaderSearchBar from '../components/common/HeaderSearchBar'
@@ -19,22 +19,22 @@ import { withTheme } from 'styled-components';
 const FilterBubble = withTheme(({ theme, ...props }) => {
   const { name, onPress, isSelected } = props
   return (
-      <ViewX style={{
-        borderRadius: StyleConfig.convertWidthPerVal(20),
-        padding: StyleConfig.convertWidthPerVal(10),
-        margin: StyleConfig.convertWidthPerVal(5),
-        backgroundColor: isSelected ? theme.filterOn : theme.filterOff
-      }} >
-        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.fontSizeH3 }} >{name}</TextX>
-      </ViewX>
-    
+    <ViewX style={{
+      borderRadius: StyleConfig.convertWidthPerVal(20),
+      padding: StyleConfig.convertWidthPerVal(10),
+      margin: StyleConfig.convertWidthPerVal(5),
+      backgroundColor: isSelected ? theme.filterOn : theme.filterOff
+    }} >
+      <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.fontSizeH3 }} >{name}</TextX>
+    </ViewX>
+
   )
 })
 
 class SearchResult extends Component {
   constructor(props) {
     super(props)
-    console.log({selectedTag:props.route.params.selectedTag})
+    console.log({ selectedTag: props.route.params.selectedTag })
     this.state = {
       data: [],
       showFilter: false,
@@ -43,13 +43,13 @@ class SearchResult extends Component {
 
     props.navigation.setOptions({
       header: ({ tintColor }) => (
-        <HeaderSearchBar  {...props} showMenu showFilter={props.route.params.selectedTag?true:false} showFilterMenu onFilterPress={this.onFilterPress} back={true} reload={true} text={props.route.params.text} />
+        <HeaderSearchBar  {...props} showMenu showFilter={props.route.params.selectedTag ? true : false} showFilterMenu onFilterPress={this.onFilterPress} back={true} reload={true} text={props.route.params.text} />
       )
     })
   }
 
-  onFilterPress=()=>{
-    this.setState({showFilters:true})
+  onFilterPress = () => {
+    this.setState({ showFilters: true })
   }
   componentDidMount() {
     let data = this.props.route.params.data
@@ -60,23 +60,23 @@ class SearchResult extends Component {
     const { selectedTag, showFilters } = this.state;
     return (
       <SafeAreaView {...this.props}>
-        <View1CC style={{ flex: 0,  }} {...this.props} >
-        {selectedTag.length > 0 && showFilters && 
-          <View style={{ width:StyleConfig.width , height: StyleConfig.convertHeightPerVal(54)}}>
-          <FlatList
-            horizontal 
-            data={selectedTag}
-            extraData={this.state}
-            renderItem={({item,index})=>(
-              <View key={`header-${index}`}>
-              <FilterBubble
-                name={item}
-                isSelected={true}
-            />
-          </View>
-            )}
-          />
-        </View>}
+        <View1CC style={{ flex: 0, }} {...this.props} >
+          {selectedTag.length > 0 && showFilters &&
+            <View style={{ width: StyleConfig.width, height: StyleConfig.convertHeightPerVal(54) }}>
+              <FlatList
+                horizontal
+                data={selectedTag}
+                extraData={this.state}
+                renderItem={({ item, index }) => (
+                  <View key={`header-${index}`}>
+                    <FilterBubble
+                      name={item}
+                      isSelected={true}
+                    />
+                  </View>
+                )}
+              />
+            </View>}
           <FlatList
             data={this.state.data}
             keyExtractor={(_, idx) => `search-${idx}`}

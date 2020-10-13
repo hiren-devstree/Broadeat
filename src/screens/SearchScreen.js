@@ -115,7 +115,7 @@ class SearchScreen extends Component {
     let response = await getSearchRecipeList(data, token)
     if (response.code === 1) {
       if (response.data.length > 0) {
-        this.props.navigation.navigate("SearchResult", { data: response.data, text: tagName })
+        this.props.navigation.navigate("SearchResult", { data: response.data, text: tagName, selectedTag: tagName })
       } else {
         Alert.alert(response.message)
       }

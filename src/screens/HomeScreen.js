@@ -19,11 +19,13 @@ import withUser from '../redux/actionCreator/withUser';
 import HeaderSearchBar from '../components/common/HeaderSearchBar';
 import AppImages from '../assets/images';
 import Video from 'react-native-video';
+
+let _this = undefined
 class HomeScreen extends Component {
 
   constructor(props) {
     super(props)
-
+    _this = this
     this.state = {
       data: []
     }
@@ -32,9 +34,9 @@ class HomeScreen extends Component {
     _getProfileDetailsAPICalling = async () => {
       const { loader } = this.props
       let token = await AsyncStorage.getItem('user_token')
-      loader(true)
+      // loader(true)
       let response = await getUserDetails(token)
-      loader(false)
+      // loader(false)
       console.log("getUserDetails", response)
       if (response.code === 1) {
         this.setState({ userDetails: response.data })
@@ -90,14 +92,15 @@ class HomeScreen extends Component {
     })
   }
   static reloadScreen = async () => {
-    const { loader } = this.props
+    // const { loader } = this.props
     // loader(true)
     console.log('==============')
+    debugger
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
     // this.props.loader(false)
     if (response.code === 1) {
-      this.setState({ data: response.data })
+      _this.setState({ data: response.data })
     } else {
       setTimeout(() => {
         Alert.alert(response.message)
@@ -108,11 +111,11 @@ class HomeScreen extends Component {
   refreshScreen = async () => {
     console.log("HOME reload screen")
     const { loader } = this.props
-    loader(true)
+    // loader(true)
     let token = await AsyncStorage.getItem('user_token')
     let response = await getRecipeData(token)
     console.log("Loader", false)
-    this.props.loader(false)
+    // this.props.loader(false)
     console.log("getRecipeData", response)
     if (response.code === 1) {
       this.setState({ data: response.data })
