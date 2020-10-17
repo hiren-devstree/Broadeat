@@ -93,11 +93,11 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
   )
 })
 const INIT_FILTER = [
-  { "name": "View All", isSelected: false },
-  { "name": "Pastas", isSelected: false },
-  { "name": "Salads", isSelected: false },
-  { "name": "Deserts", isSelected: false },
-  { "name": "Vegetarian", isSelected: false }];
+  { "_id": 0, "name": "View All", isSelected: true },
+  { "_id": 1, "name": "Pastas", isSelected: false },
+  { "_id": 2, "name": "Salads", isSelected: false },
+  { "_id": 3, "name": "Desserts", isSelected: false },
+  { "_id": 4, "name": "Vegetarian", isSelected: false }];
 
 class UserAccount extends Component {
 
@@ -182,28 +182,57 @@ class UserAccount extends Component {
   onFoodItemPress(item) {
     this.props.navigation.navigate('PhotoRecipeDetails', { data: item.id })
   }
-  _onFilterChange = (index) => {
+  _onFilterChange = (item) => {
     let { data, filters } = this.state
-    filters[index].isSelected = !filters[index].isSelected;
+
+    for (let filInd in filters) {
+      if (filters[filInd].name == item.name) {
+        filters[filInd].isSelected = !filters[filInd].isSelected;
+      }
+    }
+
+    if (item._id == 0) {
+      for (let filInd in filters) {
+        filters[filInd].isSelected = filInd == 0 ? true : false
+      }
+    } else if (item._id != 0 && filters[0].isSelected) {
+      filters[0].isSelected = false
+    }
+
     let fil = []
     for (let ind in filters) {
       if (filters[ind].isSelected == true)
         fil.push(filters[ind].name);
     }
-    if (fil.length > 0) {
+
+    let isAllFalse = false
+    filters.forEach((item, idx) => {
+      if (item.isSelected == true) {
+        isAllFalse = true
+      }
+    })
+
+    if (!isAllFalse) {
+      filters[0].isSelected = true
+    }
+
+    console.log({ fil, filters })
+    if (fil.length == 0 || (fil.length == 1 && fil[0] == filters[0].name)) {
+      console.log("State 1", data)
+      this.setState({ filteredData: data, filters });
+    } else {
+      console.log("State 2")
       let filteredData = [];
       for (let ind in data) {
         for (let subInd in data[ind].recipe_hashtags) {
           if (fil.includes(data[ind].recipe_hashtags[subInd].hashtag_name)) {
             filteredData.push(data[ind])
+            break;
           }
         }
       }
       this.setState({ filteredData: filteredData, filters });
-    } else {
-      this.setState({ filteredData: data, filters });
     }
-
   }
   _onBookmarkUser = async () => {
     const { loader } = this.props
@@ -221,7 +250,7 @@ class UserAccount extends Component {
     this.setState({ isAlreadyBookMarked: !isAlreadyBookMarked })
   }
   render() {
-    const { theme,navigation } = this.props
+    const { theme, navigation } = this.props
     let userDetails = this.props.route.params && this.props.route.params.userDetails ? this.props.route.params.userDetails : this.state.userDetails
     const { hashTagAvailable, filteredData, user_id, isAlreadyBookMarked } = this.state;
 
@@ -251,13 +280,13 @@ class UserAccount extends Component {
                 source={AppImages.ic_bookmark}
               />
             </TouchableOpacity> :
-            <Feather
-              onPress={()=> navigation.navigate('ProfileMenu')}
-              style={{ paddingRight: StyleConfig.convertHeightPerVal(10) }}
-              name={"menu"}
-              color={theme.text}
-              size={StyleConfig.iconSize}
-            />
+              <Feather
+                onPress={() => navigation.navigate('ProfileMenu')}
+                style={{ paddingRight: StyleConfig.convertHeightPerVal(10) }}
+                name={"menu"}
+                color={theme.text}
+                size={StyleConfig.iconSize}
+              />
             }
           </ViewX>
 
@@ -276,7 +305,7 @@ class UserAccount extends Component {
             }} >
               {
                 hashTagAvailable.map((item, idx) => <FilterBubble
-                  onPress={() => this._onFilterChange(idx)}
+                  onPress={() => this._onFilterChange(item)}
                   key={`filter-${idx}`} {...{ item }} />)
               }
             </ViewX>
@@ -287,7 +316,7 @@ class UserAccount extends Component {
           numColumns={2}
           keyExtractor={(_, idx) => `foodGlr-${idx}`}
           data={filteredData}
-          renderItem={({ item, index }) => <FavoriteFood {...{ item, idx:index }} onPres={() => this.onFoodItemPress(item)} />}
+          renderItem={({ item, index }) => <FavoriteFood {...{ item, idx: index }} onPres={() => this.onFoodItemPress(item)} />}
         />
       </SafeAreaView>
     );

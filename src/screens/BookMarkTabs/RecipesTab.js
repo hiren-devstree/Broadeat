@@ -20,7 +20,7 @@ const INIT_FILTER = [
   { "_id": 0, "name": "View All", isSelected: true },
   { "_id": 1, "name": "Pastas", isSelected: false },
   { "_id": 2, "name": "Salads", isSelected: false },
-  { "_id": 3, "name": "Deserts", isSelected: false },
+  { "_id": 3, "name": "Desserts", isSelected: false },
   { "_id": 4, "name": "Vegetarian", isSelected: false }];
 const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
@@ -191,6 +191,18 @@ class RecipesTab extends Component {
       if (filters[ind].isSelected == true)
         fil.push(filters[ind].name);
     }
+
+    let isAllFalse = false
+    filters.forEach((item, idx) => {
+      if (item.isSelected == true) {
+        isAllFalse = true
+      }
+    })
+
+    if (!isAllFalse) {
+      filters[0].isSelected = true
+    }
+
     console.log({ fil, filters })
     if (fil.length == 0 || (fil.length == 1 && fil[0] == filters[0].name)) {
       console.log("State 1", data)

@@ -174,7 +174,7 @@ const FIlterStackNavigator = withTheme(({ theme, ...props }) => {
       />
       <FIlterNavigator.Screen
         options={({ route, navigation }) => ({
-          header: () => (<HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />)
+          // header: () => (<HeaderSearchBar back showFilterMenu  {...{ navigation, route }} />)
         })}
         name="SearchResult" component={SearchResult}
       />
