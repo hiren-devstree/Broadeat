@@ -26,13 +26,15 @@ const FilterBubble = withTheme(({ theme, item, onPress }) => {
   const { cLightCyan, filterOn } = theme;
   return (
     <TouchableOpacity onPress={onPress}>
-      <ViewX style={{
-        marginHorizontal: StyleConfig.convertWidthPerVal(5),
-        padding: StyleConfig.convertWidthPerVal(8),
-        backgroundColor: item.isSelected ? filterOn : cLightCyan,
-        borderRadius: 20
-      }}>
-        <TextX style={{ fontSize: StyleConfig.fontSizeH3_4, color: !item.isSelected ? filterOn : cLightCyan, }} >{item.name}</TextX>
+       <ViewX style={{
+        borderRadius: StyleConfig.convertWidthPerVal(20),
+        paddingHorizontal: StyleConfig.convertWidthPerVal(12),
+        paddingVertical: StyleConfig.convertWidthPerVal(8),
+        marginHorizontal: StyleConfig.convertWidthPerVal(4),
+        marginTop: StyleConfig.convertWidthPerVal(4),
+        backgroundColor: isSelected ? theme.filterOn : theme.filterOff
+      }} >
+        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.bubleFontSize }} >{name}</TextX>
       </ViewX>
     </TouchableOpacity>
   )

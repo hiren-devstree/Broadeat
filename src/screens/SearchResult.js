@@ -21,11 +21,13 @@ const FilterBubble = withTheme(({ theme, ...props }) => {
   return (
     <ViewX style={{
       borderRadius: StyleConfig.convertWidthPerVal(20),
-      padding: StyleConfig.convertWidthPerVal(10),
-      margin: StyleConfig.convertWidthPerVal(5),
+      paddingHorizontal: StyleConfig.convertWidthPerVal(12),
+      paddingVertical: StyleConfig.convertWidthPerVal(8),
+      marginHorizontal: StyleConfig.convertWidthPerVal(4),
+      marginTop: StyleConfig.convertWidthPerVal(4),
       backgroundColor: isSelected ? theme.filterOn : theme.filterOff
     }} >
-      <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.fontSizeH3 }} >{name}</TextX>
+      <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.bubleFontSize }} >{name}</TextX>
     </ViewX>
 
   )

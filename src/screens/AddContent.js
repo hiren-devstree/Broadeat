@@ -143,7 +143,7 @@ const FilterBubble = withTheme(({ theme, ...props }) => {
         margin: StyleConfig.convertWidthPerVal(5),
         backgroundColor: isSelected ? theme.filterOn : theme.filterOff
       }} >
-        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.fontSizeH3 }} >{name}</TextX>
+        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.bubleFontSize }} >{name}</TextX>
       </ViewX>
     </TouchableWithoutFeedback>
   )

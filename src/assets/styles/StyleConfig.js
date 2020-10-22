@@ -35,6 +35,7 @@ export default {
   // fontBold: 'Roboto-Bold',
   // fontItalic: 'Roboto-Italic',
   // fontBoldItalic: 'Roboto-Bold-Italic',
+  bubleFontSize: 17*ratioCount,
   fontSizeH1: 26 * ratioCount,
   fontSizeH2: 20 * ratioCount,
   fontSizeH2_3: 18 * ratioCount,
