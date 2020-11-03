@@ -21,6 +21,7 @@ import {
   POST_USER_BOOKMARK,
   GET_COMMENT_LIST,
   POST_COMMENT_LIST,
+  DELETE_COMMENT
 } from './../helper/Constants'
 
 
@@ -121,6 +122,23 @@ const ApiManager = {
     myHeaders.append("Content-Type", "application/json")
 
     return fetch(RECIPE_DATA_URL, {
+      method: 'GET',
+      headers: myHeaders,
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
+  deleteComment: async (token, commentId) => {
+    console.log('DELETE COMMENT CALLED!!!!')
+    let myHeaders = new Headers()
+    myHeaders.append('Authorization', `Bearer ${token}`)
+    myHeaders.append("Content-Type", "application/json")
+
+    return fetch(`${DELETE_COMMENT}${commentId}`, {
       method: 'GET',
       headers: myHeaders,
     }).then((response) => {

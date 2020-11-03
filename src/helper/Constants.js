@@ -26,6 +26,7 @@ export const POST_ADD_UPDATE_ACTIVITY = `${BASE_URL}recipe/AddUpdateActivity`;
 export const POST_USER_BOOKMARK = `${BASE_URL}recipe/UserBookmark`;
 export const GET_COMMENT_LIST = `${BASE_URL}recipe/comment/list/`
 export const POST_COMMENT_LIST = `${BASE_URL}recipe/comment/add`
+export const DELETE_COMMENT = `${BASE_URL}recipe/comment/delete/`
 export const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
 export const KEY_PREF_ANDROID_THEME = "PREF_ANDROID_THEME"

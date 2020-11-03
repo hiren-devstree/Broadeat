@@ -13,7 +13,7 @@ import FastImage from 'react-native-fast-image'
 import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import StyleConfig from '../assets/styles/StyleConfig';
-import { getCommentList, postComment } from './../apiManager'
+import { getCommentList, postComment, deleteComment } from './../apiManager'
 
 // Component Imports
 import {
@@ -69,6 +69,16 @@ class CommentList extends Component {
       this.inputRef.focus()
     })
   }
+  _deleteBtnPressed=async (item)=>{
+    const { comment_id } = item
+    let token = await AsyncStorage.getItem('user_token')
+    const { loader } = this.props
+
+    loader(true)
+    let result = await deleteComment(token, comment_id)
+    console.log(result)
+    this._getCommentList()
+  }
 
   _onSendBtnPressed = async () => {
     const { commentId, commentText, user_id, recipeData } = this.state
@@ -102,13 +112,7 @@ class CommentList extends Component {
     loader(true)
     let result = await postComment(urlencoded, token)
     console.log(result)
-    // debugger
-    // this.props.loader(false)
-
     this._getCommentList()
-
-
-
   }
 
   _getCommentList = async () => {
@@ -122,9 +126,12 @@ class CommentList extends Component {
     if (response.code === 1) {
       this.setState({ comments: response.data, commentText: '' })
     } else  if(response.message != "No data found"){
+      this.setState({ comments: [], commentText: '' })
       setTimeout(() => {
         Alert.alert(response.message)
       }, 500)
+    }else{
+      this.setState({ comments: [], commentText: '' })
     }
   }
 
@@ -177,7 +184,7 @@ class CommentList extends Component {
   }
 
   renderFlatlistVIew = () => {
-    const { comments } = this.state
+    const { comments, user_id } = this.state
     return (
       <FlatList
         style={{ flex: 1 }}
@@ -204,10 +211,20 @@ class CommentList extends Component {
               }}>
                 <TextX align={'left'} fontSize={StyleConfig.fontSizeH3} >{item.name}</TextX>
                 <TextX align={'left'} fontSize={StyleConfig.fontSizeH2_3} style={{ flexWrap: 'wrap' }} >{item.message}</TextX>
+                <View style={{flexDirection:'row-reverse'}}>
+                  <TouchableOpacity onPress={() => this._replyBtnPressed(item)}>
+                    <TextX align={'right'} fontSize={StyleConfig.fontSizeH3} >{'Reply'}</TextX>
+                  </TouchableOpacity>
+                  
+                  <View style={{width:StyleConfig.countPixelRatio(16)}} />
+                  
+                  {item.user_id == user_id && <TouchableOpacity onPress={() => this._deleteBtnPressed(item)}>
+                    <TextX align={'right'} fontSize={StyleConfig.fontSizeH3} >{'Delete'}</TextX>
+                  </TouchableOpacity>}
+                  
+                </View>
+                
 
-                {<TouchableOpacity onPress={() => this._replyBtnPressed(item)}>
-                  <TextX align={'right'} fontSize={StyleConfig.fontSizeH3} >{'Reply'}</TextX>
-                </TouchableOpacity>}
                 {item.reply && item.reply.length > 0 &&
                   item.reply.map((item, index) => {
                     return this.renderReplyUI(item, index)

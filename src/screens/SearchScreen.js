@@ -23,7 +23,8 @@ class SearchScreen extends Component {
     _this = this
     this.state = {
       data: [],
-      searchText: ''
+      searchText: '',
+      suggestion: false
     }
 
     props.navigation.setOptions({
@@ -74,7 +75,7 @@ class SearchScreen extends Component {
 
     console.log("response ==> ", response)
     if (response && response.code === 1) {
-      this.setState({ data: response.data })
+      this.setState({ data: response.data, suggestion: response.suggestion })
     } else {
       this.setState({ data: [] })
       //console.log(response.message)
@@ -125,7 +126,7 @@ class SearchScreen extends Component {
   }
 
   render() {
-    const { data } = this.state
+    const { data, suggestion } = this.state
     const { theme, navigation } = this.props;
 
     return (
@@ -144,7 +145,7 @@ class SearchScreen extends Component {
                 fontSize: StyleConfig.fontSizeH3,
                 fontWeight: "bold",
                 textAlign: "left"
-              }} >{"Recent"}</TextX>
+              }} >{suggestion ? "Suggestion":"Recent"}</TextX>
           </ViewX>
           <ScrollView
             style={{
@@ -178,12 +179,12 @@ class SearchScreen extends Component {
                         </ViewX>
                       </ViewX>
                     </TouchableWithoutFeedback>
-                    <Ionicons
+                    { !suggestion && <Ionicons
                       name={"ios-close"}
                       color={theme.text}
                       size={StyleConfig.iconSize * 1.4}
                       onPress={() => this._onDeleteRecord(item)}
-                    />
+                    />}
                   </ViewX>
                 )
               })

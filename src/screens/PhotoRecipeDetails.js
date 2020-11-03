@@ -611,6 +611,15 @@ class PhotoRecipeDetails extends Component {
 
   renderMethodListView = () => {
     const { data } = this.state
+    console.log({renderMethodListView:data})
+    let created_at = null
+    if(data && data.Recipe ){
+      created_at = data.Recipe.created_at;
+      // let temp = new Date(data.Recipe.created_at)
+      // console.log(data.Recipe.created_at ,temp.toString())
+      // created_at = `${temp.getDate()}-${temp.getMonth()+1}-${temp.getFullYear()}`
+    }
+
     return (
       <FlatList
         scrollEnabled={false}
@@ -621,6 +630,7 @@ class PhotoRecipeDetails extends Component {
         renderItem={this.renderMethodListCellContainer}
         ListFooterComponent={() => {
           return (
+            <>
             <TouchableOpacity style={{ marginVertical: 10 }}
               onPress={() => {
                 this.props.navigation.navigate('CommentList', { recipeData: data })
@@ -630,6 +640,12 @@ class PhotoRecipeDetails extends Component {
                 fontSize={StyleConfig.countPixelRatio(16)}
               >{`View all ${data.Recipe.comment_count} comments`}</TextX>
             </TouchableOpacity>
+            <View style={{height: StyleConfig.countPixelRatio(8)}} />
+            <TextX
+                align='left'
+                fontSize={StyleConfig.countPixelRatio(16)}
+              >{created_at == null ? '' : `Posted on: ${created_at}`}</TextX>
+            </>
           )
         }}
       />
