@@ -29,9 +29,9 @@ const FilterBubble = withTheme(({ theme, item, onPress }) => {
         paddingVertical: StyleConfig.convertWidthPerVal(8),
         marginHorizontal: StyleConfig.convertWidthPerVal(4),
         marginTop: StyleConfig.convertWidthPerVal(4),
-        backgroundColor: isSelected ? theme.filterOn : theme.filterOff
+        backgroundColor: item.isSelected ? theme.filterOn : theme.filterOff
       }} >
-        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.bubleFontSize }} >{name}</TextX>
+        <TextX style={{ fontWeight: "bold", fontSize: StyleConfig.bubleFontSize }} >{item.name}</TextX>
       </ViewX>
     </TouchableOpacity>
   )
@@ -65,9 +65,12 @@ const FavoriteFood = withTheme(({ theme, item, idx, onPres }) => {
             <View>
               <Video
                 ref={(ref) => {
-                  this[`userAcc${idx}`] = ref
+                  this[`user_acc${idx}`] = ref
                 }}
-                onLoad={() => { this[`userAcc${idx}`].seek(0) }}
+                onLoad={() => { 
+                  this[`user_acc${idx}`].seek(0) 
+                  
+                }}
                 repeat={false}
                 playInBackground={false}
                 paused={true}

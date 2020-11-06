@@ -108,7 +108,7 @@ class EditAccount extends Component {
     let myHeaders = new Headers()
     myHeaders.append('Authorization', `Bearer ${token}`)
     console.log('typeof proPic->', typeof proPic, proPic)
-    let filename = proPic.hasOwnProperty('uri') ? proPic.uri.split('/').pop() : 'image'
+    let filename = proPic.hasOwnProperty('path') ? proPic.path.split('/').pop() : 'image'
     var photo = {
       uri: proPic ? proPic.uri : '',
       type: 'image/jpg',
@@ -216,7 +216,7 @@ class EditAccount extends Component {
     const { proPic } = this.state
     let img = '';
     if (proPic) {
-      img = proPic.path ? proPic.path : proPic.uri;
+      img = proPic.uri ? proPic.uri : proPic.path;
     }
     console.log('img', img)
     const { theme } = this.props
@@ -228,9 +228,7 @@ class EditAccount extends Component {
             : <Image source={imgDummy} style={styles.imgProfile} />}
 
           <TouchableOpacity style={{ marginTop: 15 }} onPress={() => {
-            const options = {
-
-            };
+            const options = {};
 
             ImagePicker.launchImageLibrary(options, (images) => {
               console.log({ images })
