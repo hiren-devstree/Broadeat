@@ -427,7 +427,8 @@ class PhotoRecipeDetails extends Component {
     const { data } = this.state
     let listData = [];
     if (data) {
-      if (data.Recipe.image.includes("png") || data.Recipe.image.includes("jpg") || data.Recipe.image.includes("JPG") || data.Recipe.image.includes("jpeg") || data.Recipe.image.includes("JPEG") || data.Recipe.image.includes("PNG")) {
+      console.log(data.Recipe.thumbnail_image)
+      if (data.Recipe.image_type == "image") {
         listData.push({
           "id": 0, "media_type": "image", "media_name": data.Recipe.image
         })
@@ -440,6 +441,7 @@ class PhotoRecipeDetails extends Component {
     if (data && data.Media.length > 0) {
       listData = listData.concat(data.Media)
     }
+    console.log({ listData })
     return (
       <FlatList
         horizontal
@@ -452,6 +454,7 @@ class PhotoRecipeDetails extends Component {
                 uri: item.media_name,
                 priority: FastImage.priority.high,
               }}
+              onError={(err) => console.log({ err })}
               resizeMode={FastImage.resizeMode.cover}
             /> :
             <Video
