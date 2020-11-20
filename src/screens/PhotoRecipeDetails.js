@@ -121,6 +121,7 @@ class PhotoRecipeDetails extends Component {
     let reloadScreen = this.props.route.params.reloadScreen;
     loader(true)
     let response = await deleteReceipe(this.state.data.Recipe.id, token)
+    console.log({ deleteReceipe: response })
     loader(false)
     if (response.code == 1) {
       if (reloadScreen) {
@@ -295,7 +296,7 @@ class PhotoRecipeDetails extends Component {
     return (
       <SafeAreaView {...this.props} style={{ flex: 1, }}>
         {this.renderHeaderView()}
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }} >
           {this.renderItemMainImage()}
           {this.renderDescriptionView()}
           {this.renderTabButtons()}
@@ -611,9 +612,9 @@ class PhotoRecipeDetails extends Component {
 
   renderMethodListView = () => {
     const { data } = this.state
-    console.log({renderMethodListView:data})
+    console.log({ renderMethodListView: data })
     let created_at = null
-    if(data && data.Recipe ){
+    if (data && data.Recipe) {
       created_at = data.Recipe.created_at;
       // let temp = new Date(data.Recipe.created_at)
       // console.log(data.Recipe.created_at ,temp.toString())
@@ -631,17 +632,17 @@ class PhotoRecipeDetails extends Component {
         ListFooterComponent={() => {
           return (
             <>
-            <TouchableOpacity style={{ marginVertical: 10 }}
-              onPress={() => {
-                this.props.navigation.navigate('CommentList', { recipeData: data })
-              }}>
+              <TouchableOpacity style={{ marginVertical: 10 }}
+                onPress={() => {
+                  this.props.navigation.navigate('CommentList', { recipeData: data })
+                }}>
+                <TextX
+                  align='left'
+                  fontSize={StyleConfig.countPixelRatio(16)}
+                >{`View all ${data.Recipe.comment_count} comments`}</TextX>
+              </TouchableOpacity>
+              <View style={{ height: StyleConfig.countPixelRatio(8) }} />
               <TextX
-                align='left'
-                fontSize={StyleConfig.countPixelRatio(16)}
-              >{`View all ${data.Recipe.comment_count} comments`}</TextX>
-            </TouchableOpacity>
-            <View style={{height: StyleConfig.countPixelRatio(8)}} />
-            <TextX
                 align='left'
                 fontSize={StyleConfig.countPixelRatio(16)}
               >{created_at == null ? '' : `Posted on: ${created_at}`}</TextX>

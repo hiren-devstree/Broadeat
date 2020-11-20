@@ -21,11 +21,33 @@ import {
   POST_USER_BOOKMARK,
   GET_COMMENT_LIST,
   POST_COMMENT_LIST,
-  DELETE_COMMENT
+  DELETE_COMMENT,
+  SAVE_APP_USED
 } from './../helper/Constants'
 
 
 const ApiManager = {
+
+  saveAppUsed: async (start_time, end_time, token) => {
+    console.log({ start_time, end_time })
+    return fetch(SAVE_APP_USED, {
+      method: 'POST',
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        start_time, end_time
+      })
+    }).then((response) => {
+      return response.json()
+    }, function (error) {
+      console.log('error', error)
+    }).catch((error) => {
+      console.log('error', error)
+    });
+  },
   postLogin: async (email, password) => {
     console.log({ email, password })
     return fetch(KEY_POST_LOGIN, {
@@ -333,7 +355,7 @@ const ApiManager = {
     });
   },
   deleteReceipe: async (recipeId, token) => {
-    console.log('DELETE Recipe ID: ', recipeId)
+    console.log('DELETE Recipe ID: ', `${DELETE_RECIPE}${recipeId}`)
     let myHeaders = new Headers();
     myHeaders.append('Authorization', `Bearer ${token}`)
 

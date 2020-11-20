@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import {
   View, StyleSheet, Image, TouchableOpacity,
   FlatList, KeyboardAvoidingView, TextInput, ScrollView,
-  Alert, Platform
+  Alert, Platform, Text
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import Feather from 'react-native-vector-icons/Feather';
@@ -14,7 +14,7 @@ import withLoader from '../redux/actionCreator/withLoader';
 import withToast from '../redux/actionCreator/withToast';
 import StyleConfig from '../assets/styles/StyleConfig';
 import { getCommentList, postComment, deleteComment } from './../apiManager'
-
+import { SwipeListView } from 'react-native-swipe-list-view';
 // Component Imports
 import {
   SafeAreaView, ViewX, TextX,
@@ -69,7 +69,8 @@ class CommentList extends Component {
       this.inputRef.focus()
     })
   }
-  _deleteBtnPressed=async (item)=>{
+  _deleteBtnPressed = async (item) => {
+    //  console.log({ item })
     const { comment_id } = item
     let token = await AsyncStorage.getItem('user_token')
     const { loader } = this.props
@@ -125,12 +126,12 @@ class CommentList extends Component {
 
     if (response.code === 1) {
       this.setState({ comments: response.data, commentText: '' })
-    } else  if(response.message != "No data found"){
+    } else if (response.message != "No data found") {
       this.setState({ comments: [], commentText: '' })
       setTimeout(() => {
         Alert.alert(response.message)
       }, 500)
-    }else{
+    } else {
       this.setState({ comments: [], commentText: '' })
     }
   }
@@ -186,15 +187,14 @@ class CommentList extends Component {
   renderFlatlistVIew = () => {
     const { comments, user_id } = this.state
     return (
-      <FlatList
-        style={{ flex: 1 }}
+      <SwipeListView
         data={comments}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <View style={{
+          <ViewX style={{
             width: StyleConfig.width,
             flexDirection: 'row',
             alignItems: 'flex-start',
-            backgroundColor: 'transparent',
             justifyContent: 'flex-start',
             paddingHorizontal: StyleConfig.countPixelRatio(16),
             paddingVertical: StyleConfig.countPixelRatio(8)
@@ -211,19 +211,14 @@ class CommentList extends Component {
               }}>
                 <TextX align={'left'} fontSize={StyleConfig.fontSizeH3} >{item.name}</TextX>
                 <TextX align={'left'} fontSize={StyleConfig.fontSizeH2_3} style={{ flexWrap: 'wrap' }} >{item.message}</TextX>
-                <View style={{flexDirection:'row-reverse'}}>
+                <View style={{ flexDirection: 'row-reverse' }}>
                   <TouchableOpacity onPress={() => this._replyBtnPressed(item)}>
                     <TextX align={'right'} fontSize={StyleConfig.fontSizeH3} >{'Reply'}</TextX>
                   </TouchableOpacity>
-                  
-                  <View style={{width:StyleConfig.countPixelRatio(16)}} />
-                  
-                  {item.user_id == user_id && <TouchableOpacity onPress={() => this._deleteBtnPressed(item)}>
-                    <TextX align={'right'} fontSize={StyleConfig.fontSizeH3} >{'Delete'}</TextX>
-                  </TouchableOpacity>}
-                  
+
+                  <View style={{ width: StyleConfig.countPixelRatio(16) }} />
                 </View>
-                
+
 
                 {item.reply && item.reply.length > 0 &&
                   item.reply.map((item, index) => {
@@ -232,9 +227,24 @@ class CommentList extends Component {
                 }
               </View>
             </View>
-          </View>)}
-        keyExtractor={(item, index) => index.toString()}
+          </ViewX>)}
+        renderHiddenItem={(data, rowMap) => (
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            {data.item.user_id == user_id &&
+              <View style={{ flexDirection: "row", width: StyleConfig.width }}>
+                <View style={{ width: StyleConfig.width - 50 }} >
+
+                </View>
+                <TouchableOpacity onPress={() => this._deleteBtnPressed(data.item)} style={{ backgroundColor: 'red', flex: 1, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                  <Feather name="trash-2" size={28} color="white" />
+                </TouchableOpacity>
+              </View>}
+          </View>
+        )}
+        leftOpenValue={0}
+        rightOpenValue={-50}
       />
+
     )
   }
 

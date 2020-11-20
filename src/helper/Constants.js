@@ -12,6 +12,7 @@ export const RECIPE_DATA_URL = `${BASE_URL}recipe/list`
 export const ADD_RECIPE_URL = `${BASE_URL}recipe/add`
 export const USER_DETAILS_URL = `${BASE_URL}user/get/profile`
 export const UPDATE_USER_DETAILS_URL = `${BASE_URL}user/update/profile`
+export const SAVE_APP_USED = `${BASE_URL}user/saveappused`
 export const FAVOURITE_LIST_URL = `${BASE_URL}recipe/Getfavoritelist`
 export const BOOKMARK_USER_URL = `${BASE_URL}recipe/UserBookmarklist`
 export const TAG_URL = `${BASE_URL}tag`
@@ -30,3 +31,5 @@ export const DELETE_COMMENT = `${BASE_URL}recipe/comment/delete/`
 export const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
 export const KEY_PREF_ANDROID_THEME = "PREF_ANDROID_THEME"
+export const KEY_PREF_START_TIME = "PREF_START_TIME"
+
