@@ -230,13 +230,13 @@ class CommentList extends Component {
           </ViewX>)}
         renderHiddenItem={(data, rowMap) => (
           <View style={{ flex: 1, justifyContent: 'center' }}>
-            {data.item.user_id == user_id &&
+            { //data.item.user_id == user_id &&
               <View style={{ flexDirection: "row", width: StyleConfig.width }}>
                 <View style={{ width: StyleConfig.width - 50 }} >
 
                 </View>
-                <TouchableOpacity onPress={() => this._deleteBtnPressed(data.item)} style={{ backgroundColor: 'red', flex: 1, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                  <Feather name="trash-2" size={28} color="white" />
+                <TouchableOpacity onPress={() => this._deleteBtnPressed(data.item)} style={{ flex: 1, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                  <Feather name="trash-2" size={28} color={'#ff0000'} />
                 </TouchableOpacity>
               </View>}
           </View>
