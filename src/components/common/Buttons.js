@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
         marginVertical:StyleConfig.countPixelRatio(12)
     },
     textStyle:{
+        includeFontPadding:false,
         fontSize:StyleConfig.countPixelRatio(18),
         fontWeight:'bold'
     }
